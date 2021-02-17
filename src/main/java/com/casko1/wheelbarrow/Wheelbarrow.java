@@ -1,12 +1,12 @@
 package com.casko1.wheelbarrow;
 
 import com.casko1.wheelbarrow.commands.PingCommand;
+import com.casko1.wheelbarrow.commands.WeatherCommand;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.exceptions.RateLimitedException;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
@@ -22,6 +22,7 @@ public class Wheelbarrow {
         // get configs from config.txt
         String token = config.get(0);
         String ownerId = config.get(1);
+        String weatherToken = config.get(2);
 
         EventWaiter waiter = new EventWaiter();
 
@@ -31,7 +32,10 @@ public class Wheelbarrow {
                 .setOwnerId(ownerId)
                 .setActivity(Activity.playing("$ is my prefix!"));
 
-        client.addCommand(new PingCommand());
+        client.addCommands(
+                new PingCommand(),
+                new WeatherCommand(weatherToken)
+                );
 
         JDABuilder.createDefault(token)
                 //status while loading

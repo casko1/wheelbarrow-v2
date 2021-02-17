@@ -14,10 +14,10 @@ public class PingCommand extends Command {
     }
 
     @Override
-    protected void execute(CommandEvent commandEvent) {
-        commandEvent.reply("Pinging: ...", m -> {
-            long ping = commandEvent.getMessage().getTimeCreated().until(m.getTimeCreated(), ChronoUnit.MILLIS);
-            m.editMessage("Ping: " + ping  + "ms | Websocket: " + commandEvent.getJDA().getGatewayPing() + "ms").queue();
+    protected void execute(CommandEvent event) {
+        event.reply("Pinging: ...", m -> {
+            long ping = event.getMessage().getTimeCreated().until(m.getTimeCreated(), ChronoUnit.MILLIS);
+            m.editMessage("Ping: " + ping  + "ms | Websocket: " + event.getJDA().getGatewayPing() + "ms").queue();
         });
     }
 }
