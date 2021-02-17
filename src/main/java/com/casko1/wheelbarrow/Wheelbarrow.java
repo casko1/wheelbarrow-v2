@@ -1,7 +1,7 @@
 package com.casko1.wheelbarrow;
 
-import com.casko1.wheelbarrow.commands.PingCommand;
-import com.casko1.wheelbarrow.commands.WeatherCommand;
+import com.casko1.wheelbarrow.commands.basic.PingCommand;
+import com.casko1.wheelbarrow.commands.basic.WeatherCommand;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.JDABuilder;

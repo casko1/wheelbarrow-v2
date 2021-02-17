@@ -1,4 +1,4 @@
-package com.casko1.wheelbarrow.commands;
+package com.casko1.wheelbarrow.commands.basic;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
@@ -130,14 +130,15 @@ public class WeatherCommand extends Command {
                             .append(" ");
 
                     if(dayOfWeek.equals("")){
-                        dayOfWeek = getDayOfWeek(currentHour.getString("dt_txt").split("\\s+")[0]);
+                        String date = currentHour.getString("dt_txt").split("\\s+")[0];
+                        dayOfWeek = getDayOfWeek(currentHour.getString("dt_txt").split("\\s+")[0]) + " " + date;
                     }
                 }
             }
 
             //special case where first day is almost over
             if(dayOfWeek.equals("")){
-                dayOfWeek = getDayOfWeek(firstDay);
+                dayOfWeek = getDayOfWeek(firstDay) + " " + firstDay;
             }
 
             eb.addField(dayOfWeek, sb.toString(), false);
