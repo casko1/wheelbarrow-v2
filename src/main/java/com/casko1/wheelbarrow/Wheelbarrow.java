@@ -27,10 +27,10 @@ public class Wheelbarrow {
         EventWaiter waiter = new EventWaiter();
 
         CommandClientBuilder client = new CommandClientBuilder()
-                .setPrefix("$")
+                .setPrefix("$$")
                 .setStatus(OnlineStatus.ONLINE)
                 .setOwnerId(ownerId)
-                .setActivity(Activity.playing("$ is my prefix!"));
+                .setActivity(Activity.playing("$$ is my prefix!"));
 
         client.addCommands(
                 new PingCommand(),
