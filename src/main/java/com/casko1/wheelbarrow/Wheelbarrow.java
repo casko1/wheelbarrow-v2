@@ -2,16 +2,23 @@ package com.casko1.wheelbarrow;
 
 import com.casko1.wheelbarrow.commands.basic.PingCommand;
 import com.casko1.wheelbarrow.commands.basic.WeatherCommand;
+import com.casko1.wheelbarrow.commands.music.JoinCommand;
+import com.casko1.wheelbarrow.commands.music.PlayCommand;
+import com.casko1.wheelbarrow.commands.music.StopCommand;
+import com.casko1.wheelbarrow.commands.music.lavaplayer.SkipCommand;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.EnumSet;
 import java.util.List;
 
 public class Wheelbarrow {
@@ -34,10 +41,25 @@ public class Wheelbarrow {
 
         client.addCommands(
                 new PingCommand(),
-                new WeatherCommand(weatherToken)
+                new WeatherCommand(weatherToken),
+                new JoinCommand(),
+                new PlayCommand(),
+                new StopCommand(),
+                new SkipCommand()
                 );
 
-        JDABuilder.createDefault(token)
+        JDABuilder.createDefault(
+                token,
+                GatewayIntent.GUILD_MEMBERS,
+                GatewayIntent.GUILD_MESSAGES,
+                GatewayIntent.GUILD_VOICE_STATES
+                )
+                .disableCache(EnumSet.of(
+                        CacheFlag.CLIENT_STATUS,
+                        CacheFlag.ACTIVITY,
+                        CacheFlag.EMOTE
+                ))
+                .enableCache(CacheFlag.VOICE_STATE)
                 //status while loading
                 .setStatus(OnlineStatus.DO_NOT_DISTURB)
                 .setActivity(Activity.playing("loading..."))
