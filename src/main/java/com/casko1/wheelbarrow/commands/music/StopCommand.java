@@ -48,7 +48,7 @@ public class StopCommand extends Command {
         musicManager.trackScheduler.player.stopTrack();
         musicManager.trackScheduler.queue.clear();
 
-        PlayerManager.getInstance().removeTextChannelManager(event.getGuild());
+        PlayerManager.getInstance().removeTextChannel(event.getGuild());
 
         final AudioManager audioManager = event.getGuild().getAudioManager();
 

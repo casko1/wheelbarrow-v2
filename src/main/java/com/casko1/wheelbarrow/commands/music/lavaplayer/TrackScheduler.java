@@ -43,9 +43,9 @@ public class TrackScheduler extends AudioEventAdapter {
         if(track == null){
             this.player.stopTrack();
             PlayerManager playerManager = PlayerManager.getInstance();
-            TextChannel textChannel = playerManager.getTextChannelManager(guild);
+            TextChannel textChannel = playerManager.getTextChannel(guild);
             textChannel.sendMessage("Nothing left to play. Leaving the voice channel.").queue();
-            playerManager.removeTextChannelManager(guild);
+            playerManager.removeTextChannel(guild);
             guild.getAudioManager().closeAudioConnection();
         }
         else{

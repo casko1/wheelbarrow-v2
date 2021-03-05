@@ -17,6 +17,7 @@
         <jda.utils.version>3.0.5</jda.utils.version>
         <unirest.version>3.11.11</unirest.version>
         <lavaplayer.version>1.3.71</lavaplayer.version>
+        <spotify.api.version>6.5.2</spotify.api.version>
     </properties>
 
     <dependencies>
@@ -45,6 +46,12 @@
             <artifactId>lavaplayer</artifactId>
             <version>${lavaplayer.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>se.michaelthelin.spotify</groupId>
+            <artifactId>spotify-web-api-java</artifactId>
+            <version>${spotify.api.version}</version>
+        </dependency>
     </dependencies>
 
     <repositories>
@@ -58,6 +65,11 @@
             <id>central</id>
             <name>bintray</name>
             <url>https://jcenter.bintray.com</url>
+        </repository>
+
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 </project>

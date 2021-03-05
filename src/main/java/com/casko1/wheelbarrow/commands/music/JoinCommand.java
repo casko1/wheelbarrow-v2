@@ -44,7 +44,7 @@ public class JoinCommand extends Command {
 
         TextChannel channel = event.getTextChannel();
 
-        PlayerManager.getInstance().setTextChannelManager(event.getGuild(), channel);
+        PlayerManager.getInstance().setTextChannel(event.getGuild(), channel);
 
         event.replyFormatted("Joining %s.", voiceChannel.getName());
     }

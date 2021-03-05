@@ -47,8 +47,10 @@ public class SkipCommand extends Command {
             return;
         }
 
-        musicManager.trackScheduler.nextTrack();
+
         event.reply("Skipped current track.");
+        musicManager.trackScheduler.nextTrack();
+
 
     }
 }

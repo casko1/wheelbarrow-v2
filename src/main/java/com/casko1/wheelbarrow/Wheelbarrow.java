@@ -3,6 +3,7 @@ package com.casko1.wheelbarrow;
 import com.casko1.wheelbarrow.commands.basic.PingCommand;
 import com.casko1.wheelbarrow.commands.basic.WeatherCommand;
 import com.casko1.wheelbarrow.commands.music.JoinCommand;
+import com.casko1.wheelbarrow.commands.music.NowPlayingCommand;
 import com.casko1.wheelbarrow.commands.music.PlayCommand;
 import com.casko1.wheelbarrow.commands.music.StopCommand;
 import com.casko1.wheelbarrow.commands.music.lavaplayer.SkipCommand;
@@ -45,7 +46,8 @@ public class Wheelbarrow {
                 new JoinCommand(),
                 new PlayCommand(),
                 new StopCommand(),
-                new SkipCommand()
+                new SkipCommand(),
+                new NowPlayingCommand()
                 );
 
         JDABuilder.createDefault(

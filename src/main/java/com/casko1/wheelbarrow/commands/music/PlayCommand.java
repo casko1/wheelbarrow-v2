@@ -3,6 +3,8 @@ package com.casko1.wheelbarrow.commands.music;
 import com.casko1.wheelbarrow.commands.music.lavaplayer.PlayerManager;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
+import com.wrapper.spotify.SpotifyApi;
+import com.wrapper.spotify.requests.authorization.client_credentials.ClientCredentialsRequest;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -48,7 +50,7 @@ public class PlayCommand extends Command {
             audioManager.openAudioConnection(voiceChannel);
             event.replyFormatted("Joining %s.", voiceChannel.getName());
 
-            PlayerManager.getInstance().setTextChannelManager(event.getGuild(), channel);
+            PlayerManager.getInstance().setTextChannel(event.getGuild(), channel);
         }
         else if(!memberVoiceState.getChannel().equals(selfVoiceState.getChannel())){
             event.reply("You must be in the same channel as me to use this command!");
@@ -58,13 +60,14 @@ public class PlayCommand extends Command {
         String link = event.getArgs();
 
         if(!isUrl(link)){
+            String query = link;
             link = "ytsearch:" + link;
             //false because we only take the first search result
-            PlayerManager.getInstance().loadAndPLay(channel, link, false);
+            PlayerManager.getInstance().loadAndPLay(channel, link, false, member, query);
         }
         else{
             //true as it might be a playlist
-            PlayerManager.getInstance().loadAndPLay(channel, link, true);
+            PlayerManager.getInstance().loadAndPLay(channel, link, true, member);
         }
 
     }
