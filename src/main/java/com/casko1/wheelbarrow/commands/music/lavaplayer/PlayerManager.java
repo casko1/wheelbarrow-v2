@@ -40,7 +40,7 @@ public class PlayerManager {
     private final Map<Long, TextChannel> textChannelManagers;
     private final AudioPlayerManager audioPlayerManager;
     private final SpotifyApi spotifyApi;
-    private final ClientCredentials clientCredentials;
+    private ClientCredentials clientCredentials;
 
 
     public PlayerManager() throws IOException, ParseException, SpotifyWebApiException {
@@ -51,6 +51,9 @@ public class PlayerManager {
         this.musicManagers = new HashMap<>();
         this.textChannelManagers = new HashMap<>();
         this.audioPlayerManager = new DefaultAudioPlayerManager();
+
+        this.audioPlayerManager.getConfiguration().setFilterHotSwapEnabled(true);
+
         this.spotifyApi = new SpotifyApi.Builder()
                 .setClientId(spotifyId)
                 .setClientSecret(spotifySecret)
@@ -70,6 +73,10 @@ public class PlayerManager {
 
             return guildMusicManager;
         });
+    }
+
+    public void removeMusicManager(Long guild){
+        this.musicManagers.remove(guild);
     }
 
     //sets the text channel to reply in
@@ -172,9 +179,20 @@ public class PlayerManager {
 
         } catch (IOException | SpotifyWebApiException | ParseException e){
             System.out.println(e);
+            spotifyApi.setAccessToken(getNewAccessToken());
+            return getThumbnail(query);
         }
 
         return res;
+    }
+
+    private String getNewAccessToken(){
+        try{
+            clientCredentials = spotifyApi.clientCredentials().build().execute();
+        } catch (IOException | SpotifyWebApiException | ParseException e){
+            System.out.println(e);
+        }
+        return clientCredentials.getAccessToken();
     }
 
     public void sendEmbed(AudioTrack audioTrack, TextChannel channel){

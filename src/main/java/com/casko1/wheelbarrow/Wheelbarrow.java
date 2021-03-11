@@ -2,11 +2,8 @@ package com.casko1.wheelbarrow;
 
 import com.casko1.wheelbarrow.commands.basic.PingCommand;
 import com.casko1.wheelbarrow.commands.basic.WeatherCommand;
-import com.casko1.wheelbarrow.commands.music.JoinCommand;
-import com.casko1.wheelbarrow.commands.music.NowPlayingCommand;
-import com.casko1.wheelbarrow.commands.music.PlayCommand;
-import com.casko1.wheelbarrow.commands.music.StopCommand;
-import com.casko1.wheelbarrow.commands.music.lavaplayer.SkipCommand;
+import com.casko1.wheelbarrow.commands.music.*;
+import com.casko1.wheelbarrow.commands.music.SkipCommand;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.JDABuilder;
@@ -47,7 +44,10 @@ public class Wheelbarrow {
                 new PlayCommand(),
                 new StopCommand(),
                 new SkipCommand(),
-                new NowPlayingCommand()
+                new NowPlayingCommand(),
+                new SpeedCommand(),
+                new KaraokeCommand(),
+                new DistortionCommand()
                 );
 
         JDABuilder.createDefault(

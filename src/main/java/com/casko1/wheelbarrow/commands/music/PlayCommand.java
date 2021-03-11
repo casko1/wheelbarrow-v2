@@ -3,8 +3,6 @@ package com.casko1.wheelbarrow.commands.music;
 import com.casko1.wheelbarrow.commands.music.lavaplayer.PlayerManager;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
-import com.wrapper.spotify.SpotifyApi;
-import com.wrapper.spotify.requests.authorization.client_credentials.ClientCredentialsRequest;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
