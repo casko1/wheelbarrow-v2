@@ -24,6 +24,11 @@ public class DistortionConfig {
         this.enabled = true;
     }
 
+    public void disable(){
+        this.scale = 1.0f;
+        this.enabled = false;
+    }
+
     public boolean isEnabled(){
         return this.enabled;
     }

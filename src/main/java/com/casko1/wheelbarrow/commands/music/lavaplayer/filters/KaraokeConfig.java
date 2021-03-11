@@ -3,7 +3,6 @@ package com.casko1.wheelbarrow.commands.music.lavaplayer.filters;
 import com.github.natanbc.lavadsp.karaoke.KaraokePcmAudioFilter;
 import com.sedmelluq.discord.lavaplayer.filter.AudioFilter;
 import com.sedmelluq.discord.lavaplayer.filter.FloatPcmAudioFilter;
-import com.sedmelluq.discord.lavaplayer.filter.UniversalPcmAudioFilter;
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
 
 public class KaraokeConfig {
@@ -31,6 +30,12 @@ public class KaraokeConfig {
 
     public void enable(){
         this.enabled = true;
+    }
+
+    public void disable(){
+        this.level = 1.0f;
+        this.monoLevel = 1.0f;
+        this.enabled = false;
     }
 
     public boolean isEnabled(){

@@ -3,9 +3,7 @@ package com.casko1.wheelbarrow.commands.music.lavaplayer.filters;
 import com.github.natanbc.lavadsp.timescale.TimescalePcmAudioFilter;
 import com.sedmelluq.discord.lavaplayer.filter.AudioFilter;
 import com.sedmelluq.discord.lavaplayer.filter.FloatPcmAudioFilter;
-import com.sedmelluq.discord.lavaplayer.filter.UniversalPcmAudioFilter;
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 public class TimescaleConfig {
 
@@ -41,6 +39,13 @@ public class TimescaleConfig {
 
     public void enable(){
         this.enabled = true;
+    }
+
+    public void disable(){
+        this.speed = 1.0;
+        this.pitch = 1.0;
+        this.rate = 1.0;
+        this.enabled = false;
     }
 
     public boolean isEnabled(){

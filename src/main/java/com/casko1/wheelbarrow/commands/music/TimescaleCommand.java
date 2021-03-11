@@ -8,12 +8,14 @@ import com.casko1.wheelbarrow.utils.VoiceStateCheckUtil;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
-public class KaraokeCommand extends Command {
 
-    public KaraokeCommand(){
-        this.name = "karaoke";
-        this.help = "**Applies karaoke filter to current track.** *Example: $$karaoke level 1.2*";
-        this.arguments = "<mono|level> <number>";
+public class TimescaleCommand extends Command {
+
+    public TimescaleCommand(){
+        this.name = "timescale";
+        this.help = "**Applies timescale filter to current track.** *Example: $$timescale speed 1.2*";
+        this.arguments = "<speed | pitch | rate> <number>";
+        this.aliases = new String[]{"ts"};
         this.guildOnly = false;
     }
 
@@ -29,22 +31,22 @@ public class KaraokeCommand extends Command {
             FilterConfiguration config = guildMusicManager.getFilterConfiguration();
 
             if(args.length == 1 && args[0].equals("disable")){
-                event.reply("Disabling Karaoke filter.");
-                config.karaoke.disable();
+                event.reply("Disabling **Timescale** filter.");
+                config.timescale.disable();
                 guildMusicManager.setFilters();
                 return;
             }
 
-            if(args.length > 1 && ArgumentsUtil.isFloat(args[1])){
+            if(args.length > 1 && ArgumentsUtil.isDouble(args[1])){
 
-                float factor = Float.parseFloat(args[1]);
+                double factor = Double.parseDouble(args[1]);
 
-                if(!config.karaoke.isEnabled()){
-                    config.karaoke.enable();
+                if(!config.timescale.isEnabled()){
+                    config.timescale.enable();
 
                     if(!applyFactor(args[0], factor, config)){
                         event.reply("Incorrect command usage");
-                        config.karaoke.disable();
+                        config.timescale.disable();
                         return;
                     }
 
@@ -57,10 +59,10 @@ public class KaraokeCommand extends Command {
                         return;
                     }
 
-                    config.karaoke.updateFilter();
+                    config.timescale.updateFilter();
                 }
 
-                event.reply(String.format("Setting karaoke/**%s** to **%.1fx**", args[0], factor));
+                event.reply(String.format("Setting timescale/**%s** to **%.1fx**", args[0], factor));
 
             }
             else{
@@ -71,11 +73,13 @@ public class KaraokeCommand extends Command {
 
     }
 
-    private boolean applyFactor(String setting, float factor, FilterConfiguration config){
+    //returns true if applying factor is successful, false otherwise
+    private boolean applyFactor(String setting, double factor, FilterConfiguration config){
 
         switch (setting) {
-            case "mono" -> config.karaoke.setMonoLevel(factor);
-            case "level" -> config.karaoke.setLevel(factor);
+            case "speed" -> config.timescale.setSpeed(factor);
+            case "pitch" -> config.timescale.setPitch(factor);
+            case "rate" -> config.timescale.setRate(factor);
             default -> {
                 return false;
             }

@@ -33,6 +33,12 @@ public class TremoloConfig {
         this.enabled = true;
     }
 
+    public void disable(){
+        this.frequency = 2.0f;
+        this.depth = 0.5f;
+        this.enabled = false;
+    }
+
     public boolean isEnabled(){
         return this.enabled;
     }

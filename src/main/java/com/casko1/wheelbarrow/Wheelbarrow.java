@@ -45,9 +45,10 @@ public class Wheelbarrow {
                 new StopCommand(),
                 new SkipCommand(),
                 new NowPlayingCommand(),
-                new SpeedCommand(),
+                new TimescaleCommand(),
                 new KaraokeCommand(),
-                new DistortionCommand()
+                new DistortionCommand(),
+                new TremoloCommand()
                 );
 
         JDABuilder.createDefault(

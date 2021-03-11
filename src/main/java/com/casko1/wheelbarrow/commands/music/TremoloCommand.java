@@ -8,12 +8,12 @@ import com.casko1.wheelbarrow.utils.VoiceStateCheckUtil;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
-public class KaraokeCommand extends Command {
+public class TremoloCommand extends Command {
 
-    public KaraokeCommand(){
-        this.name = "karaoke";
-        this.help = "**Applies karaoke filter to current track.** *Example: $$karaoke level 1.2*";
-        this.arguments = "<mono|level> <number>";
+    public TremoloCommand(){
+        this.name = "tremolo";
+        this.help = "**Applies tremolo filter to current track.** *Example: $$tremolo depth 1.2*";
+        this.arguments = "<freq | depth> <number>";
         this.guildOnly = false;
     }
 
@@ -29,8 +29,8 @@ public class KaraokeCommand extends Command {
             FilterConfiguration config = guildMusicManager.getFilterConfiguration();
 
             if(args.length == 1 && args[0].equals("disable")){
-                event.reply("Disabling Karaoke filter.");
-                config.karaoke.disable();
+                event.reply("Disabling **Tremolo** filter.");
+                config.tremolo.disable();
                 guildMusicManager.setFilters();
                 return;
             }
@@ -39,12 +39,12 @@ public class KaraokeCommand extends Command {
 
                 float factor = Float.parseFloat(args[1]);
 
-                if(!config.karaoke.isEnabled()){
-                    config.karaoke.enable();
+                if(!config.tremolo.isEnabled()){
+                    config.tremolo.enable();
 
                     if(!applyFactor(args[0], factor, config)){
                         event.reply("Incorrect command usage");
-                        config.karaoke.disable();
+                        config.tremolo.disable();
                         return;
                     }
 
@@ -57,25 +57,23 @@ public class KaraokeCommand extends Command {
                         return;
                     }
 
-                    config.karaoke.updateFilter();
+                    config.tremolo.updateFilter();
                 }
 
-                event.reply(String.format("Setting karaoke/**%s** to **%.1fx**", args[0], factor));
+                event.reply(String.format("Setting tremolo/**%s** to **%.1fx**", args[0], factor));
 
             }
             else{
                 event.reply("Incorrect command usage");
             }
-
         }
-
     }
 
+    //returns true if applying factor is successful, false otherwise
     private boolean applyFactor(String setting, float factor, FilterConfiguration config){
-
         switch (setting) {
-            case "mono" -> config.karaoke.setMonoLevel(factor);
-            case "level" -> config.karaoke.setLevel(factor);
+            case "depth" -> config.tremolo.setDepth(factor);
+            case "freq" -> config.tremolo.setFrequency(factor);
             default -> {
                 return false;
             }
