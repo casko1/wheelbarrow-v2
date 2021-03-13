@@ -152,6 +152,7 @@ public class PlayerManager {
 
             @Override
             public void noMatches() {
+                channel.sendMessage("No results with that query were found").queue();
             }
 
             @Override

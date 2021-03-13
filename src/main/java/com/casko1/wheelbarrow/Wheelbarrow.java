@@ -6,6 +6,7 @@ import com.casko1.wheelbarrow.commands.music.*;
 import com.casko1.wheelbarrow.commands.music.SkipCommand;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
+import com.jagrosh.jdautilities.menu.Paginator;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
@@ -37,6 +38,8 @@ public class Wheelbarrow {
                 .setOwnerId(ownerId)
                 .setActivity(Activity.playing("$$ is my prefix!"));
 
+        Paginator.Builder paginatorBuilder = new Paginator.Builder().setEventWaiter(new EventWaiter());
+
         client.addCommands(
                 new PingCommand(),
                 new WeatherCommand(weatherToken),
@@ -48,14 +51,16 @@ public class Wheelbarrow {
                 new TimescaleCommand(),
                 new KaraokeCommand(),
                 new DistortionCommand(),
-                new TremoloCommand()
+                new TremoloCommand(),
+                new QueueCommand(paginatorBuilder)
                 );
 
         JDABuilder.createDefault(
                 token,
                 GatewayIntent.GUILD_MEMBERS,
                 GatewayIntent.GUILD_MESSAGES,
-                GatewayIntent.GUILD_VOICE_STATES
+                GatewayIntent.GUILD_VOICE_STATES,
+                GatewayIntent.GUILD_MESSAGE_REACTIONS
                 )
                 .disableCache(EnumSet.of(
                         CacheFlag.CLIENT_STATUS,
@@ -68,5 +73,6 @@ public class Wheelbarrow {
                 .setActivity(Activity.playing("loading..."))
                 .addEventListeners(waiter, client.build())
                 .build(); //start the bot
+
     }
 }

@@ -46,7 +46,7 @@ public class DistortionCommand extends Command {
                     }
                     else{
                         config.distortion.setScale(factor);
-                        config.timescale.updateFilter();
+                        config.distortion.updateFilter();
                     }
 
                     event.reply(String.format("Setting distortion to **%.1fx**", factor));

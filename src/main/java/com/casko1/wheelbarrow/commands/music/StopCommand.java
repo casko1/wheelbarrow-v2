@@ -13,7 +13,7 @@ public class StopCommand extends Command {
         this.name = "stop";
         this.help = "Makes the bot stop playing music.";
         this.guildOnly = false;
-        this.aliases = new String[]{"leave"};
+        this.aliases = new String[]{"leave", "disconnect", "exit"};
     }
 
     @Override
