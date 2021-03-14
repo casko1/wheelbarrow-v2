@@ -5,13 +5,17 @@ import com.sedmelluq.discord.lavaplayer.filter.AudioFilter;
 import com.sedmelluq.discord.lavaplayer.filter.FloatPcmAudioFilter;
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
 
-public class TimescaleConfig implements FilterConfig {
+public class TimescaleConfig extends FilterConfig {
 
     private double speed = 1.0;
     private double pitch = 1.0;
     private double rate = 1.0;
     public TimescalePcmAudioFilter timescalePcmAudioFilter;
-    public boolean enabled = false;
+    private boolean enabled = false;
+
+    public TimescaleConfig() {
+        super("Timescale");
+    }
 
     public String getName(){
         return "Timescale";
@@ -41,19 +45,15 @@ public class TimescaleConfig implements FilterConfig {
         this.rate = rate;
     }
 
-    public void disableFilter(){
+    public void disable(){
         this.speed = 1.0;
         this.pitch = 1.0;
         this.rate = 1.0;
-        this.disable();
+        this.enabled = false;
     }
 
     public void enable(){
         this.enabled = true;
-    }
-
-    public void disable(){
-        this.enabled = false;
     }
 
     public boolean isEnabled(){

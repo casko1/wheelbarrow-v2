@@ -30,7 +30,7 @@ public class KaraokeCommand extends Command {
 
             if(args.length == 1 && args[0].equals("disable")){
                 event.reply("Disabling Karaoke filter.");
-                config.karaoke.disableFilter();
+                config.karaoke.disable();
                 guildMusicManager.setFilters();
                 return;
             }
@@ -44,7 +44,7 @@ public class KaraokeCommand extends Command {
 
                     if(!applyFactor(args[0], factor, config)){
                         event.reply("Incorrect command usage");
-                        config.karaoke.disableFilter();
+                        config.karaoke.disable();
                         return;
                     }
 

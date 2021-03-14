@@ -31,7 +31,7 @@ public class DistortionCommand extends Command {
             if(args.length == 1){
                 if(args[0].equals("disable")){
                     event.reply("Disabling **Distortion** filter.");
-                    config.distortion.disableFilter();
+                    config.distortion.disable();
                     guildMusicManager.setFilters();
                     return;
                 }

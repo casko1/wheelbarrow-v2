@@ -5,15 +5,15 @@ import com.sedmelluq.discord.lavaplayer.filter.AudioFilter;
 import com.sedmelluq.discord.lavaplayer.filter.FloatPcmAudioFilter;
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
 
-public class KaraokeConfig implements FilterConfig {
+public class KaraokeConfig extends FilterConfig {
 
     private float level = 1.0f;
     private float monoLevel = 1.0f;
     private KaraokePcmAudioFilter karaokePcmAudioFilter;
-    public boolean enabled = false;
+    private boolean enabled = false;
 
-    public String getName(){
-        return "Karaoke";
+    public KaraokeConfig(){
+        super("Karaoke");
     }
 
     public double getLevel() {
@@ -32,18 +32,14 @@ public class KaraokeConfig implements FilterConfig {
         this.monoLevel = monoLevel;
     }
 
-    public void disableFilter(){
+    public void disable(){
         this.level = 1.0f;
         this.monoLevel = 1.0f;
-        this.disable();
+        this.enabled = false;
     }
 
     public void enable(){
         this.enabled = true;
-    }
-
-    public void disable(){
-        this.enabled = false;
     }
 
     public boolean isEnabled(){
@@ -55,7 +51,6 @@ public class KaraokeConfig implements FilterConfig {
                 .setMonoLevel(this.monoLevel);
     }
 
-    @Override
     public AudioFilter create(AudioDataFormat format, FloatPcmAudioFilter output){
 
         this.karaokePcmAudioFilter = new KaraokePcmAudioFilter(output, format.channelCount, format.sampleRate)
