@@ -3,15 +3,18 @@ package com.casko1.wheelbarrow.commands.music.lavaplayer.filters;
 import com.github.natanbc.lavadsp.tremolo.TremoloPcmAudioFilter;
 import com.sedmelluq.discord.lavaplayer.filter.AudioFilter;
 import com.sedmelluq.discord.lavaplayer.filter.FloatPcmAudioFilter;
-import com.sedmelluq.discord.lavaplayer.filter.UniversalPcmAudioFilter;
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
 
-public class TremoloConfig {
+public class TremoloConfig implements FilterConfig {
 
     private float frequency = 2.0f;
     private float depth = 0.5f;
     private TremoloPcmAudioFilter tremoloPcmAudioFilter;
     private boolean enabled = false;
+
+    public String getName(){
+        return "Tremolo";
+    }
 
     public float getFrequency() {
         return frequency;
@@ -29,13 +32,17 @@ public class TremoloConfig {
         this.depth = depth;
     }
 
+    public void disableFilter(){
+        this.frequency = 2.0f;
+        this.depth = 0.5f;
+        this.disable();
+    }
+
     public void enable(){
         this.enabled = true;
     }
 
     public void disable(){
-        this.frequency = 2.0f;
-        this.depth = 0.5f;
         this.enabled = false;
     }
 

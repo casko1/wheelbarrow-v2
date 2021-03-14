@@ -52,7 +52,8 @@ public class Wheelbarrow {
                 new KaraokeCommand(),
                 new DistortionCommand(),
                 new TremoloCommand(),
-                new QueueCommand(paginatorBuilder)
+                new QueueCommand(paginatorBuilder),
+                new FilterCommand()
                 );
 
         JDABuilder.createDefault(

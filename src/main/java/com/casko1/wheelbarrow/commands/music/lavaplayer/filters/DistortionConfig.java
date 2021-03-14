@@ -4,13 +4,16 @@ import com.github.natanbc.lavadsp.distortion.DistortionPcmAudioFilter;
 import com.sedmelluq.discord.lavaplayer.filter.AudioFilter;
 import com.sedmelluq.discord.lavaplayer.filter.FloatPcmAudioFilter;
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
-public class DistortionConfig {
+public class DistortionConfig implements FilterConfig {
 
     private float scale = 1.0f;
     public DistortionPcmAudioFilter distortionPcmAudioFilter;
-    private boolean enabled = false;
+    public boolean enabled = false;
+
+    public String getName(){
+        return "Distortion";
+    }
 
     public float getScale() {
         return scale;
@@ -20,12 +23,16 @@ public class DistortionConfig {
         this.scale = scale;
     }
 
+    public void disableFilter(){
+        this.scale = 1.0f;
+        this.disable();
+    }
+
     public void enable(){
         this.enabled = true;
     }
 
     public void disable(){
-        this.scale = 1.0f;
         this.enabled = false;
     }
 
@@ -36,7 +43,6 @@ public class DistortionConfig {
     public void updateFilter(){
         this.distortionPcmAudioFilter.setScale(this.scale);
     }
-
 
     public AudioFilter create(AudioDataFormat format, FloatPcmAudioFilter output){
 

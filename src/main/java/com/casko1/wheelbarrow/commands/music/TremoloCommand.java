@@ -30,7 +30,7 @@ public class TremoloCommand extends Command {
 
             if(args.length == 1 && args[0].equals("disable")){
                 event.reply("Disabling **Tremolo** filter.");
-                config.tremolo.disable();
+                config.tremolo.disableFilter();
                 guildMusicManager.setFilters();
                 return;
             }
@@ -44,7 +44,7 @@ public class TremoloCommand extends Command {
 
                     if(!applyFactor(args[0], factor, config)){
                         event.reply("Incorrect command usage");
-                        config.tremolo.disable();
+                        config.tremolo.disableFilter();
                         return;
                     }
 

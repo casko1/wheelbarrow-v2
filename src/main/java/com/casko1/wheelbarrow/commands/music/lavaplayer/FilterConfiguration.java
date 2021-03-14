@@ -1,9 +1,6 @@
 package com.casko1.wheelbarrow.commands.music.lavaplayer;
 
-import com.casko1.wheelbarrow.commands.music.lavaplayer.filters.DistortionConfig;
-import com.casko1.wheelbarrow.commands.music.lavaplayer.filters.KaraokeConfig;
-import com.casko1.wheelbarrow.commands.music.lavaplayer.filters.TimescaleConfig;
-import com.casko1.wheelbarrow.commands.music.lavaplayer.filters.TremoloConfig;
+import com.casko1.wheelbarrow.commands.music.lavaplayer.filters.*;
 import com.sedmelluq.discord.lavaplayer.filter.AudioFilter;
 import com.sedmelluq.discord.lavaplayer.filter.FloatPcmAudioFilter;
 import com.sedmelluq.discord.lavaplayer.filter.PcmFilterFactory;
@@ -20,6 +17,18 @@ public class FilterConfiguration {
     public KaraokeConfig karaoke = new KaraokeConfig();
     public DistortionConfig distortion = new DistortionConfig();
     public TremoloConfig tremolo = new TremoloConfig();
+    public List<FilterConfig> filterConfigs = new ArrayList<>();
+
+    public FilterConfiguration(){
+        filterConfigs.add(timescale);
+        filterConfigs.add(karaoke);
+        filterConfigs.add(distortion);
+        filterConfigs.add(tremolo);
+    }
+
+    private List<FilterConfig> getConfigs(){
+        return this.filterConfigs;
+    }
 
     public PcmFilterFactory createFactory(){
         return new Factory(this);
@@ -37,24 +46,16 @@ public class FilterConfiguration {
         @Override
         public List<AudioFilter> buildChain(AudioTrack audioTrack, AudioDataFormat audioDataFormat, UniversalPcmAudioFilter output) {
 
+            List<FilterConfig> filterConfigs = filterConfiguration.getConfigs();
+
             List<AudioFilter> filterChain = new ArrayList<>();
 
             filterChain.add(output);
 
-            if(filterConfiguration.timescale.isEnabled()){
-                filterChain.add(0, filterConfiguration.timescale.create(audioDataFormat, (FloatPcmAudioFilter) filterChain.get(0)));
-            }
-
-            if(filterConfiguration.karaoke.isEnabled()){
-                filterChain.add(0, filterConfiguration.karaoke.create(audioDataFormat, (FloatPcmAudioFilter) filterChain.get(0)));
-            }
-
-            if(filterConfiguration.distortion.isEnabled()){
-                filterChain.add(0, filterConfiguration.distortion.create(audioDataFormat,(FloatPcmAudioFilter) filterChain.get(0)));
-            }
-
-            if(filterConfiguration.tremolo.isEnabled()){
-                filterChain.add(0, filterConfiguration.tremolo.create(audioDataFormat,(FloatPcmAudioFilter) filterChain.get(0)));
+            for(FilterConfig config : filterConfigs){
+                if(config.isEnabled()){
+                    filterChain.add(0, config.create(audioDataFormat, (FloatPcmAudioFilter) filterChain.get(0)));
+                }
             }
 
             return filterChain.subList(0, filterChain.size()-1);

@@ -32,7 +32,7 @@ public class TimescaleCommand extends Command {
 
             if(args.length == 1 && args[0].equals("disable")){
                 event.reply("Disabling **Timescale** filter.");
-                config.timescale.disable();
+                config.timescale.disableFilter();
                 guildMusicManager.setFilters();
                 return;
             }
@@ -46,7 +46,7 @@ public class TimescaleCommand extends Command {
 
                     if(!applyFactor(args[0], factor, config)){
                         event.reply("Incorrect command usage");
-                        config.timescale.disable();
+                        config.timescale.disableFilter();
                         return;
                     }
 
