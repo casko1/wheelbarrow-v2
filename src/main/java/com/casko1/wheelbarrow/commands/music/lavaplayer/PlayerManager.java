@@ -157,6 +157,7 @@ public class PlayerManager {
 
             @Override
             public void loadFailed(FriendlyException e) {
+                channel.sendMessage("Loading failed.").queue();
             }
         });
     }

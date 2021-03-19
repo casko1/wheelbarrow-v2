@@ -2,6 +2,7 @@ package com.casko1.wheelbarrow.commands.music.lavaplayer;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
+import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import net.dv8tion.jda.api.entities.Guild;
@@ -36,6 +37,13 @@ public class TrackScheduler extends AudioEventAdapter {
         if(!this.player.startTrack(track, true)){
             this.queue.offer(track);
         }
+    }
+
+    @Override
+    public void onTrackException(AudioPlayer player, AudioTrack track, FriendlyException exception) {
+        PlayerManager playerManager = PlayerManager.getInstance();
+        TextChannel textChannel = playerManager.getTextChannel(guild);
+        textChannel.sendMessage("There was an error playing that track.").queue();
     }
 
     public void nextTrack(){
