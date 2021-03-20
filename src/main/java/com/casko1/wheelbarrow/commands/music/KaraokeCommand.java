@@ -1,8 +1,8 @@
 package com.casko1.wheelbarrow.commands.music;
 
-import com.casko1.wheelbarrow.commands.music.lavaplayer.FilterConfiguration;
-import com.casko1.wheelbarrow.commands.music.lavaplayer.GuildMusicManager;
-import com.casko1.wheelbarrow.commands.music.lavaplayer.PlayerManager;
+import com.casko1.wheelbarrow.music.lavaplayer.FilterConfiguration;
+import com.casko1.wheelbarrow.music.lavaplayer.GuildMusicManager;
+import com.casko1.wheelbarrow.music.lavaplayer.PlayerManager;
 import com.casko1.wheelbarrow.utils.ArgumentsUtil;
 import com.casko1.wheelbarrow.utils.VoiceStateCheckUtil;
 import com.jagrosh.jdautilities.command.Command;
@@ -28,45 +28,17 @@ public class KaraokeCommand extends Command {
 
             FilterConfiguration config = guildMusicManager.getFilterConfiguration();
 
-            if(args.length == 1 && args[0].equals("disable")){
-                event.reply("Disabling Karaoke filter.");
-                config.karaoke.disable();
-                guildMusicManager.setFilters();
+            if(args.length == 1 && args[0].equals("disable")) {
+                disableFilter(event, config, guildMusicManager);
                 return;
             }
 
             if(args.length > 1 && ArgumentsUtil.isFloat(args[1])){
-
-                float factor = Float.parseFloat(args[1]);
-
-                if(!config.karaoke.isEnabled()){
-                    config.karaoke.enable();
-
-                    if(!applyFactor(args[0], factor, config)){
-                        event.reply("Incorrect command usage");
-                        config.karaoke.disable();
-                        return;
-                    }
-
-                    guildMusicManager.setFilters();
-                }
-                else{
-
-                    if(!applyFactor(args[0], factor, config)){
-                        event.reply("Incorrect command usage");
-                        return;
-                    }
-
-                    config.karaoke.updateFilter();
-                }
-
-                event.reply(String.format("Setting karaoke/**%s** to **%.1fx**", args[0], factor));
-
+                applyFilter(event, config, guildMusicManager, args);
             }
             else{
                 event.reply("Incorrect command usage");
             }
-
         }
 
     }
@@ -82,5 +54,38 @@ public class KaraokeCommand extends Command {
         }
 
         return true;
+    }
+
+    private void disableFilter(CommandEvent event, FilterConfiguration config, GuildMusicManager guildMusicManager){
+        event.reply("Disabling **Karaoke** filter.");
+        config.karaoke.disable();
+        guildMusicManager.setFilters();
+    }
+
+    private void applyFilter(CommandEvent event, FilterConfiguration config, GuildMusicManager guildMusicManager, String[] args){
+        float factor = Float.parseFloat(args[1]);
+
+        if(!config.karaoke.isEnabled()){
+            config.karaoke.enable();
+
+            if(!applyFactor(args[0], factor, config)){
+                event.reply("Incorrect command usage");
+                config.karaoke.disable();
+                return;
+            }
+
+            guildMusicManager.setFilters();
+        }
+        else{
+
+            if(!applyFactor(args[0], factor, config)){
+                event.reply("Incorrect command usage");
+                return;
+            }
+
+            config.karaoke.updateFilter();
+        }
+
+        event.reply(String.format("Setting karaoke/**%s** to **%.1fx**", args[0], factor));
     }
 }

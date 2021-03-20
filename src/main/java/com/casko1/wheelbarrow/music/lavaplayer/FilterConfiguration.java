@@ -1,6 +1,6 @@
-package com.casko1.wheelbarrow.commands.music.lavaplayer;
+package com.casko1.wheelbarrow.music.lavaplayer;
 
-import com.casko1.wheelbarrow.commands.music.lavaplayer.filters.*;
+import com.casko1.wheelbarrow.music.lavaplayer.filters.*;
 import com.sedmelluq.discord.lavaplayer.filter.AudioFilter;
 import com.sedmelluq.discord.lavaplayer.filter.FloatPcmAudioFilter;
 import com.sedmelluq.discord.lavaplayer.filter.PcmFilterFactory;

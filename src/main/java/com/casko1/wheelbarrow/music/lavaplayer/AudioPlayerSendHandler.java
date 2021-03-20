@@ -1,4 +1,4 @@
-package com.casko1.wheelbarrow.commands.music.lavaplayer;
+package com.casko1.wheelbarrow.music.lavaplayer;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.playback.MutableAudioFrame;

@@ -1,4 +1,4 @@
-package com.casko1.wheelbarrow.commands.music.lavaplayer;
+package com.casko1.wheelbarrow.music.lavaplayer;
 
 import com.casko1.wheelbarrow.entities.AdditionalTrackData;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;

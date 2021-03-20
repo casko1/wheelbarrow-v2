@@ -1,7 +1,7 @@
 package com.casko1.wheelbarrow.commands.music;
 
-import com.casko1.wheelbarrow.commands.music.lavaplayer.GuildMusicManager;
-import com.casko1.wheelbarrow.commands.music.lavaplayer.PlayerManager;
+import com.casko1.wheelbarrow.music.lavaplayer.GuildMusicManager;
+import com.casko1.wheelbarrow.music.lavaplayer.PlayerManager;
 import com.casko1.wheelbarrow.entities.AdditionalTrackData;
 import com.casko1.wheelbarrow.utils.TimeConverterUtil;
 import com.jagrosh.jdautilities.command.Command;

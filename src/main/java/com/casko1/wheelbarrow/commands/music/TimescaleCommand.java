@@ -1,8 +1,8 @@
 package com.casko1.wheelbarrow.commands.music;
 
-import com.casko1.wheelbarrow.commands.music.lavaplayer.FilterConfiguration;
-import com.casko1.wheelbarrow.commands.music.lavaplayer.GuildMusicManager;
-import com.casko1.wheelbarrow.commands.music.lavaplayer.PlayerManager;
+import com.casko1.wheelbarrow.music.lavaplayer.FilterConfiguration;
+import com.casko1.wheelbarrow.music.lavaplayer.GuildMusicManager;
+import com.casko1.wheelbarrow.music.lavaplayer.PlayerManager;
 import com.casko1.wheelbarrow.utils.ArgumentsUtil;
 import com.casko1.wheelbarrow.utils.VoiceStateCheckUtil;
 import com.jagrosh.jdautilities.command.Command;
@@ -31,39 +31,12 @@ public class TimescaleCommand extends Command {
             FilterConfiguration config = guildMusicManager.getFilterConfiguration();
 
             if(args.length == 1 && args[0].equals("disable")){
-                event.reply("Disabling **Timescale** filter.");
-                config.timescale.disable();
-                guildMusicManager.setFilters();
+                disableFilter(event, config, guildMusicManager);
                 return;
             }
 
             if(args.length > 1 && ArgumentsUtil.isDouble(args[1])){
-
-                double factor = Double.parseDouble(args[1]);
-
-                if(!config.timescale.isEnabled()){
-                    config.timescale.enable();
-
-                    if(!applyFactor(args[0], factor, config)){
-                        event.reply("Incorrect command usage");
-                        config.timescale.disable();
-                        return;
-                    }
-
-                    guildMusicManager.setFilters();
-                }
-                else{
-
-                    if(!applyFactor(args[0], factor, config)){
-                        event.reply("Incorrect command usage");
-                        return;
-                    }
-
-                    config.timescale.updateFilter();
-                }
-
-                event.reply(String.format("Setting timescale/**%s** to **%.1fx**", args[0], factor));
-
+                applyFilter(event, config, guildMusicManager, args);
             }
             else{
                 event.reply("Incorrect command usage");
@@ -86,5 +59,38 @@ public class TimescaleCommand extends Command {
         }
 
         return true;
+    }
+
+    private void disableFilter(CommandEvent event, FilterConfiguration config, GuildMusicManager guildMusicManager){
+        event.reply("Disabling **Timescale** filter.");
+        config.timescale.disable();
+        guildMusicManager.setFilters();
+    }
+
+    private void applyFilter(CommandEvent event, FilterConfiguration config, GuildMusicManager guildMusicManager, String[] args){
+        double factor = Double.parseDouble(args[1]);
+
+        if(!config.timescale.isEnabled()){
+            config.timescale.enable();
+
+            if(!applyFactor(args[0], factor, config)){
+                event.reply("Incorrect command usage");
+                config.timescale.disable();
+                return;
+            }
+
+            guildMusicManager.setFilters();
+        }
+        else{
+
+            if(!applyFactor(args[0], factor, config)){
+                event.reply("Incorrect command usage");
+                return;
+            }
+
+            config.timescale.updateFilter();
+        }
+
+        event.reply(String.format("Setting timescale/**%s** to **%.1fx**", args[0], factor));
     }
 }

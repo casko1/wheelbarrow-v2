@@ -1,6 +1,6 @@
 package com.casko1.wheelbarrow.commands.music;
 
-import com.casko1.wheelbarrow.commands.music.lavaplayer.PlayerManager;
+import com.casko1.wheelbarrow.music.lavaplayer.PlayerManager;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import net.dv8tion.jda.api.entities.GuildVoiceState;

@@ -1,4 +1,4 @@
-package com.casko1.wheelbarrow.commands.music.lavaplayer.filters;
+package com.casko1.wheelbarrow.music.lavaplayer.filters;
 
 import com.github.natanbc.lavadsp.timescale.TimescalePcmAudioFilter;
 import com.sedmelluq.discord.lavaplayer.filter.AudioFilter;
