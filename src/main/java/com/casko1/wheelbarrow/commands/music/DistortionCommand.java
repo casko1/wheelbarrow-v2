@@ -1,68 +1,13 @@
 package com.casko1.wheelbarrow.commands.music;
 
-import com.casko1.wheelbarrow.music.lavaplayer.FilterConfiguration;
-import com.casko1.wheelbarrow.music.lavaplayer.GuildMusicManager;
-import com.casko1.wheelbarrow.music.lavaplayer.PlayerManager;
-import com.casko1.wheelbarrow.utils.ArgumentsUtil;
-import com.casko1.wheelbarrow.utils.VoiceStateCheckUtil;
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
-
-public class DistortionCommand extends Command {
+public class DistortionCommand extends FilterCommand {
 
     public DistortionCommand(){
+        super("distortion");
         this.name = "distortion";
-        this.help = "**Distorts the current track.** *Example: $$distortion 1.2*";
-        this.arguments = "<number>";
+        this.help = "**Distorts the current track.** *Example: $$distortion scale 1.2*";
+        this.arguments = "scale <number>";
         this.guildOnly = false;
     }
 
-    @Override
-    protected void execute(CommandEvent event) {
-
-        if(VoiceStateCheckUtil.isEligible(event)){
-
-            String[] args = event.getArgs().split(" ");
-
-            GuildMusicManager guildMusicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
-
-            FilterConfiguration config = guildMusicManager.getFilterConfiguration();
-
-            if(args.length == 1){
-                if(args[0].equals("disable")){
-                    disableFilter(event, config, guildMusicManager);
-                    return;
-                }
-
-                if(ArgumentsUtil.isFloat(args[0])){
-                    applyFilter(event, config, guildMusicManager, args);
-                }
-                else{
-                    event.reply("Incorrect command usage");
-                }
-            }
-        }
-    }
-
-    private void disableFilter(CommandEvent event, FilterConfiguration config, GuildMusicManager guildMusicManager){
-        event.reply("Disabling **Distortion** filter.");
-        config.distortion.disable();
-        guildMusicManager.setFilters();
-    }
-
-    private void applyFilter(CommandEvent event, FilterConfiguration config, GuildMusicManager guildMusicManager, String[] args){
-        float factor = Float.parseFloat(args[0]);
-
-        if(!config.distortion.isEnabled()){
-            config.distortion.enable();
-            config.distortion.setScale(factor);
-            guildMusicManager.setFilters();
-        }
-        else{
-            config.distortion.setScale(factor);
-            config.distortion.updateFilter();
-        }
-
-        event.reply(String.format("Setting distortion to **%.1fx**", factor));
-    }
 }

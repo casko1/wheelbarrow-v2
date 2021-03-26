@@ -38,25 +38,7 @@ public class QueueCommand extends Command {
 
             //10 items per page
             if(queue.size() < 10){
-                EmbedBuilder eb = new EmbedBuilder();
-                eb.setColor(Color.BLUE);
-
-                List<AudioTrack> list = new ArrayList<>(queue);
-
-                StringBuilder sb = new StringBuilder();
-
-                for(int i = 0; i < list.size(); i++){
-                    sb.append(String.format("%d. %s\n", i+1, list.get(i).getInfo().title));
-                }
-
-                eb.addField("Currently playing:", manager.audioPlayer.getPlayingTrack().getInfo().title, false);
-
-                String text = sb.length() == 0 ? "Nothing is in the queue... yet" : sb.toString();
-
-                eb.addField("**Tracks in queue:**", text, false);
-                eb.setFooter("Use $$remove <number> to remove song from queue");
-
-                event.reply(eb.build());
+                singlePage(queue, manager, event);
             }
 
             /*
@@ -70,6 +52,27 @@ public class QueueCommand extends Command {
              */
 
         }
+    }
+
+    public void singlePage(BlockingQueue<AudioTrack> queue, GuildMusicManager manager, CommandEvent event){
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setColor(Color.BLUE);
+
+        List<AudioTrack> list = new ArrayList<>(queue);
+
+        StringBuilder sb = new StringBuilder();
+
+        for(int i = 0; i < list.size(); i++){
+            sb.append(String.format("%d. %s\n", i+1, list.get(i).getInfo().title));
+        }
+
+        String text = sb.length() == 0 ? "Nothing is in the queue... yet" : sb.toString();
+
+        eb.addField("Currently playing:", manager.audioPlayer.getPlayingTrack().getInfo().title, false);
+        eb.addField("**Tracks in queue:**", text, false);
+        eb.setFooter("Use $$remove <number> to remove song from queue");
+
+        event.reply(eb.build());
     }
 
 }

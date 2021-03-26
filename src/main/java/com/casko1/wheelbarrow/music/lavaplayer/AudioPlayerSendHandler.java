@@ -19,7 +19,6 @@ public class AudioPlayerSendHandler implements AudioSendHandler {
         this.lastFrame.setBuffer(buffer);
     }
 
-
     @Override
     public boolean canProvide() {
         //audioPlayer writes to lastFrame which writes to buffer

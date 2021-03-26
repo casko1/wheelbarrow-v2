@@ -1,47 +1,78 @@
 package com.casko1.wheelbarrow.commands.music;
 
+import com.casko1.wheelbarrow.music.lavaplayer.FilterConfiguration;
 import com.casko1.wheelbarrow.music.lavaplayer.GuildMusicManager;
 import com.casko1.wheelbarrow.music.lavaplayer.PlayerManager;
 import com.casko1.wheelbarrow.music.lavaplayer.filters.FilterConfig;
+import com.casko1.wheelbarrow.utils.ArgumentsUtil;
 import com.casko1.wheelbarrow.utils.VoiceStateCheckUtil;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
-import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.awt.*;
-import java.util.List;
 
-public class FilterCommand extends Command {
+public abstract class FilterCommand extends Command {
 
-    public FilterCommand(){
-        this.name = "filters";
-        this.help = "Displays enabled filters";
-        this.guildOnly = false;
+    private final String filterName;
+
+    public FilterCommand(String filterName){
+        this.filterName = filterName;
     }
 
     @Override
     protected void execute(CommandEvent event) {
-
         if(VoiceStateCheckUtil.isEligible(event)){
-            GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
 
-            List<FilterConfig> configs = musicManager.getFilterConfiguration().filterConfigs;
+            String[] args = event.getArgs().split(" ");
 
-            EmbedBuilder eb = new EmbedBuilder();
+            GuildMusicManager guildMusicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
 
-            eb.setColor(Color.BLUE);
-            eb.setTitle("**Filters**");
+            FilterConfiguration config = guildMusicManager.getFilterConfiguration();
 
-            StringBuilder sb = new StringBuilder();
-
-            for(FilterConfig config : configs){
-                sb.append(String.format("%s: %s\n", config.getName(), config.isEnabled() ? ":white_check_mark:" : ":x:"));
+            if(args.length == 1 && args[0].equals("disable")){
+                disableFilter(event, parseFilter(filterName, config), guildMusicManager);
+                return;
             }
 
-            eb.setDescription(sb.toString());
+            if(args.length > 1 && ArgumentsUtil.isFloat(args[1])){
+                applyFilter(event, parseFilter(filterName, config), guildMusicManager, args);
+            }
+            else{
+                event.reply("Incorrect command usage");
+            }
+        }
+    }
 
-            event.reply(eb.build());
+    private void disableFilter(CommandEvent event, FilterConfig config, GuildMusicManager guildMusicManager){
+        event.reply(String.format("Disabling **%s** filter.", filterName));
+        config.disable();
+        guildMusicManager.setFilters();
+    }
+
+    private void applyFilter(CommandEvent event, FilterConfig filterConfig, GuildMusicManager guildMusicManager, String[] args){
+        float factor = Float.parseFloat(args[1]);
+
+        boolean enabled = filterConfig.isEnabled();
+
+        if(filterConfig.applyConfig(args, factor)){
+            event.reply(String.format("Setting %s/**%s** to **%.1fx**", filterName, args[0], factor));
+
+            if(!enabled) guildMusicManager.setFilters();
+        }
+        else{
+            event.reply("Incorrect command usage");
+        }
+    }
+
+    private FilterConfig parseFilter(String filterName, FilterConfiguration config){
+        FilterConfig filterConfig = null;
+
+        switch (filterName) {
+            case "timescale" -> filterConfig = config.timescale;
+            case "karaoke" -> filterConfig = config.karaoke;
+            case "distortion" -> filterConfig = config.distortion;
+            case "tremolo" -> filterConfig = config.tremolo;
         }
 
+        return filterConfig;
     }
 }

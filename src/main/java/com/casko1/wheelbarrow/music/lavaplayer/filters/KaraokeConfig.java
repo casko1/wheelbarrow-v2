@@ -46,7 +46,7 @@ public class KaraokeConfig extends FilterConfig {
         return this.enabled;
     }
 
-    public void updateFilter(){
+    public void updateConfig(){
         this.karaokePcmAudioFilter.setLevel(this.level)
                 .setMonoLevel(this.monoLevel);
     }
@@ -58,5 +58,17 @@ public class KaraokeConfig extends FilterConfig {
                 .setMonoLevel(this.monoLevel);
 
         return this.karaokePcmAudioFilter;
+    }
+
+    public boolean parseOption(String option, float factor) {
+        switch (option) {
+            case "mono" -> setMonoLevel(factor);
+            case "level" -> setLevel(factor);
+            default -> {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

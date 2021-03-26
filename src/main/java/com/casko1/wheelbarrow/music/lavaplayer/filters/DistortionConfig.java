@@ -36,7 +36,7 @@ public class DistortionConfig extends FilterConfig {
         return this.enabled;
     }
 
-    public void updateFilter(){
+    public void updateConfig(){
         this.distortionPcmAudioFilter.setScale(this.scale);
     }
 
@@ -46,5 +46,15 @@ public class DistortionConfig extends FilterConfig {
                 .setScale(this.scale);
 
         return this.distortionPcmAudioFilter;
+    }
+
+    public boolean parseOption(String option, float factor) {
+        if ("scale".equals(option)) {
+            setScale(factor);
+        } else {
+            return false;
+        }
+
+        return true;
     }
 }

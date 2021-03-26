@@ -21,16 +21,10 @@ public class SkipCommand extends Command {
         if(VoiceStateCheckUtil.isEligible(event)){
             final GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
 
-            final AudioPlayer audioPlayer = musicManager.audioPlayer;
-
-            if(audioPlayer.getPlayingTrack() == null){
-                event.reply("Nothing is playing right now.");
-                return;
+            if(VoiceStateCheckUtil.isEligible(event)){
+                event.reply("Skipped current track.");
+                musicManager.trackScheduler.nextTrack();
             }
-
-
-            event.reply("Skipped current track.");
-            musicManager.trackScheduler.nextTrack();
         }
 
     }

@@ -61,6 +61,8 @@ public class PlayerManager {
 
         this.clientCredentials = spotifyApi.clientCredentials().build().execute();
 
+        this.spotifyApi.setAccessToken(clientCredentials.getAccessToken());
+
         AudioSourceManagers.registerRemoteSources(this.audioPlayerManager);
         AudioSourceManagers.registerLocalSource(this.audioPlayerManager);
     }
@@ -165,8 +167,6 @@ public class PlayerManager {
     private String getThumbnail(String query){
         String res = "attachment";
 
-        spotifyApi.setAccessToken(clientCredentials.getAccessToken());
-
         SearchTracksRequest searchTracksRequest = spotifyApi.searchTracks(query)
                 .limit(1)
                 .build();
@@ -180,7 +180,6 @@ public class PlayerManager {
             }
 
         } catch (IOException | SpotifyWebApiException | ParseException e){
-            System.out.println(e);
             spotifyApi.setAccessToken(getNewAccessToken());
             return getThumbnail(query);
         }

@@ -1,6 +1,8 @@
 package com.casko1.wheelbarrow.utils;
 
+import com.casko1.wheelbarrow.music.lavaplayer.PlayerManager;
 import com.jagrosh.jdautilities.command.CommandEvent;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 
@@ -12,6 +14,13 @@ import net.dv8tion.jda.api.entities.Member;
 public final class VoiceStateCheckUtil {
 
     public static boolean isEligible(CommandEvent event){
+
+        AudioTrack audioTrack = PlayerManager
+                .getInstance()
+                .getMusicManager(event.getGuild())
+                .audioPlayer
+                .getPlayingTrack();
+
         Member self = event.getSelfMember();
         GuildVoiceState selfVoiceState = self.getVoiceState();
 
@@ -30,6 +39,11 @@ public final class VoiceStateCheckUtil {
 
         if(!memberVoiceState.getChannel().equals(selfVoiceState.getChannel())){
             event.reply("You must be in the same channel as me to use this command!");
+            return false;
+        }
+
+        if(audioTrack == null){
+            event.reply("Nothing is playing right now.");
             return false;
         }
 

@@ -53,7 +53,7 @@ public class Wheelbarrow {
                 new DistortionCommand(),
                 new TremoloCommand(),
                 new QueueCommand(paginatorBuilder),
-                new FilterCommand()
+                new FilterSettingsCommand()
                 );
 
         JDABuilder.createDefault(

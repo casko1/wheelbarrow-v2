@@ -46,7 +46,7 @@ public class TremoloConfig extends FilterConfig {
         return this.enabled;
     }
 
-    public void updateFilter(){
+    public void updateConfig(){
         this.tremoloPcmAudioFilter.setDepth(this.depth)
                 .setFrequency(this.frequency);
     }
@@ -58,5 +58,17 @@ public class TremoloConfig extends FilterConfig {
                 .setFrequency(this.frequency);
 
         return this.tremoloPcmAudioFilter;
+    }
+
+    public boolean parseOption(String setting, float factor) {
+        switch (setting) {
+            case "depth" -> setDepth(factor);
+            case "freq" -> setFrequency(factor);
+            default -> {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

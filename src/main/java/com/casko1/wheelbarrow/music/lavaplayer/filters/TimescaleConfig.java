@@ -1,5 +1,6 @@
 package com.casko1.wheelbarrow.music.lavaplayer.filters;
 
+import com.casko1.wheelbarrow.music.lavaplayer.FilterConfiguration;
 import com.github.natanbc.lavadsp.timescale.TimescalePcmAudioFilter;
 import com.sedmelluq.discord.lavaplayer.filter.AudioFilter;
 import com.sedmelluq.discord.lavaplayer.filter.FloatPcmAudioFilter;
@@ -60,7 +61,7 @@ public class TimescaleConfig extends FilterConfig {
         return this.enabled;
     }
 
-    public void updateFilter(){
+    public void updateConfig(){
         this.timescalePcmAudioFilter.setSpeed(this.speed)
                 .setPitch(this.pitch)
                 .setRate(this.rate);
@@ -73,5 +74,18 @@ public class TimescaleConfig extends FilterConfig {
                 .setRate(this.rate);
 
         return this.timescalePcmAudioFilter;
+    }
+
+    public boolean parseOption(String setting, float factor){
+        switch (setting) {
+            case "speed" -> setSpeed(factor);
+            case "pitch" -> setPitch(factor);
+            case "rate" -> setRate(factor);
+            default -> {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

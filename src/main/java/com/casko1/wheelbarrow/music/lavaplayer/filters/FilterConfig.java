@@ -22,6 +22,30 @@ public abstract class FilterConfig {
         return name;
     }
 
+    public abstract void updateConfig();
+
+    public abstract boolean parseOption(String setting, float factor);
+
     public abstract AudioFilter create(AudioDataFormat format, FloatPcmAudioFilter output);
+
+    public boolean applyConfig(String[] args, Float factor){
+        if(!isEnabled()){
+            enable();
+
+            if(!parseOption(args[0], factor)){
+                disable();
+                return false;
+            }
+        }
+        else{
+            if(!parseOption(args[0], factor)){
+                return false;
+            }
+
+            updateConfig();
+        }
+
+        return true;
+    }
 
 }
