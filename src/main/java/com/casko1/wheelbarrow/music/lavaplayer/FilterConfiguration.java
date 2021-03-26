@@ -17,6 +17,7 @@ public class FilterConfiguration {
     public KaraokeConfig karaoke = new KaraokeConfig();
     public DistortionConfig distortion = new DistortionConfig();
     public TremoloConfig tremolo = new TremoloConfig();
+    public RotationConfig rotation = new RotationConfig();
     public List<FilterConfig> filterConfigs = new ArrayList<>();
 
     public FilterConfiguration(){
@@ -24,6 +25,7 @@ public class FilterConfiguration {
         filterConfigs.add(karaoke);
         filterConfigs.add(distortion);
         filterConfigs.add(tremolo);
+        filterConfigs.add(rotation);
     }
 
     private List<FilterConfig> getConfigs(){

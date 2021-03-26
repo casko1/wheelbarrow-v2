@@ -52,6 +52,7 @@ public class Wheelbarrow {
                 new KaraokeCommand(),
                 new DistortionCommand(),
                 new TremoloCommand(),
+                new RotationCommand(),
                 new QueueCommand(paginatorBuilder),
                 new FilterSettingsCommand()
                 );

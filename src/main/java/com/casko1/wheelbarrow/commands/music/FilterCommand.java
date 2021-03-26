@@ -10,7 +10,7 @@ import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 
-public abstract class FilterCommand extends Command {
+public class FilterCommand extends Command {
 
     private final String filterName;
 
@@ -71,6 +71,7 @@ public abstract class FilterCommand extends Command {
             case "karaoke" -> filterConfig = config.karaoke;
             case "distortion" -> filterConfig = config.distortion;
             case "tremolo" -> filterConfig = config.tremolo;
+            case "rotation" -> filterConfig = config.rotation;
         }
 
         return filterConfig;
