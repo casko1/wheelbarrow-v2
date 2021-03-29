@@ -26,7 +26,7 @@ public class NowPlayingCommand extends Command {
 
     @Override
     protected void execute(CommandEvent event) {
-        if(VoiceStateCheckUtil.isEligible(event)){
+        if(VoiceStateCheckUtil.isEligible(event, false)){
             final GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
 
             final AudioPlayer audioPlayer = musicManager.audioPlayer;

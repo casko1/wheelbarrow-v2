@@ -22,7 +22,7 @@ public class FilterSettingsCommand extends Command {
     @Override
     protected void execute(CommandEvent event) {
 
-        if(VoiceStateCheckUtil.isEligible(event)){
+        if(VoiceStateCheckUtil.isEligible(event, false)){
             GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
 
             List<FilterConfig> configs = musicManager.getFilterConfiguration().filterConfigs;

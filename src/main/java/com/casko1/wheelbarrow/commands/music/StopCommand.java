@@ -19,7 +19,7 @@ public class StopCommand extends Command {
     @Override
     protected void execute(CommandEvent event) {
 
-        if(VoiceStateCheckUtil.isEligible(event)){
+        if(VoiceStateCheckUtil.isEligible(event, true)){
             final GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
 
             musicManager.trackScheduler.player.stopTrack();

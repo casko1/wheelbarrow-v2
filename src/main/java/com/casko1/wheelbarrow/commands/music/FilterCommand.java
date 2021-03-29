@@ -20,7 +20,7 @@ public class FilterCommand extends Command {
 
     @Override
     protected void execute(CommandEvent event) {
-        if(VoiceStateCheckUtil.isEligible(event)){
+        if(VoiceStateCheckUtil.isEligible(event, false)){
 
             String[] args = event.getArgs().split(" ");
 

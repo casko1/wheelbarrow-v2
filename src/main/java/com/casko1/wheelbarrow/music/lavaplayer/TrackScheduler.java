@@ -16,6 +16,7 @@ public class TrackScheduler extends AudioEventAdapter {
     public final AudioPlayer player;
     public final BlockingQueue<AudioTrack> queue;
     private final Guild guild;
+    private boolean loop = false;
 
     public TrackScheduler(AudioPlayer player, Guild guild){
         this.player = player;
@@ -26,6 +27,11 @@ public class TrackScheduler extends AudioEventAdapter {
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
         if(endReason.mayStartNext){
+            if(this.loop){
+                this.player.startTrack(track.makeClone(), false);
+                return;
+            }
+
             nextTrack();
         }
     }
@@ -36,6 +42,14 @@ public class TrackScheduler extends AudioEventAdapter {
         if(!this.player.startTrack(track, true)){
             this.queue.offer(track);
         }
+    }
+
+    public void toggleLoop(){
+        loop = !loop;
+    }
+
+    public boolean isLoop() {
+        return loop;
     }
 
     @Override

@@ -54,7 +54,8 @@ public class Wheelbarrow {
                 new TremoloCommand(),
                 new RotationCommand(),
                 new QueueCommand(paginatorBuilder),
-                new FilterSettingsCommand()
+                new FilterSettingsCommand(),
+                new LoopCommand()
                 );
 
         JDABuilder.createDefault(

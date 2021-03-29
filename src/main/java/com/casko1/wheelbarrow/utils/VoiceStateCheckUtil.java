@@ -13,7 +13,8 @@ import net.dv8tion.jda.api.entities.Member;
 @SuppressWarnings("ConstantConditions")
 public final class VoiceStateCheckUtil {
 
-    public static boolean isEligible(CommandEvent event){
+    //override is used for stop and skip command in case audio track somehow ends up null
+    public static boolean isEligible(CommandEvent event, boolean override){
 
         AudioTrack audioTrack = PlayerManager
                 .getInstance()
@@ -42,7 +43,7 @@ public final class VoiceStateCheckUtil {
             return false;
         }
 
-        if(audioTrack == null){
+        if(audioTrack == null && !override){
             event.reply("Nothing is playing right now.");
             return false;
         }

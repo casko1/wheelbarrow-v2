@@ -30,7 +30,7 @@ public class QueueCommand extends Command {
     @Override
     protected void execute(CommandEvent event) {
 
-        if(VoiceStateCheckUtil.isEligible(event)){
+        if(VoiceStateCheckUtil.isEligible(event, false)){
 
             GuildMusicManager manager = PlayerManager.getInstance().getMusicManager(event.getGuild());
 
