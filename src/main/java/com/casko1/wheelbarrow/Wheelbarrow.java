@@ -58,7 +58,8 @@ public class Wheelbarrow {
                 new QueueCommand(paginatorBuilder),
                 new FilterSettingsCommand(),
                 new LoopCommand(),
-                new SeekCommand()
+                new SeekCommand(),
+                new RemoveCommand()
                 );
 
         JDABuilder.createDefault(
