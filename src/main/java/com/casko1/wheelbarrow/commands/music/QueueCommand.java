@@ -1,11 +1,11 @@
 package com.casko1.wheelbarrow.commands.music;
 
+import com.casko1.wheelbarrow.music.QueuePaginator;
 import com.casko1.wheelbarrow.music.lavaplayer.GuildMusicManager;
 import com.casko1.wheelbarrow.music.lavaplayer.PlayerManager;
 import com.casko1.wheelbarrow.utils.VoiceStateCheckUtil;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
-import com.jagrosh.jdautilities.menu.Paginator;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -16,9 +16,9 @@ import java.util.concurrent.BlockingQueue;
 
 public class QueueCommand extends Command {
 
-    private final Paginator.Builder builder;
+    private final QueuePaginator.Builder builder;
 
-    public QueueCommand(Paginator.Builder builder){
+    public QueueCommand(QueuePaginator.Builder builder){
         this.name = "queue";
         this.help = "Return the current music queue.";
         this.aliases = new String[]{"q"};
@@ -37,20 +37,12 @@ public class QueueCommand extends Command {
             BlockingQueue<AudioTrack> queue = manager.trackScheduler.queue;
 
             //10 items per page
-            if(queue.size() < 10){
+            if(queue.size() <= 10){
                 singlePage(queue, manager, event);
             }
-
-            /*
-            Paginator paginator = builder
-                    .setItems("1", "2")
-                    .setUsers(event.getAuthor())
-                    .setItemsPerPage(1)
-                    .build();
-            paginator.paginate(event.getTextChannel(), 1);
-
-             */
-
+            else{
+                multiplePages(queue, manager, event);
+            }
         }
     }
 
@@ -73,6 +65,27 @@ public class QueueCommand extends Command {
         eb.setFooter("Use $$remove <number> to remove song from queue");
 
         event.reply(eb.build());
+    }
+
+    public void multiplePages(BlockingQueue<AudioTrack> queue, GuildMusicManager manager, CommandEvent event){
+
+        List<String> list = new ArrayList<>();
+
+        for(AudioTrack track : queue){
+            list.add(track.getInfo().title);
+        }
+
+
+        QueuePaginator paginator = builder
+                .setItems(list)
+                .setUsers(event.getAuthor())
+                .setCurrentTrack(manager.audioPlayer.getPlayingTrack().getInfo().title)
+                .setItemsPerPage(10)
+                .setColor(Color.BLUE)
+                .build();
+
+        paginator.paginate(event.getTextChannel(), 1);
+
     }
 
 }

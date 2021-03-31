@@ -4,6 +4,7 @@ import com.casko1.wheelbarrow.commands.basic.PingCommand;
 import com.casko1.wheelbarrow.commands.basic.WeatherCommand;
 import com.casko1.wheelbarrow.commands.music.*;
 import com.casko1.wheelbarrow.commands.music.SkipCommand;
+import com.casko1.wheelbarrow.music.QueuePaginator;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.jagrosh.jdautilities.menu.Paginator;
@@ -31,6 +32,7 @@ public class Wheelbarrow {
         String weatherToken = config.get(2);
 
         EventWaiter waiter = new EventWaiter();
+        EventWaiter reactionWaiter = new EventWaiter();
 
         CommandClientBuilder client = new CommandClientBuilder()
                 .setPrefix("$$")
@@ -38,7 +40,7 @@ public class Wheelbarrow {
                 .setOwnerId(ownerId)
                 .setActivity(Activity.playing("$$ is my prefix!"));
 
-        Paginator.Builder paginatorBuilder = new Paginator.Builder().setEventWaiter(new EventWaiter());
+        QueuePaginator.Builder paginatorBuilder = new QueuePaginator.Builder().setEventWaiter(reactionWaiter);
 
         client.addCommands(
                 new PingCommand(),
@@ -74,7 +76,7 @@ public class Wheelbarrow {
                 //status while loading
                 .setStatus(OnlineStatus.DO_NOT_DISTURB)
                 .setActivity(Activity.playing("loading..."))
-                .addEventListeners(waiter, client.build())
+                .addEventListeners(waiter, reactionWaiter, client.build())
                 .build(); //start the bot
 
     }
