@@ -16,7 +16,7 @@
         <jda.version>4.2.0_168</jda.version>
         <jda.utils.version>3.0.5</jda.utils.version>
         <unirest.version>3.11.11</unirest.version>
-        <lavaplayer.version>1.3.74</lavaplayer.version>
+        <lavaplayer.version>1.3.75</lavaplayer.version>
         <spotify.api.version>6.5.2</spotify.api.version>
         <lavadsp.version>0.7.7</lavadsp.version>
     </properties>
