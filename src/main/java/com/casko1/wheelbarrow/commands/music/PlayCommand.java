@@ -61,11 +61,11 @@ public class PlayCommand extends Command {
             String query = link;
             link = "ytsearch:" + link;
             //false because we only take the first search result
-            PlayerManager.getInstance().loadAndPLay(channel, link, false, member, query);
+            PlayerManager.getInstance().loadAndPlay(channel, link, false, member, query);
         }
         else{
             //true as it might be a playlist
-            PlayerManager.getInstance().loadAndPLay(channel, link, true, member);
+            PlayerManager.getInstance().loadAndPlay(channel, link, true, member);
         }
 
     }

@@ -20,11 +20,11 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
+import org.apache.commons.io.IOUtils;
 import org.apache.hc.core5.http.ParseException;
 
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -39,6 +39,7 @@ public class PlayerManager {
     private final Map<Long, GuildMusicManager> musicManagers;
     private final Map<Long, TextChannel> textChannelManagers;
     private final AudioPlayerManager audioPlayerManager;
+    private final File defaultImage;
     private final SpotifyApi spotifyApi;
     private ClientCredentials clientCredentials;
 
@@ -58,6 +59,8 @@ public class PlayerManager {
                 .setClientId(spotifyId)
                 .setClientSecret(spotifySecret)
                 .build();
+
+        defaultImage = prepareDefaultImage();
 
         this.clientCredentials = spotifyApi.clientCredentials().build().execute();
 
@@ -99,7 +102,7 @@ public class PlayerManager {
         return textChannelManagers.get(guild.getIdLong());
     }
 
-    public void loadAndPLay(TextChannel channel, String trackUrl, boolean isPlaylistLink, Member requester, String... query){
+    public void loadAndPlay(TextChannel channel, String trackUrl, boolean isPlaylistLink, Member requester, String... query){
         final GuildMusicManager musicManager = this.getMusicManager(channel.getGuild());
 
         this.audioPlayerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
@@ -196,7 +199,19 @@ public class PlayerManager {
         return clientCredentials.getAccessToken();
     }
 
-    public void sendEmbed(AudioTrack audioTrack, TextChannel channel){
+    private File prepareDefaultImage() throws IOException {
+        InputStream in = getClass().getResourceAsStream("/img/default.png");
+        byte[] buffer = IOUtils.toByteArray(in);
+
+        File tmp = File.createTempFile("temp", null);
+        OutputStream outStream = new FileOutputStream(tmp);
+        outStream.write(buffer);
+        tmp.deleteOnExit();
+
+        return tmp;
+    }
+
+    public void sendEmbed(AudioTrack audioTrack, TextChannel channel) {
         final AudioTrackInfo info = audioTrack.getInfo();
 
         final AdditionalTrackData addTrackData = audioTrack.getUserData(AdditionalTrackData.class);
@@ -211,9 +226,9 @@ public class PlayerManager {
 
         if(addTrackData.getThumbnail().equals("attachment")){
             //default case
-            File file = new File("src/main/resources/img/default.png");
+
             eb.setThumbnail("attachment://thumbnail.png");
-            channel.sendMessage(eb.build()).addFile(file, "thumbnail.png").queue();
+            channel.sendMessage(eb.build()).addFile(defaultImage, "thumbnail.png").queue();
         }
         else{
             //spotify api has found thumbnail
