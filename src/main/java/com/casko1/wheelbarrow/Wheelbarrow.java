@@ -7,7 +7,6 @@ import com.casko1.wheelbarrow.commands.music.SkipCommand;
 import com.casko1.wheelbarrow.music.QueuePaginator;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
-import com.jagrosh.jdautilities.menu.Paginator;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
