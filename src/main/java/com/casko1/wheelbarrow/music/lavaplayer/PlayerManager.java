@@ -229,6 +229,7 @@ public class PlayerManager {
 
             eb.setThumbnail("attachment://thumbnail.png");
             channel.sendMessage(eb.build()).addFile(defaultImage, "thumbnail.png").queue();
+            addTrackData.setDefaultImage(defaultImage);
         }
         else{
             //spotify api has found thumbnail

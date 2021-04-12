@@ -54,7 +54,7 @@ public class NowPlayingCommand extends Command {
 
         if(addTrackData.getThumbnail().equals("attachment")){
             //default case
-            File file = new File("src/main/resources/img/default.png");
+            File file = addTrackData.getDefaultImage();
             eb.setThumbnail("attachment://thumbnail.png");
             event.getTextChannel().sendMessage(eb.build()).addFile(file, "thumbnail.png").queue();
         }
