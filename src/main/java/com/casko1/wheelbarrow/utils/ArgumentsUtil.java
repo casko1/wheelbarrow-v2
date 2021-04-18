@@ -1,5 +1,8 @@
 package com.casko1.wheelbarrow.utils;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 public final class ArgumentsUtil {
 
     public static boolean isFloat(String arg){
@@ -28,6 +31,15 @@ public final class ArgumentsUtil {
             return true;
         }
         catch(NumberFormatException e) {
+            return false;
+        }
+    }
+
+    public static boolean isUrl(String url){
+        try{
+            new URI(url);
+            return true;
+        } catch (URISyntaxException e){
             return false;
         }
     }

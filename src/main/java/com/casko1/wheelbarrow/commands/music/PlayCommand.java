@@ -1,6 +1,7 @@
 package com.casko1.wheelbarrow.commands.music;
 
 import com.casko1.wheelbarrow.music.lavaplayer.PlayerManager;
+import com.casko1.wheelbarrow.utils.ArgumentsUtil;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
@@ -57,7 +58,7 @@ public class PlayCommand extends Command {
 
         String link = event.getArgs();
 
-        if(!isUrl(link)){
+        if(!ArgumentsUtil.isUrl(link)){
             String query = link;
             link = "ytsearch:" + link;
             //false because we only take the first search result
@@ -68,14 +69,5 @@ public class PlayCommand extends Command {
             PlayerManager.getInstance().loadAndPlay(channel, link, true, member);
         }
 
-    }
-
-    private boolean isUrl(String url){
-        try{
-            new URI(url);
-            return true;
-        } catch (URISyntaxException e){
-            return false;
-        }
     }
 }
