@@ -10,9 +10,6 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 @SuppressWarnings("ConstantConditions")
 public class PlayCommand extends Command {
 
@@ -43,31 +40,53 @@ public class PlayCommand extends Command {
         }
 
         if(!selfVoiceState.inVoiceChannel()){
-            AudioManager audioManager = event.getGuild().getAudioManager();
-            VoiceChannel voiceChannel = memberVoiceState.getChannel();
-
-            audioManager.openAudioConnection(voiceChannel);
-            event.replyFormatted("Joining %s.", voiceChannel.getName());
-
-            PlayerManager.getInstance().setTextChannel(event.getGuild(), channel);
+            joinVoiceChannel(event, memberVoiceState, channel);
         }
         else if(!memberVoiceState.getChannel().equals(selfVoiceState.getChannel())){
             event.reply("You must be in the same channel as me to use this command!");
             return;
         }
 
+        parseAndPlay(event, channel, member);
+
+    }
+
+    private void joinVoiceChannel(CommandEvent event, GuildVoiceState memberVoiceState, TextChannel channel){
+        AudioManager audioManager = event.getGuild().getAudioManager();
+        VoiceChannel voiceChannel = memberVoiceState.getChannel();
+
+        audioManager.openAudioConnection(voiceChannel);
+        event.replyFormatted("Joining %s.", voiceChannel.getName());
+
+        PlayerManager.getInstance().setTextChannel(event.getGuild(), channel);
+    }
+
+    private void parseAndPlay(CommandEvent event, TextChannel channel, Member member){
+
         String link = event.getArgs();
 
-        if(!ArgumentsUtil.isUrl(link)){
-            String query = link;
-            link = "ytsearch:" + link;
-            //false because we only take the first search result
-            PlayerManager.getInstance().loadAndPlay(channel, link, false, member, query);
+        if(ArgumentsUtil.isSpotifyURL(link)){
+            if(ArgumentsUtil.isSpotifyPlaylist(link)){
+                PlayerManager.getInstance().loadSpotifyPlaylist(channel, link, member);
+            }
+            else{
+                String title = PlayerManager.getInstance().getSpotifyTitle(link);
+                link = "ytsearch:" + title;
+                //false because we only take the first search result
+                PlayerManager.getInstance().loadAndPlay(channel, link, false, false, member, title);
+            }
         }
         else{
-            //true as it might be a playlist
-            PlayerManager.getInstance().loadAndPlay(channel, link, true, member);
+            if(!ArgumentsUtil.isUrl(link)){
+                String query = link;
+                link = "ytsearch:" + link;
+                //false because we only take the first search result
+                PlayerManager.getInstance().loadAndPlay(channel, link, false, false, member, query);
+            }
+            else{
+                //true as it might be a playlist
+                PlayerManager.getInstance().loadAndPlay(channel, link, true, false, member);
+            }
         }
-
     }
 }

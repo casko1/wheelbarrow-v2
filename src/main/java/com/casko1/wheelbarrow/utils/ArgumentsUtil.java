@@ -1,7 +1,9 @@
 package com.casko1.wheelbarrow.utils;
 
+
 import java.net.URI;
 import java.net.URISyntaxException;
+import org.apache.commons.validator.routines.UrlValidator;
 
 public final class ArgumentsUtil {
 
@@ -36,11 +38,22 @@ public final class ArgumentsUtil {
     }
 
     public static boolean isUrl(String url){
+        String[] schemes = {"http","https"};
+        UrlValidator urlValidator = new UrlValidator(schemes);
+
+        return urlValidator.isValid(url);
+    }
+
+    public static boolean isSpotifyURL(String url){
         try{
-            new URI(url);
-            return true;
+            URI link = new URI(url);
+            return link.getHost().toLowerCase().contains("spotify");
         } catch (URISyntaxException e){
             return false;
         }
+    }
+
+    public static boolean isSpotifyPlaylist(String url){
+        return url.split("/")[3].equals("playlist");
     }
 }

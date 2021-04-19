@@ -1,6 +1,7 @@
 package com.casko1.wheelbarrow.music.lavaplayer;
 
 import com.casko1.wheelbarrow.entities.AdditionalTrackData;
+import com.casko1.wheelbarrow.utils.TrackUtil;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
@@ -12,10 +13,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
-import com.wrapper.spotify.model_objects.specification.Image;
-import com.wrapper.spotify.model_objects.specification.Paging;
-import com.wrapper.spotify.model_objects.specification.Track;
-import com.wrapper.spotify.requests.data.search.simplified.SearchTracksRequest;
+import com.wrapper.spotify.model_objects.specification.Playlist;
+import com.wrapper.spotify.model_objects.specification.PlaylistTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -102,25 +101,32 @@ public class PlayerManager {
         return textChannelManagers.get(guild.getIdLong());
     }
 
-    public void loadAndPlay(TextChannel channel, String trackUrl, boolean isPlaylistLink, Member requester, String... query){
+    public void loadAndPlay(TextChannel channel, String trackUrl, boolean isPlaylistLink,
+                            boolean isSpotifyPlaylist, Member requester, String... query){
         final GuildMusicManager musicManager = this.getMusicManager(channel.getGuild());
 
         this.audioPlayerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
+
+            //triggered when track is loaded with an URL
             @Override
             public void trackLoaded(AudioTrack audioTrack) {
 
                 AudioTrackInfo audioTrackInfo = audioTrack.getInfo();
 
                 //url provided so we supply with title
-                String thumbnail = getThumbnail(audioTrackInfo.title);
+                String thumbnail = TrackUtil.getThumbnail(audioTrackInfo.title, spotifyApi, clientCredentials);
 
-                audioTrack.setUserData(new AdditionalTrackData(requester, thumbnail, audioTrackInfo.length));
+                audioTrack.setUserData(new AdditionalTrackData(requester,
+                        thumbnail,
+                        audioTrackInfo.length,
+                        defaultImage));
 
                 sendEmbed(audioTrack, channel);
 
                 musicManager.trackScheduler.addToQueue(audioTrack);
             }
 
+            //triggered when track is loaded with query or playlist URL
             @Override
             public void playlistLoaded(AudioPlaylist audioPlaylist) {
                 if(isPlaylistLink){
@@ -128,7 +134,12 @@ public class PlayerManager {
                         AudioTrackInfo audioTrackInfo = audioTrack.getInfo();
 
                         //loading images for playlist is expensive so we use default image
-                        audioTrack.setUserData(new AdditionalTrackData(requester, "attachment", audioTrackInfo.length));
+                        audioTrack.setUserData(new AdditionalTrackData(requester,
+                                "attachment",
+                                audioTrackInfo.length,
+                                defaultImage));
+
+
                         musicManager.trackScheduler.addToQueue(audioTrack);
                     }
 
@@ -143,13 +154,21 @@ public class PlayerManager {
                     AudioTrack audioTrack = audioPlaylist.getTracks().get(0);
 
                     AudioTrackInfo audioTrackInfo = audioTrack.getInfo();
+                    String thumbnail = "attachment";
 
-                    //in practice user queries work better for finding images so we use provided query
-                    String thumbnail = getThumbnail(query[0]);
+                    if(!isSpotifyPlaylist){
+                        thumbnail = TrackUtil.getThumbnail(query[0], spotifyApi, clientCredentials);
+                    }
 
-                    audioTrack.setUserData(new AdditionalTrackData(requester, thumbnail, audioTrackInfo.length));
+                    //loading images for playlist is expensive so we use default image
+                    audioTrack.setUserData(new AdditionalTrackData(requester,
+                            thumbnail,
+                            audioTrackInfo.length,
+                            defaultImage));
 
-                    sendEmbed(audioTrack, channel);
+                    if(!isSpotifyPlaylist){
+                        sendEmbed(audioTrack, channel);
+                    }
 
                     musicManager.trackScheduler.addToQueue(audioTrack);
                 }
@@ -157,46 +176,44 @@ public class PlayerManager {
 
             @Override
             public void noMatches() {
-                channel.sendMessage("No results with that query were found").queue();
+                if(!isPlaylistLink && ! isSpotifyPlaylist){
+                    channel.sendMessage("No results with that query were found").queue();
+                }
             }
 
             @Override
             public void loadFailed(FriendlyException e) {
-                channel.sendMessage("Loading failed.").queue();
+                if(!isPlaylistLink && ! isSpotifyPlaylist){
+                    channel.sendMessage("Loading failed.").queue();
+                }
             }
         });
     }
 
-    private String getThumbnail(String query){
-        String res = "attachment";
+    public void loadSpotifyPlaylist(TextChannel channel, String url, Member requester){
+        Playlist playlist = TrackUtil.getPlaylist(url, spotifyApi, clientCredentials);
+        PlaylistTrack[] tracks = playlist.getTracks().getItems();
 
-        SearchTracksRequest searchTracksRequest = spotifyApi.searchTracks(query)
-                .limit(1)
-                .build();
+        int numberOfTracks = Math.min(tracks.length, 100);
 
-        try{
-            final Paging<Track> trackPaging = searchTracksRequest.execute();
+        channel.sendMessage("Added ")
+                .append(String.valueOf(numberOfTracks))
+                .append(" tracks from playlist ")
+                .append(playlist.getName())
+                .append(" to the queue.")
+                .queue();
 
-            if(trackPaging.getTotal() > 0){
-                Image[] images = trackPaging.getItems()[0].getAlbum().getImages();
-                res = images.length > 1 ? images[1].getUrl() : images[0].getUrl();
-            }
-
-        } catch (IOException | SpotifyWebApiException | ParseException e){
-            spotifyApi.setAccessToken(getNewAccessToken());
-            return getThumbnail(query);
+        for(int i = 0; i < numberOfTracks; i++){
+            loadAndPlay(channel,
+                    String.format("ytsearch:%s", TrackUtil.getTitle(tracks[i].getTrack().getId(), spotifyApi, clientCredentials)),
+                    false,
+                    true,
+                    requester);
         }
-
-        return res;
     }
 
-    private String getNewAccessToken(){
-        try{
-            clientCredentials = spotifyApi.clientCredentials().build().execute();
-        } catch (IOException | SpotifyWebApiException | ParseException e){
-            System.out.println(e);
-        }
-        return clientCredentials.getAccessToken();
+    public String getSpotifyTitle(String url){
+        return TrackUtil.getTitle(url, spotifyApi, clientCredentials);
     }
 
     private File prepareDefaultImage() throws IOException {
@@ -229,7 +246,6 @@ public class PlayerManager {
 
             eb.setThumbnail("attachment://thumbnail.png");
             channel.sendMessage(eb.build()).addFile(defaultImage, "thumbnail.png").queue();
-            addTrackData.setDefaultImage(defaultImage);
         }
         else{
             //spotify api has found thumbnail

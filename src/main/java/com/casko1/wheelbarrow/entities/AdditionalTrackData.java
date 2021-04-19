@@ -11,12 +11,13 @@ public class AdditionalTrackData {
     final private Member requester;
     final private String thumbnail;
     final private String duration;
-    private File defaultImage = null;
+    private final File defaultImage;
 
-    public AdditionalTrackData(Member requester, String thumbnail, long duration){
+    public AdditionalTrackData(Member requester, String thumbnail, long duration, File defaultImage){
         this.requester = requester;
         this.thumbnail = thumbnail;
         this.duration = TimeConverterUtil.getMinutesAndSeconds(duration);
+        this.defaultImage = defaultImage;
     }
 
     public Member getRequester() {
@@ -33,9 +34,5 @@ public class AdditionalTrackData {
 
     public File getDefaultImage() {
         return defaultImage;
-    }
-
-    public void setDefaultImage(File defaultImage) {
-        this.defaultImage = defaultImage;
     }
 }
