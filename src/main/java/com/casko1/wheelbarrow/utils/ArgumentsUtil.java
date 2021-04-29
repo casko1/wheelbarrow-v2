@@ -45,12 +45,19 @@ public final class ArgumentsUtil {
     }
 
     public static boolean isSpotifyURL(String url){
-        try{
-            URI link = new URI(url);
-            return link.getHost().toLowerCase().contains("spotify");
-        } catch (URISyntaxException e){
-            return false;
+        String[] schemes = {"http","https"};
+        UrlValidator urlValidator = new UrlValidator(schemes);
+
+        if(urlValidator.isValid(url)){
+            try{
+                URI link = new URI(url);
+                return link.getHost().toLowerCase().contains("spotify");
+            } catch (URISyntaxException e){
+                return false;
+            }
         }
+
+        return false;
     }
 
     public static boolean isSpotifyPlaylist(String url){
