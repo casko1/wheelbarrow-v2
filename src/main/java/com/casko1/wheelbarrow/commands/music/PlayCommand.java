@@ -16,6 +16,7 @@ public class PlayCommand extends Command {
     public PlayCommand(){
         this.name = "play";
         this.help = "Plays a song from specified url or query.";
+        this.aliases = new String[]{"p"};
         this.guildOnly = false;
     }
 
