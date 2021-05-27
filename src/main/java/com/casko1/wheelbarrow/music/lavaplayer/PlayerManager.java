@@ -213,7 +213,7 @@ public class PlayerManager {
 
         for(int i = 0; i < numberOfTracks; i++){
             loadAndPlay(channel,
-                    String.format("ytsearch:%s", TrackUtil.getTitle(tracks[i].getTrack().getId(), spotifyApi, clientCredentials)),
+                    String.format("ytsearch:%s", getSpotifyTitle(tracks[i].getTrack().getId())),
                     false,
                     true,
                     requester);
@@ -241,7 +241,7 @@ public class PlayerManager {
 
         for(int i = 0; i < numberOfTracks; i++){
             loadAndPlay(channel,
-                    String.format("ytsearch:%s", TrackUtil.getTitle(tracks[i].getId(), spotifyApi, clientCredentials)),
+                    String.format("ytsearch:%s", getSpotifyTitle(tracks[i].getId())),
                     false,
                     true,
                     requester);
