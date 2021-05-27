@@ -2,6 +2,7 @@ package com.casko1.wheelbarrow.commands.music;
 
 import com.casko1.wheelbarrow.music.lavaplayer.PlayerManager;
 import com.casko1.wheelbarrow.utils.ArgumentsUtil;
+import com.casko1.wheelbarrow.utils.TrackUtil;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
@@ -67,27 +68,22 @@ public class PlayCommand extends Command {
         String link = event.getArgs();
 
         if(ArgumentsUtil.isSpotifyURL(link)){
-            if(ArgumentsUtil.isSpotifyPlaylist(link)){
-                PlayerManager.getInstance().loadSpotifyPlaylist(channel, link, member);
-            }
-            else{
-                String title = PlayerManager.getInstance().getSpotifyTitle(link);
-                link = "ytsearch:" + title;
-                //false because we only take the first search result
-                PlayerManager.getInstance().loadAndPlay(channel, link, false, false, member, title);
+            switch (ArgumentsUtil.parseSpotifyUrl(link)) {
+                case "playlist" -> PlayerManager.getInstance().loadSpotifyPlaylist(channel, link, member);
+                case "album" -> PlayerManager.getInstance().loadSpotifyAlbum(channel, link, member);
+                case "track" -> PlayerManager.getInstance().loadSpotifyTrack(channel, link, member);
+                default -> event.reply("Spotify URL could not be parsed");
             }
         }
+        else if(!ArgumentsUtil.isUrl(link)){
+            String query = link;
+            link = "ytsearch:" + link;
+            //false because we only take the first search result
+            PlayerManager.getInstance().loadAndPlay(channel, link, false, false, member, query);
+        }
         else{
-            if(!ArgumentsUtil.isUrl(link)){
-                String query = link;
-                link = "ytsearch:" + link;
-                //false because we only take the first search result
-                PlayerManager.getInstance().loadAndPlay(channel, link, false, false, member, query);
-            }
-            else{
-                //true as it might be a playlist
-                PlayerManager.getInstance().loadAndPlay(channel, link, true, false, member);
-            }
+            //true as it might be a playlist
+            PlayerManager.getInstance().loadAndPlay(channel, link, true, false, member);
         }
     }
 }

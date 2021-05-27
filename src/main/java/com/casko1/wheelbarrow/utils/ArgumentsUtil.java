@@ -60,7 +60,9 @@ public final class ArgumentsUtil {
         return false;
     }
 
-    public static boolean isSpotifyPlaylist(String url){
-        return url.split("/")[3].equals("playlist");
+    public static String parseSpotifyUrl(String url){
+        String[] split = url.split("/");
+
+        return split[3];
     }
 }

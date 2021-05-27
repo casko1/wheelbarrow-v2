@@ -2,11 +2,10 @@ package com.casko1.wheelbarrow.utils;
 
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
+import com.wrapper.spotify.exceptions.detailed.NotFoundException;
 import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
-import com.wrapper.spotify.model_objects.specification.Image;
-import com.wrapper.spotify.model_objects.specification.Paging;
-import com.wrapper.spotify.model_objects.specification.Playlist;
-import com.wrapper.spotify.model_objects.specification.Track;
+import com.wrapper.spotify.model_objects.specification.*;
+import com.wrapper.spotify.requests.data.albums.GetAlbumRequest;
 import com.wrapper.spotify.requests.data.playlists.GetPlaylistRequest;
 import com.wrapper.spotify.requests.data.search.simplified.SearchTracksRequest;
 import com.wrapper.spotify.requests.data.tracks.GetTrackRequest;
@@ -79,8 +78,24 @@ public final class TrackUtil {
         try{
             return getPlaylistRequest.execute();
         } catch (IOException | SpotifyWebApiException | ParseException e){
+            if(e instanceof NotFoundException) return null;
+
             spotifyApi.setAccessToken(getNewAccessToken(spotifyApi, clientCredentials));
             return getPlaylist(query, spotifyApi, clientCredentials);
+        }
+    }
+
+
+    public static Album getAlbum(String query, SpotifyApi spotifyApi, ClientCredentials clientCredentials){
+        GetAlbumRequest getAlbumRequest = spotifyApi.getAlbum(getSpotifyID(query)).build();
+
+        try{
+            return getAlbumRequest.execute();
+        } catch (IOException | SpotifyWebApiException | ParseException e){
+            if(e instanceof NotFoundException) return null;
+
+            spotifyApi.setAccessToken(getNewAccessToken(spotifyApi, clientCredentials));
+            return getAlbum(query, spotifyApi, clientCredentials);
         }
     }
 
@@ -98,6 +113,8 @@ public final class TrackUtil {
         try{
             return getTrackRequest.execute();
         } catch (IOException | SpotifyWebApiException | ParseException e){
+            if(e instanceof NotFoundException) return null;
+
             spotifyApi.setAccessToken(getNewAccessToken(spotifyApi, clientCredentials));
             return getTrack(query, spotifyApi, clientCredentials);
         }

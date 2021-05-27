@@ -34,10 +34,10 @@ public class Wheelbarrow {
         EventWaiter reactionWaiter = new EventWaiter();
 
         CommandClientBuilder client = new CommandClientBuilder()
-                .setPrefix("$$")
+                .setPrefix("--")
                 .setStatus(OnlineStatus.ONLINE)
                 .setOwnerId(ownerId)
-                .setActivity(Activity.playing("$$ is my prefix!"));
+                .setActivity(Activity.playing("-- is my prefix!"));
 
         QueuePaginator.Builder paginatorBuilder = new QueuePaginator.Builder().setEventWaiter(reactionWaiter);
 

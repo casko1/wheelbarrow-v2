@@ -13,8 +13,10 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
+import com.wrapper.spotify.model_objects.specification.Album;
 import com.wrapper.spotify.model_objects.specification.Playlist;
 import com.wrapper.spotify.model_objects.specification.PlaylistTrack;
+import com.wrapper.spotify.model_objects.specification.TrackSimplified;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -192,6 +194,12 @@ public class PlayerManager {
 
     public void loadSpotifyPlaylist(TextChannel channel, String url, Member requester){
         Playlist playlist = TrackUtil.getPlaylist(url, spotifyApi, clientCredentials);
+
+        if(playlist == null){
+            channel.sendMessage("An error occurred while loading the playlist.").queue();
+            return;
+        }
+
         PlaylistTrack[] tracks = playlist.getTracks().getItems();
 
         int numberOfTracks = Math.min(tracks.length, 100);
@@ -210,6 +218,41 @@ public class PlayerManager {
                     true,
                     requester);
         }
+    }
+
+    public void loadSpotifyAlbum(TextChannel channel, String url, Member requester){
+        Album album = TrackUtil.getAlbum(url, spotifyApi, clientCredentials);
+
+        if(album == null){
+            channel.sendMessage("An error occurred while loading the album.").queue();
+            return;
+        }
+
+        TrackSimplified[] tracks = album.getTracks().getItems();
+
+        int numberOfTracks = Math.min(tracks.length, 100);
+
+        channel.sendMessage("Added ")
+                .append(String.valueOf(numberOfTracks))
+                .append(" tracks from playlist ")
+                .append(album.getName())
+                .append(" to the queue.")
+                .queue();
+
+        for(int i = 0; i < numberOfTracks; i++){
+            loadAndPlay(channel,
+                    String.format("ytsearch:%s", TrackUtil.getTitle(tracks[i].getId(), spotifyApi, clientCredentials)),
+                    false,
+                    true,
+                    requester);
+        }
+    }
+
+    public void loadSpotifyTrack(TextChannel channel, String url, Member requester){
+        String title = getSpotifyTitle(url);
+        String link = "ytsearch:" + title;
+        //false because we only take the first search result
+        loadAndPlay(channel, link, false, false, requester, title);
     }
 
     public String getSpotifyTitle(String url){
