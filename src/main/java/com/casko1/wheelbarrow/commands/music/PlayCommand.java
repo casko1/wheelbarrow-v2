@@ -11,12 +11,18 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @SuppressWarnings("ConstantConditions")
 public class PlayCommand extends Command {
 
     public PlayCommand(){
         this.name = "play";
-        this.help = "Plays a song from specified url or query.";
+        this.help = "Plays a song or playlist from specified url or query." +
+                " Optional flags can be added at the end of the command.";
+        this.arguments = "[-s; shuffles the playlist]";
         this.aliases = new String[]{"p"};
         this.guildOnly = false;
     }
@@ -65,12 +71,21 @@ public class PlayCommand extends Command {
 
     private void parseAndPlay(CommandEvent event, TextChannel channel, Member member){
 
-        String link = event.getArgs();
+        boolean shuffle = false;
+
+        List<String> split = new ArrayList<>(Arrays.asList(event.getArgs().split("\\s+")));
+
+        if(split.get(split.size() - 1).equals("-s")){
+            shuffle = true;
+            split.remove(split.size() - 1);
+        }
+
+        String link = String.join("\\s+", split);
 
         if(ArgumentsUtil.isSpotifyURL(link)){
             switch (ArgumentsUtil.parseSpotifyUrl(link)) {
-                case "playlist" -> PlayerManager.getInstance().loadSpotifyPlaylist(channel, link, member);
-                case "album" -> PlayerManager.getInstance().loadSpotifyAlbum(channel, link, member);
+                case "playlist" -> PlayerManager.getInstance().loadSpotifyPlaylist(channel, link, member, shuffle);
+                case "album" -> PlayerManager.getInstance().loadSpotifyAlbum(channel, link, member, shuffle);
                 case "track" -> PlayerManager.getInstance().loadSpotifyTrack(channel, link, member);
                 default -> event.reply("Spotify URL could not be parsed");
             }
@@ -79,11 +94,11 @@ public class PlayCommand extends Command {
             String query = link;
             link = "ytsearch:" + link;
             //false because we only take the first search result
-            PlayerManager.getInstance().loadAndPlay(channel, link, false, false, member, query);
+            PlayerManager.getInstance().loadAndPlay(channel, link, false, false, false, member, query);
         }
         else{
             //true as it might be a playlist
-            PlayerManager.getInstance().loadAndPlay(channel, link, true, false, member);
+            PlayerManager.getInstance().loadAndPlay(channel, link, true, false, shuffle ,member);
         }
     }
 }

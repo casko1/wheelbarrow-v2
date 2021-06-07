@@ -14,7 +14,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class TrackScheduler extends AudioEventAdapter {
 
     public final AudioPlayer player;
-    public final BlockingQueue<AudioTrack> queue;
+    public BlockingQueue<AudioTrack> queue;
     private final Guild guild;
     private boolean loop = false;
 

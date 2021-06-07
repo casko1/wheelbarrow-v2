@@ -58,7 +58,8 @@ public class Wheelbarrow {
                 new FilterSettingsCommand(),
                 new LoopCommand(),
                 new SeekCommand(),
-                new RemoveCommand()
+                new RemoveCommand(),
+                new ShuffleCommand()
                 );
 
         JDABuilder.createDefault(

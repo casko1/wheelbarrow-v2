@@ -28,9 +28,8 @@ import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class PlayerManager {
     //only one instance
@@ -104,7 +103,7 @@ public class PlayerManager {
     }
 
     public void loadAndPlay(TextChannel channel, String trackUrl, boolean isPlaylistLink,
-                            boolean isSpotifyPlaylist, Member requester, String... query){
+                            boolean isSpotifyPlaylist, boolean shuffle,  Member requester, String... query){
         final GuildMusicManager musicManager = this.getMusicManager(channel.getGuild());
 
         this.audioPlayerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
@@ -132,7 +131,11 @@ public class PlayerManager {
             @Override
             public void playlistLoaded(AudioPlaylist audioPlaylist) {
                 if(isPlaylistLink){
-                    for(AudioTrack audioTrack : audioPlaylist.getTracks()){
+                    List<AudioTrack> tracks = audioPlaylist.getTracks();
+
+                    if(shuffle) Collections.shuffle(tracks);
+
+                    for(AudioTrack audioTrack : tracks){
                         AudioTrackInfo audioTrackInfo = audioTrack.getInfo();
 
                         //loading images for playlist is expensive so we use default image
@@ -192,7 +195,7 @@ public class PlayerManager {
         });
     }
 
-    public void loadSpotifyPlaylist(TextChannel channel, String url, Member requester){
+    public void loadSpotifyPlaylist(TextChannel channel, String url, Member requester, boolean shuffle){
         Playlist playlist = TrackUtil.getPlaylist(url, spotifyApi, clientCredentials);
 
         if(playlist == null){
@@ -200,9 +203,11 @@ public class PlayerManager {
             return;
         }
 
-        PlaylistTrack[] tracks = playlist.getTracks().getItems();
+        List<PlaylistTrack> tracks = Arrays.asList(playlist.getTracks().getItems());
 
-        int numberOfTracks = Math.min(tracks.length, 100);
+        if(shuffle) Collections.shuffle(tracks);
+
+        int numberOfTracks = Math.min(tracks.size(), 100);
 
         channel.sendMessage("Added ")
                 .append(String.valueOf(numberOfTracks))
@@ -213,14 +218,15 @@ public class PlayerManager {
 
         for(int i = 0; i < numberOfTracks; i++){
             loadAndPlay(channel,
-                    String.format("ytsearch:%s", getSpotifyTitle(tracks[i].getTrack().getId())),
+                    String.format("ytsearch:%s", getSpotifyTitle(tracks.get(i).getTrack().getId())),
                     false,
                     true,
+                    shuffle,
                     requester);
         }
     }
 
-    public void loadSpotifyAlbum(TextChannel channel, String url, Member requester){
+    public void loadSpotifyAlbum(TextChannel channel, String url, Member requester, boolean shuffle){
         Album album = TrackUtil.getAlbum(url, spotifyApi, clientCredentials);
 
         if(album == null){
@@ -228,9 +234,11 @@ public class PlayerManager {
             return;
         }
 
-        TrackSimplified[] tracks = album.getTracks().getItems();
+        List<TrackSimplified> tracks = Arrays.asList(album.getTracks().getItems());
 
-        int numberOfTracks = Math.min(tracks.length, 100);
+        if(shuffle) Collections.shuffle(tracks);
+
+        int numberOfTracks = Math.min(tracks.size(), 100);
 
         channel.sendMessage("Added ")
                 .append(String.valueOf(numberOfTracks))
@@ -241,9 +249,10 @@ public class PlayerManager {
 
         for(int i = 0; i < numberOfTracks; i++){
             loadAndPlay(channel,
-                    String.format("ytsearch:%s", getSpotifyTitle(tracks[i].getId())),
+                    String.format("ytsearch:%s", getSpotifyTitle(tracks.get(i).getId())),
                     false,
                     true,
+                    shuffle,
                     requester);
         }
     }
@@ -252,7 +261,7 @@ public class PlayerManager {
         String title = getSpotifyTitle(url);
         String link = "ytsearch:" + title;
         //false because we only take the first search result
-        loadAndPlay(channel, link, false, false, requester, title);
+        loadAndPlay(channel, link, false, false, false, requester, title);
     }
 
     public String getSpotifyTitle(String url){
