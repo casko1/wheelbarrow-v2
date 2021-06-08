@@ -1,15 +1,10 @@
 package com.casko1.wheelbarrow.music.lavaplayer;
 
-import com.casko1.wheelbarrow.entities.AdditionalTrackData;
+import com.casko1.wheelbarrow.entities.PlayRequest;
 import com.casko1.wheelbarrow.utils.TrackUtil;
-import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
-import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
-import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
@@ -17,19 +12,16 @@ import com.wrapper.spotify.model_objects.specification.Album;
 import com.wrapper.spotify.model_objects.specification.Playlist;
 import com.wrapper.spotify.model_objects.specification.PlaylistTrack;
 import com.wrapper.spotify.model_objects.specification.TrackSimplified;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.apache.commons.io.IOUtils;
 import org.apache.hc.core5.http.ParseException;
 
-import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.List;
 
 public class PlayerManager {
     //only one instance
@@ -41,7 +33,7 @@ public class PlayerManager {
     private final AudioPlayerManager audioPlayerManager;
     private final File defaultImage;
     private final SpotifyApi spotifyApi;
-    private ClientCredentials clientCredentials;
+    private final ClientCredentials clientCredentials;
 
 
     public PlayerManager() throws IOException, ParseException, SpotifyWebApiException {
@@ -80,132 +72,46 @@ public class PlayerManager {
         });
     }
 
-    public void removeMusicManager(Long guild){
+    public void removeMusicManager(Long guild) {
         this.musicManagers.remove(guild);
     }
 
     //sets the text channel to reply in
-    public void setTextChannel(Guild guild, TextChannel textChannel){
+    public void setTextChannel(Guild guild, TextChannel textChannel) {
         Long longId = guild.getIdLong();
-        if(!textChannelManagers.containsKey(longId)){
+        if (!textChannelManagers.containsKey(longId)) {
             textChannelManagers.put(longId, textChannel);
         }
     }
 
     //removes the text channel connected to guild
-    public void removeTextChannel(Guild guild){
+    public void removeTextChannel(Guild guild) {
         textChannelManagers.remove(guild.getIdLong());
     }
 
     //returns the text channel connected to guild
-    public TextChannel getTextChannel(Guild guild){
+    public TextChannel getTextChannel(Guild guild) {
         return textChannelManagers.get(guild.getIdLong());
     }
 
-    public void loadAndPlay(TextChannel channel, String trackUrl, boolean isPlaylistLink,
-                            boolean isSpotifyPlaylist, boolean shuffle,  Member requester, String... query){
-        final GuildMusicManager musicManager = this.getMusicManager(channel.getGuild());
+    public void loadAndPlay(PlayRequest request) {
+        final GuildMusicManager musicManager = this.getMusicManager(request.getTextChannel().getGuild());
 
-        this.audioPlayerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
-
-            //triggered when track is loaded with an URL
-            @Override
-            public void trackLoaded(AudioTrack audioTrack) {
-
-                AudioTrackInfo audioTrackInfo = audioTrack.getInfo();
-
-                //url provided so we supply with title
-                String thumbnail = TrackUtil.getThumbnail(audioTrackInfo.title, spotifyApi, clientCredentials);
-
-                audioTrack.setUserData(new AdditionalTrackData(requester,
-                        thumbnail,
-                        audioTrackInfo.length,
-                        defaultImage));
-
-                sendEmbed(audioTrack, channel);
-
-                musicManager.trackScheduler.addToQueue(audioTrack);
-            }
-
-            //triggered when track is loaded with query or playlist URL
-            @Override
-            public void playlistLoaded(AudioPlaylist audioPlaylist) {
-                if(isPlaylistLink){
-                    List<AudioTrack> tracks = audioPlaylist.getTracks();
-
-                    if(shuffle) Collections.shuffle(tracks);
-
-                    for(AudioTrack audioTrack : tracks){
-                        AudioTrackInfo audioTrackInfo = audioTrack.getInfo();
-
-                        //loading images for playlist is expensive so we use default image
-                        audioTrack.setUserData(new AdditionalTrackData(requester,
-                                "attachment",
-                                audioTrackInfo.length,
-                                defaultImage));
-
-
-                        musicManager.trackScheduler.addToQueue(audioTrack);
-                    }
-
-                    channel.sendMessage("Added ")
-                            .append(String.valueOf(audioPlaylist.getTracks().size()))
-                            .append(" tracks from playlist ")
-                            .append(audioPlaylist.getName())
-                            .append(" to the queue.")
-                            .queue();
-                }
-                else{
-                    AudioTrack audioTrack = audioPlaylist.getTracks().get(0);
-
-                    AudioTrackInfo audioTrackInfo = audioTrack.getInfo();
-                    String thumbnail = "attachment";
-
-                    if(!isSpotifyPlaylist){
-                        thumbnail = TrackUtil.getThumbnail(query[0], spotifyApi, clientCredentials);
-                    }
-
-                    //loading images for playlist is expensive so we use default image
-                    audioTrack.setUserData(new AdditionalTrackData(requester,
-                            thumbnail,
-                            audioTrackInfo.length,
-                            defaultImage));
-
-                    if(!isSpotifyPlaylist){
-                        sendEmbed(audioTrack, channel);
-                    }
-
-                    musicManager.trackScheduler.addToQueue(audioTrack);
-                }
-            }
-
-            @Override
-            public void noMatches() {
-                if(!isPlaylistLink && ! isSpotifyPlaylist){
-                    channel.sendMessage("No results with that query were found").queue();
-                }
-            }
-
-            @Override
-            public void loadFailed(FriendlyException e) {
-                if(!isPlaylistLink && ! isSpotifyPlaylist){
-                    channel.sendMessage("Loading failed.").queue();
-                }
-            }
-        });
+        this.audioPlayerManager.loadItemOrdered(musicManager, request.getSearchString(),
+                new AudioResultHandler(request, musicManager.trackScheduler, defaultImage, spotifyApi, clientCredentials));
     }
 
-    public void loadSpotifyPlaylist(TextChannel channel, String url, Member requester, boolean shuffle){
+    public void loadSpotifyPlaylist(TextChannel channel, String url, Member requester, boolean shuffle) {
         Playlist playlist = TrackUtil.getPlaylist(url, spotifyApi, clientCredentials);
 
-        if(playlist == null){
+        if (playlist == null) {
             channel.sendMessage("An error occurred while loading the playlist.").queue();
             return;
         }
 
         List<PlaylistTrack> tracks = Arrays.asList(playlist.getTracks().getItems());
 
-        if(shuffle) Collections.shuffle(tracks);
+        if (shuffle) Collections.shuffle(tracks);
 
         int numberOfTracks = Math.min(tracks.size(), 100);
 
@@ -216,27 +122,29 @@ public class PlayerManager {
                 .append(" to the queue.")
                 .queue();
 
-        for(int i = 0; i < numberOfTracks; i++){
-            loadAndPlay(channel,
+        for (int i = 0; i < numberOfTracks; i++) {
+            PlayRequest request = new PlayRequest(channel,
                     String.format("ytsearch:%s", getSpotifyTitle(tracks.get(i).getTrack().getId())),
-                    false,
+                    "",
                     true,
-                    shuffle,
-                    requester);
+                    requester,
+                    shuffle);
+
+            loadAndPlay(request);
         }
     }
 
-    public void loadSpotifyAlbum(TextChannel channel, String url, Member requester, boolean shuffle){
+    public void loadSpotifyAlbum(TextChannel channel, String url, Member requester, boolean shuffle) {
         Album album = TrackUtil.getAlbum(url, spotifyApi, clientCredentials);
 
-        if(album == null){
+        if (album == null) {
             channel.sendMessage("An error occurred while loading the album.").queue();
             return;
         }
 
         List<TrackSimplified> tracks = Arrays.asList(album.getTracks().getItems());
 
-        if(shuffle) Collections.shuffle(tracks);
+        if (shuffle) Collections.shuffle(tracks);
 
         int numberOfTracks = Math.min(tracks.size(), 100);
 
@@ -247,24 +155,26 @@ public class PlayerManager {
                 .append(" to the queue.")
                 .queue();
 
-        for(int i = 0; i < numberOfTracks; i++){
-            loadAndPlay(channel,
+        for (int i = 0; i < numberOfTracks; i++) {
+            PlayRequest request = new PlayRequest(channel,
                     String.format("ytsearch:%s", getSpotifyTitle(tracks.get(i).getId())),
-                    false,
+                    "",
                     true,
-                    shuffle,
-                    requester);
+                    requester,
+                    shuffle);
+
+            loadAndPlay(request);
         }
     }
 
-    public void loadSpotifyTrack(TextChannel channel, String url, Member requester){
+    public void loadSpotifyTrack(TextChannel channel, String url, Member requester) {
         String title = getSpotifyTitle(url);
         String link = "ytsearch:" + title;
-        //false because we only take the first search result
-        loadAndPlay(channel, link, false, false, false, requester, title);
+        PlayRequest request = new PlayRequest(channel, link, title, false, requester, false);
+        loadAndPlay(request);
     }
 
-    public String getSpotifyTitle(String url){
+    public String getSpotifyTitle(String url) {
         return TrackUtil.getTitle(url, spotifyApi, clientCredentials);
     }
 
@@ -280,38 +190,12 @@ public class PlayerManager {
         return tmp;
     }
 
-    public void sendEmbed(AudioTrack audioTrack, TextChannel channel) {
-        final AudioTrackInfo info = audioTrack.getInfo();
-
-        final AdditionalTrackData addTrackData = audioTrack.getUserData(AdditionalTrackData.class);
-
-        EmbedBuilder eb = new EmbedBuilder();
-        eb.setColor(Color.BLUE);
-
-        eb.addField("Adding to queue", String.format("[%s by %s](%s)", info.title, info.author, info.uri), false);
-        eb.addField("Duration: ", addTrackData.getDuration(), true);
-        eb.addField("Requested by: ",addTrackData.getRequester().getAsMention(), true);
-
-
-        if(addTrackData.getThumbnail().equals("attachment")){
-            //default case
-
-            eb.setThumbnail("attachment://thumbnail.png");
-            channel.sendMessage(eb.build()).addFile(defaultImage, "thumbnail.png").queue();
-        }
-        else{
-            //spotify api has found thumbnail
-            eb.setThumbnail(addTrackData.getThumbnail());
-            channel.sendMessage(eb.build()).queue();
-        }
-    }
-
     public static PlayerManager getInstance() {
 
-        if(instance == null){
-            try{
+        if (instance == null) {
+            try {
                 instance = new PlayerManager();
-            } catch (IOException | ParseException | SpotifyWebApiException e){
+            } catch (IOException | ParseException | SpotifyWebApiException e) {
                 System.out.println(e);
             }
         }

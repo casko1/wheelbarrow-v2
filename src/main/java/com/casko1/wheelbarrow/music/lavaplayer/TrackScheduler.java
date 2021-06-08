@@ -8,6 +8,10 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -33,6 +37,42 @@ public class TrackScheduler extends AudioEventAdapter {
             }
 
             nextTrack();
+        }
+    }
+
+    public void shuffle(){
+        List<AudioTrack> list = new ArrayList<>(queue);
+
+        Collections.shuffle(list);
+
+        queue = new LinkedBlockingQueue<>(list);
+    }
+
+    public void remove(int position){
+        Iterator<AudioTrack> iterator = queue.iterator();
+
+        int index = 1;
+
+        while(iterator.hasNext()){
+            iterator.next();
+            if(index == position){
+                iterator.remove();
+                break;
+            }
+
+            index++;
+        }
+    }
+
+    public boolean seek(long timestamp){
+        AudioTrack current = player.getPlayingTrack();
+
+        if(current.isSeekable()){
+            current.setPosition(timestamp);
+            return true;
+        }
+        else{
+            return false;
         }
     }
 

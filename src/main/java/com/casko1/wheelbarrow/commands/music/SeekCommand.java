@@ -2,12 +2,12 @@ package com.casko1.wheelbarrow.commands.music;
 
 import com.casko1.wheelbarrow.music.lavaplayer.GuildMusicManager;
 import com.casko1.wheelbarrow.music.lavaplayer.PlayerManager;
+import com.casko1.wheelbarrow.music.lavaplayer.TrackScheduler;
 import com.casko1.wheelbarrow.utils.ArgumentsUtil;
 import com.casko1.wheelbarrow.utils.TimeConverterUtil;
 import com.casko1.wheelbarrow.utils.VoiceStateCheckUtil;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 public class SeekCommand extends Command {
 
@@ -24,16 +24,12 @@ public class SeekCommand extends Command {
         if(VoiceStateCheckUtil.isEligible(event, false)){
             GuildMusicManager guildMusicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
 
-            AudioTrack currentTrack = guildMusicManager.audioPlayer.getPlayingTrack();
+            TrackScheduler trackScheduler = guildMusicManager.trackScheduler;
 
             String[] args = event.getArgs().split(" ");
 
-            if(currentTrack.isSeekable() && ArgumentsUtil.isInteger(args[0])){
-                int timeStamp = Integer.parseInt(args[0]);
-
-                currentTrack.setPosition((long) timeStamp * 1000);
-
-                sendTimestampMessage(event, timeStamp, currentTrack.getDuration());
+            if(ArgumentsUtil.isInteger(args[0]) && trackScheduler.seek((long) Integer.parseInt(args[0]) * 1000)){
+                sendTimestampMessage(event, Integer.parseInt(args[0]), trackScheduler.player.getPlayingTrack().getDuration());
             }
             else{
                 event.reply("Track cannot be seeked or the command was used incorrectly");

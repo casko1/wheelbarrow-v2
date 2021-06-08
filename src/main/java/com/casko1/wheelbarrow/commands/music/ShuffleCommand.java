@@ -25,11 +25,7 @@ public class ShuffleCommand extends Command {
         if(VoiceStateCheckUtil.isEligible(event, false)){
             TrackScheduler trackScheduler = PlayerManager.getInstance().getMusicManager(event.getGuild()).trackScheduler;
 
-            List<AudioTrack> list = new ArrayList<>(trackScheduler.queue);
-
-            Collections.shuffle(list);
-
-            trackScheduler.queue = new LinkedBlockingQueue<>(list);
+            trackScheduler.shuffle();
 
             event.reply("Shuffled current queue.");
         }

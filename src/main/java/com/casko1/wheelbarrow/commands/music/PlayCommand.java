@@ -1,5 +1,6 @@
 package com.casko1.wheelbarrow.commands.music;
 
+import com.casko1.wheelbarrow.entities.PlayRequest;
 import com.casko1.wheelbarrow.music.lavaplayer.PlayerManager;
 import com.casko1.wheelbarrow.utils.ArgumentsUtil;
 import com.casko1.wheelbarrow.utils.TrackUtil;
@@ -60,6 +61,7 @@ public class PlayCommand extends Command {
     }
 
     private void joinVoiceChannel(CommandEvent event, GuildVoiceState memberVoiceState, TextChannel channel){
+
         AudioManager audioManager = event.getGuild().getAudioManager();
         VoiceChannel voiceChannel = memberVoiceState.getChannel();
 
@@ -94,11 +96,15 @@ public class PlayCommand extends Command {
             String query = link;
             link = "ytsearch:" + link;
             //false because we only take the first search result
-            PlayerManager.getInstance().loadAndPlay(channel, link, false, false, false, member, query);
+            PlayRequest request = new PlayRequest(channel, link, query, false, member, false);
+
+            PlayerManager.getInstance().loadAndPlay(request);
         }
         else{
             //true as it might be a playlist
-            PlayerManager.getInstance().loadAndPlay(channel, link, true, false, shuffle ,member);
+            PlayRequest request = new PlayRequest(channel, link, "", true, member, shuffle);
+
+            PlayerManager.getInstance().loadAndPlay(request);
         }
     }
 }
