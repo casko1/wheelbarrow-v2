@@ -85,9 +85,10 @@ public class PlayCommand extends Command {
         String link = String.join("\\s+", split);
 
         if(ArgumentsUtil.isSpotifyURL(link)){
+            PlayRequest request = new PlayRequest(channel, link, "", true, member, shuffle);
             switch (ArgumentsUtil.parseSpotifyUrl(link)) {
-                case "playlist" -> PlayerManager.getInstance().loadSpotifyPlaylist(channel, link, member, shuffle);
-                case "album" -> PlayerManager.getInstance().loadSpotifyAlbum(channel, link, member, shuffle);
+                case "playlist" -> PlayerManager.getInstance().loadSpotifyTracks("playlist", request);
+                case "album" -> PlayerManager.getInstance().loadSpotifyTracks("album", request);
                 case "track" -> PlayerManager.getInstance().loadSpotifyTrack(channel, link, member);
                 default -> event.reply("Spotify URL could not be parsed");
             }

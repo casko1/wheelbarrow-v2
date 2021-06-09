@@ -19,6 +19,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.hc.core5.http.ParseException;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -101,69 +102,41 @@ public class PlayerManager {
                 new AudioResultHandler(request, musicManager.trackScheduler, defaultImage, spotifyApi, clientCredentials));
     }
 
-    public void loadSpotifyPlaylist(TextChannel channel, String url, Member requester, boolean shuffle) {
-        Playlist playlist = TrackUtil.getPlaylist(url, spotifyApi, clientCredentials);
+    public void loadSpotifyTracks(String type, PlayRequest request){
 
-        if (playlist == null) {
-            channel.sendMessage("An error occurred while loading the playlist.").queue();
+        List<String> trackIds;
+
+        switch (type){
+            case "playlist" -> trackIds = TrackUtil.getPlaylist(request.getSearchString(), spotifyApi, clientCredentials);
+            case "album" -> trackIds = TrackUtil.getAlbum(request.getSearchString(), spotifyApi, clientCredentials);
+            default -> {
+                request.getTextChannel().sendMessage("Could not process your request").queue();
+                return;
+            }
+        }
+
+        if (trackIds == null) {
+            request.getTextChannel().sendMessage("An error occurred while loading the tracks.").queue();
             return;
         }
 
-        List<PlaylistTrack> tracks = Arrays.asList(playlist.getTracks().getItems());
-
-        if (shuffle) Collections.shuffle(tracks);
-
-        int numberOfTracks = Math.min(tracks.size(), 100);
-
-        channel.sendMessage("Added ")
-                .append(String.valueOf(numberOfTracks))
-                .append(" tracks from playlist ")
-                .append(playlist.getName())
-                .append(" to the queue.")
+        request.getTextChannel().sendMessage("Added ")
+                .append(String.valueOf(trackIds.size()))
+                .append(" tracks to the queue.")
                 .queue();
 
-        for (int i = 0; i < numberOfTracks; i++) {
-            PlayRequest request = new PlayRequest(channel,
-                    String.format("ytsearch:%s", getSpotifyTitle(tracks.get(i).getTrack().getId())),
+        if (request.isShuffle()) Collections.shuffle(trackIds);
+
+
+        for(String id: trackIds){
+            PlayRequest trackRequest = new PlayRequest(request.getTextChannel(),
+                    String.format("ytsearch:%s", getSpotifyTitle(id)),
                     "",
                     true,
-                    requester,
-                    shuffle);
+                    request.getRequester(),
+                    false);
 
-            loadAndPlay(request);
-        }
-    }
-
-    public void loadSpotifyAlbum(TextChannel channel, String url, Member requester, boolean shuffle) {
-        Album album = TrackUtil.getAlbum(url, spotifyApi, clientCredentials);
-
-        if (album == null) {
-            channel.sendMessage("An error occurred while loading the album.").queue();
-            return;
-        }
-
-        List<TrackSimplified> tracks = Arrays.asList(album.getTracks().getItems());
-
-        if (shuffle) Collections.shuffle(tracks);
-
-        int numberOfTracks = Math.min(tracks.size(), 100);
-
-        channel.sendMessage("Added ")
-                .append(String.valueOf(numberOfTracks))
-                .append(" tracks from playlist ")
-                .append(album.getName())
-                .append(" to the queue.")
-                .queue();
-
-        for (int i = 0; i < numberOfTracks; i++) {
-            PlayRequest request = new PlayRequest(channel,
-                    String.format("ytsearch:%s", getSpotifyTitle(tracks.get(i).getId())),
-                    "",
-                    true,
-                    requester,
-                    shuffle);
-
-            loadAndPlay(request);
+            loadAndPlay(trackRequest);
         }
     }
 

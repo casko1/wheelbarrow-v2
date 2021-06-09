@@ -3,6 +3,7 @@ package com.casko1.wheelbarrow.utils;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.exceptions.detailed.NotFoundException;
+import com.wrapper.spotify.model_objects.IPlaylistItem;
 import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
 import com.wrapper.spotify.model_objects.specification.*;
 import com.wrapper.spotify.requests.data.albums.GetAlbumRequest;
@@ -12,6 +13,9 @@ import com.wrapper.spotify.requests.data.tracks.GetTrackRequest;
 import org.apache.hc.core5.http.ParseException;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Following utility class contains several utilities for
@@ -72,11 +76,14 @@ public final class TrackUtil {
         }
     }
 
-    public static Playlist getPlaylist(String query, SpotifyApi spotifyApi, ClientCredentials clientCredentials){
+    public static List<String> getPlaylist(String query, SpotifyApi spotifyApi, ClientCredentials clientCredentials){
         GetPlaylistRequest getPlaylistRequest = spotifyApi.getPlaylist(getSpotifyID(query)).build();
 
         try{
-            return getPlaylistRequest.execute();
+            return Arrays.stream(getPlaylistRequest.execute().getTracks().getItems())
+                    .map(PlaylistTrack::getTrack)
+                    .map(IPlaylistItem::getId)
+                    .collect(Collectors.toList());
         } catch (IOException | SpotifyWebApiException | ParseException e){
             if(e instanceof NotFoundException) return null;
 
@@ -86,11 +93,13 @@ public final class TrackUtil {
     }
 
 
-    public static Album getAlbum(String query, SpotifyApi spotifyApi, ClientCredentials clientCredentials){
+    public static List<String> getAlbum(String query, SpotifyApi spotifyApi, ClientCredentials clientCredentials){
         GetAlbumRequest getAlbumRequest = spotifyApi.getAlbum(getSpotifyID(query)).build();
 
         try{
-            return getAlbumRequest.execute();
+            return Arrays.stream(getAlbumRequest.execute().getTracks().getItems())
+                    .map(TrackSimplified::getId)
+                    .collect(Collectors.toList());
         } catch (IOException | SpotifyWebApiException | ParseException e){
             if(e instanceof NotFoundException) return null;
 
