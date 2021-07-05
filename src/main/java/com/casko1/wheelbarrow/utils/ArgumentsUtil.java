@@ -44,20 +44,20 @@ public final class ArgumentsUtil {
         return urlValidator.isValid(url);
     }
 
-    public static boolean isSpotifyURL(String url){
+    public static String parseURL(String url){
         String[] schemes = {"http","https"};
         UrlValidator urlValidator = new UrlValidator(schemes);
 
         if(urlValidator.isValid(url)){
             try{
                 URI link = new URI(url);
-                return link.getHost().toLowerCase().contains("spotify");
+                return link.getHost().toLowerCase();
             } catch (URISyntaxException e){
-                return false;
+                return "";
             }
         }
 
-        return false;
+        return "";
     }
 
     public static String parseSpotifyUrl(String url){

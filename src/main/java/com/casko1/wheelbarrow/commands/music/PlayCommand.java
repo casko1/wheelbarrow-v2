@@ -3,7 +3,6 @@ package com.casko1.wheelbarrow.commands.music;
 import com.casko1.wheelbarrow.entities.PlayRequest;
 import com.casko1.wheelbarrow.music.lavaplayer.PlayerManager;
 import com.casko1.wheelbarrow.utils.ArgumentsUtil;
-import com.casko1.wheelbarrow.utils.TrackUtil;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
@@ -84,16 +83,17 @@ public class PlayCommand extends Command {
 
         String link = String.join("\\s+", split);
 
-        if(ArgumentsUtil.isSpotifyURL(link)){
+        if(ArgumentsUtil.isUrl(link)){
             PlayRequest request = new PlayRequest(channel, link, "", true, member, shuffle);
-            switch (ArgumentsUtil.parseSpotifyUrl(link)) {
-                case "playlist" -> PlayerManager.getInstance().loadSpotifyTracks("playlist", request);
-                case "album" -> PlayerManager.getInstance().loadSpotifyTracks("album", request);
-                case "track" -> PlayerManager.getInstance().loadSpotifyTrack(channel, link, member);
-                default -> event.reply("Spotify URL could not be parsed");
+
+            switch(ArgumentsUtil.parseURL(link)){
+                case "spotify" -> playSpotify(channel, link, request, member, event);
+                case "soundcloud" -> playSoundcloud(channel, link, member);
+                case "" -> event.reply("An error occurred. Please try again.");
+                default -> PlayerManager.getInstance().loadAndPlay(request);
             }
         }
-        else if(!ArgumentsUtil.isUrl(link)){
+        else{
             String query = link;
             link = "ytsearch:" + link;
             //false because we only take the first search result
@@ -101,11 +101,23 @@ public class PlayCommand extends Command {
 
             PlayerManager.getInstance().loadAndPlay(request);
         }
-        else{
-            //true as it might be a playlist
-            PlayRequest request = new PlayRequest(channel, link, "", true, member, shuffle);
+    }
 
-            PlayerManager.getInstance().loadAndPlay(request);
+    private void playSpotify(TextChannel channel, String link, PlayRequest request, Member member, CommandEvent event){
+        switch (ArgumentsUtil.parseSpotifyUrl(link)) {
+            case "playlist" -> PlayerManager.getInstance().loadSpotifyTracks("playlist", request);
+            case "album" -> PlayerManager.getInstance().loadSpotifyTracks("album", request);
+            case "track" -> PlayerManager.getInstance().loadSpotifyTrack(channel, link, member);
+            default -> event.reply("Spotify URL could not be parsed");
         }
     }
+
+    private void playSoundcloud(TextChannel channel, String link, Member member){
+        String query = link;
+        link = "scsearch:" + link;
+        PlayRequest request = new PlayRequest(channel, link, query, false, member, false);
+
+        PlayerManager.getInstance().loadAndPlay(request);
+    }
+
 }
