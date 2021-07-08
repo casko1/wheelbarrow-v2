@@ -1,6 +1,7 @@
 package com.casko1.wheelbarrow.music.lavaplayer;
 
 import com.casko1.wheelbarrow.entities.PlayRequest;
+import com.casko1.wheelbarrow.utils.PropertiesUtil;
 import com.casko1.wheelbarrow.utils.TrackUtil;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
@@ -19,9 +20,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.hc.core5.http.ParseException;
 
 import java.io.*;
-import java.lang.reflect.Array;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 public class PlayerManager {
@@ -38,9 +36,12 @@ public class PlayerManager {
 
 
     public PlayerManager() throws IOException, ParseException, SpotifyWebApiException {
-        List<String> config = Files.readAllLines(Paths.get("config.txt"));
-        String spotifyId = config.get(3);
-        String spotifySecret = config.get(4);
+
+        Properties config = PropertiesUtil.getProperties();
+
+        assert config != null;
+        String spotifyId = config.getProperty("spotifyId");
+        String spotifySecret = config.getProperty("spotifySecret");
 
         this.musicManagers = new HashMap<>();
         this.textChannelManagers = new HashMap<>();

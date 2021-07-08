@@ -5,6 +5,7 @@ import com.casko1.wheelbarrow.commands.basic.WeatherCommand;
 import com.casko1.wheelbarrow.commands.music.*;
 import com.casko1.wheelbarrow.commands.music.SkipCommand;
 import com.casko1.wheelbarrow.music.QueuePaginator;
+import com.casko1.wheelbarrow.utils.PropertiesUtil;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.JDABuilder;
@@ -12,23 +13,34 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.*;
 import java.util.EnumSet;
-import java.util.List;
+import java.util.Properties;
 
 public class Wheelbarrow {
     public static void main(String[] args) throws IOException, LoginException, IllegalArgumentException {
 
-        List<String> config = Files.readAllLines(Paths.get("config.txt"));
+        Logger logger = LoggerFactory.getLogger(Wheelbarrow.class);
 
-        // get configs from config.txt
-        String token = config.get(0);
-        String ownerId = config.get(1);
-        String weatherToken = config.get(2);
+        Properties config = PropertiesUtil.getProperties();
+
+        if(config == null) {
+            logger.info("Generating properties file. Please enter your bot token in wheelbarrow.properties file!");
+            return;
+        }
+
+        if(config.getProperty("botToken").equals("replaceWithBotToken")) {
+            logger.info("Detected default botToken value. Please enter your bot token in wheelbarrow.properties file!");
+            return;
+        }
+
+        String token = config.getProperty("botToken");
+        String ownerId = config.getProperty("ownerId");
+        String weatherToken = config.getProperty("weatherToken");
 
         EventWaiter waiter = new EventWaiter();
         EventWaiter reactionWaiter = new EventWaiter();
