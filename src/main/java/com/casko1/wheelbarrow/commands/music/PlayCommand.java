@@ -87,8 +87,8 @@ public class PlayCommand extends Command {
             PlayRequest request = new PlayRequest(channel, link, "", true, member, shuffle);
 
             switch(ArgumentsUtil.parseURL(link)){
-                case "spotify" -> playSpotify(channel, link, request, member, event);
-                case "soundcloud" -> playSoundcloud(channel, link, member);
+                case "spotify.com", "open.spotify.com" -> playSpotify(channel, link, request, member, event);
+                case "soundcloud.com" -> playSoundcloud(channel, link, member);
                 case "" -> event.reply("An error occurred. Please try again.");
                 default -> PlayerManager.getInstance().loadAndPlay(request);
             }
