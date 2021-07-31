@@ -8,11 +8,13 @@ import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
 import com.wrapper.spotify.model_objects.specification.*;
 import com.wrapper.spotify.requests.data.albums.GetAlbumRequest;
 import com.wrapper.spotify.requests.data.playlists.GetPlaylistRequest;
+import com.wrapper.spotify.requests.data.playlists.GetPlaylistsItemsRequest;
 import com.wrapper.spotify.requests.data.search.simplified.SearchTracksRequest;
 import com.wrapper.spotify.requests.data.tracks.GetTrackRequest;
 import org.apache.hc.core5.http.ParseException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -76,11 +78,19 @@ public final class TrackUtil {
         }
     }
 
-    public static List<String> getPlaylist(String query, SpotifyApi spotifyApi, ClientCredentials clientCredentials){
-        GetPlaylistRequest getPlaylistRequest = spotifyApi.getPlaylist(getSpotifyID(query)).build();
+    public static List<String> getPlaylist(String query, SpotifyApi spotifyApi, ClientCredentials clientCredentials, boolean shuffle){
+        String id = getSpotifyID(query);
+
+        GetPlaylistsItemsRequest getPlaylistItemsRequest = spotifyApi.getPlaylistsItems(getSpotifyID(query)).build();
 
         try{
-            return Arrays.stream(getPlaylistRequest.execute().getTracks().getItems())
+            int size = getPlaylistItemsRequest.execute().getTotal();
+
+            if(size > 100 && shuffle) return loadBigPlaylist(size, spotifyApi, clientCredentials, id);
+
+            getPlaylistItemsRequest = spotifyApi.getPlaylistsItems(getSpotifyID(query)).build();
+
+            return Arrays.stream(getPlaylistItemsRequest.execute().getItems())
                     .map(PlaylistTrack::getTrack)
                     .map(IPlaylistItem::getId)
                     .collect(Collectors.toList());
@@ -88,7 +98,7 @@ public final class TrackUtil {
             if(e instanceof NotFoundException) return null;
 
             spotifyApi.setAccessToken(getNewAccessToken(spotifyApi, clientCredentials));
-            return getPlaylist(query, spotifyApi, clientCredentials);
+            return getPlaylist(query, spotifyApi, clientCredentials, shuffle);
         }
     }
 
@@ -108,6 +118,36 @@ public final class TrackUtil {
         }
     }
 
+    private static List<String> loadBigPlaylist(int size, SpotifyApi spotifyApi, ClientCredentials clientCredentials, String id) {
+        int itemsToLoad = Math.min(size, 500);
+
+        GetPlaylistsItemsRequest request = spotifyApi.getPlaylistsItems(id).build();
+
+        List<String> tracks = new ArrayList<>();
+
+        int i = 1;
+
+        while(tracks.size() < itemsToLoad){
+
+            try{
+
+                tracks.addAll(Arrays.stream(request.execute().getItems())
+                        .map(PlaylistTrack::getTrack)
+                        .map(IPlaylistItem::getId)
+                        .collect(Collectors.toList()));
+            } catch (IOException | SpotifyWebApiException | ParseException e){
+                if(e instanceof NotFoundException) return null;
+
+                spotifyApi.setAccessToken(getNewAccessToken(spotifyApi, clientCredentials));
+                continue;
+            }
+
+            request = spotifyApi.getPlaylistsItems(id).offset(i * 100).build();
+            i++;
+        }
+
+        return tracks;
+    }
 
     private static Track getTrack(String query, SpotifyApi spotifyApi, ClientCredentials clientCredentials){
 

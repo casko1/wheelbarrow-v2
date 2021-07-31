@@ -108,7 +108,7 @@ public class PlayerManager {
         List<String> trackIds;
 
         switch (type){
-            case "playlist" -> trackIds = TrackUtil.getPlaylist(request.getSearchString(), spotifyApi, clientCredentials);
+            case "playlist" -> trackIds = TrackUtil.getPlaylist(request.getSearchString(), spotifyApi, clientCredentials, request.isShuffle());
             case "album" -> trackIds = TrackUtil.getAlbum(request.getSearchString(), spotifyApi, clientCredentials);
             default -> {
                 request.getTextChannel().sendMessage("Could not process your request").queue();
@@ -122,16 +122,16 @@ public class PlayerManager {
         }
 
         request.getTextChannel().sendMessage("Added ")
-                .append(String.valueOf(trackIds.size()))
+                .append(String.valueOf(Math.min(trackIds.size(), 100)))
                 .append(" tracks to the queue.")
                 .queue();
 
         if (request.isShuffle()) Collections.shuffle(trackIds);
 
 
-        for(String id: trackIds){
+        for(int i = 0; i < 100; i++){
             PlayRequest trackRequest = new PlayRequest(request.getTextChannel(),
-                    String.format("ytsearch:%s", getSpotifyTitle(id)),
+                    String.format("ytsearch:%s", getSpotifyTitle(trackIds.get(i))),
                     "",
                     true,
                     request.getRequester(),

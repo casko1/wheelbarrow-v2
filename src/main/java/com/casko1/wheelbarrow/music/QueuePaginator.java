@@ -68,13 +68,21 @@ public class QueuePaginator extends Menu {
 
 
     public void init(RestAction<Message> action, int pNum){
-        action.queue(m -> {
-            m.addReaction(LEFT).queue();
-            m.addReaction(STOP).queue();
-            m.addReaction(RIGHT)
-                    .queue(v -> handlePagination(m, pNum),
-                            t -> handlePagination(m, pNum));
-        });
+        if(items.size() > 10){
+            action.queue(m -> {
+                m.addReaction(LEFT).queue();
+                m.addReaction(STOP).queue();
+                m.addReaction(RIGHT)
+                        .queue(v -> handlePagination(m, pNum),
+                                t -> handlePagination(m, pNum));
+            });
+        }
+        else{
+            action.queue(m -> {
+                m.addReaction(STOP).queue(v -> handlePagination(m, pNum),
+                        t -> handlePagination(m, pNum));
+            });
+        }
     }
 
     private void handlePagination(Message message, int pNum){
@@ -122,7 +130,7 @@ public class QueuePaginator extends Menu {
         EmbedBuilder eb = new EmbedBuilder();
         MessageBuilder mb = new MessageBuilder();
 
-        int start = (pNum - 1) * itemsPerPage;
+        int start = Math.max(0, (pNum - 1) * itemsPerPage);
         int end = Math.min(items.size(), pNum * itemsPerPage);
 
         StringBuilder sb = new StringBuilder();
@@ -139,7 +147,7 @@ public class QueuePaginator extends Menu {
 
         eb.setColor(color);
 
-        mb.setEmbed(eb.build());
+        mb.setEmbeds(eb.build());
 
         return mb.build();
     }

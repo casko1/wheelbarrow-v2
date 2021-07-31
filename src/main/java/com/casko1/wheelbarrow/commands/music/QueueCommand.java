@@ -36,45 +36,17 @@ public class QueueCommand extends Command {
 
             BlockingQueue<AudioTrack> queue = manager.trackScheduler.queue;
 
-            //10 items per page
-            if(queue.size() <= 10){
-                singlePage(queue, manager, event);
-            }
-            else{
-                multiplePages(queue, manager, event);
-            }
+            renderQueue(queue, manager, event);
         }
     }
 
-    public void singlePage(BlockingQueue<AudioTrack> queue, GuildMusicManager manager, CommandEvent event){
-        EmbedBuilder eb = new EmbedBuilder();
-        eb.setColor(Color.BLUE);
-
-        List<AudioTrack> list = new ArrayList<>(queue);
-
-        StringBuilder sb = new StringBuilder();
-
-        for(int i = 0; i < list.size(); i++){
-            sb.append(String.format("%d. %s\n", i+1, list.get(i).getInfo().title));
-        }
-
-        String text = sb.length() == 0 ? "Nothing is in the queue... yet" : sb.toString();
-
-        eb.addField("Currently playing:", manager.audioPlayer.getPlayingTrack().getInfo().title, false);
-        eb.addField("**Tracks in queue:**", text, false);
-        eb.setFooter("Use $$remove <number> to remove song from queue");
-
-        event.reply(eb.build());
-    }
-
-    public void multiplePages(BlockingQueue<AudioTrack> queue, GuildMusicManager manager, CommandEvent event){
+    public void renderQueue(BlockingQueue<AudioTrack> queue, GuildMusicManager manager, CommandEvent event){
 
         List<String> list = new ArrayList<>();
 
         for(AudioTrack track : queue){
             list.add(track.getInfo().title);
         }
-
 
         QueuePaginator paginator = builder
                 .setItems(list)
