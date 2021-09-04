@@ -95,7 +95,7 @@ public class PlayCommand extends Command {
         }
         else{
             String query = link;
-            link = "ytsearch:" + link;
+            link = "ytmsearch:" + link;
             //false because we only take the first search result
             PlayRequest request = new PlayRequest(channel, link, query, false, member, false);
 
