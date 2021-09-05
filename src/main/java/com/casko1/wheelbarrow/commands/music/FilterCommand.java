@@ -72,6 +72,7 @@ public class FilterCommand extends Command {
             case "distortion" -> filterConfig = config.distortion;
             case "tremolo" -> filterConfig = config.tremolo;
             case "rotation" -> filterConfig = config.rotation;
+            case "bassboost" -> filterConfig = config.bassboost;
         }
 
         return filterConfig;

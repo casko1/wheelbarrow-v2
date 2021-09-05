@@ -18,6 +18,7 @@ public class FilterConfiguration {
     public DistortionConfig distortion = new DistortionConfig();
     public TremoloConfig tremolo = new TremoloConfig();
     public RotationConfig rotation = new RotationConfig();
+    public BassboostConfig bassboost = new BassboostConfig();
     public List<FilterConfig> filterConfigs = new ArrayList<>();
 
     public FilterConfiguration(){
@@ -26,6 +27,7 @@ public class FilterConfiguration {
         filterConfigs.add(distortion);
         filterConfigs.add(tremolo);
         filterConfigs.add(rotation);
+        filterConfigs.add(bassboost);
     }
 
     private List<FilterConfig> getConfigs(){

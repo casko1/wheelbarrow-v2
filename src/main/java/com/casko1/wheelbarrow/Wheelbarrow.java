@@ -72,7 +72,8 @@ public class Wheelbarrow {
                 new SeekCommand(),
                 new RemoveCommand(),
                 new ShuffleCommand(),
-                new ClearCommand()
+                new ClearCommand(),
+                new BassboostCommand()
                 );
 
         JDABuilder.createDefault(
