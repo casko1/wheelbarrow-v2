@@ -17,6 +17,7 @@ public final class PropertiesUtil {
         p.setProperty("enableSpotifyThumbnails", "false");
         p.setProperty("spotifyId", "replaceWithSpotifyId");
         p.setProperty("spotifySecret", "replaceWithSpotifySecret");
+        p.setProperty("enableApi", "false");
 
 
         p.store(os, "Automatically generated properties file. For basic functionality " +

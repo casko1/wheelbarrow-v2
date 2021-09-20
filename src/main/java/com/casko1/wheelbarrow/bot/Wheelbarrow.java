@@ -4,6 +4,7 @@ import com.casko1.wheelbarrow.bot.commands.basic.PingCommand;
 import com.casko1.wheelbarrow.bot.commands.basic.WeatherCommand;
 import com.casko1.wheelbarrow.bot.commands.music.*;
 import com.casko1.wheelbarrow.bot.music.QueuePaginator;
+import com.casko1.wheelbarrow.bot.server.ApiMessageServer;
 import com.casko1.wheelbarrow.bot.utils.PropertiesUtil;
 import com.casko1.wheelbarrow.bot.commands.music.SkipCommand;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
@@ -41,6 +42,7 @@ public class Wheelbarrow {
         String token = config.getProperty("botToken");
         String ownerId = config.getProperty("ownerId");
         String weatherToken = config.getProperty("weatherToken");
+        String enableApi = config.getProperty("enableApi");
 
         EventWaiter waiter = new EventWaiter();
         EventWaiter reactionWaiter = new EventWaiter();
@@ -94,6 +96,11 @@ public class Wheelbarrow {
                 .setActivity(Activity.playing("loading..."))
                 .addEventListeners(waiter, reactionWaiter, client.build())
                 .build(); //start the bot
+
+
+        if(enableApi.equals("true")){
+            new ApiMessageServer();
+        }
 
     }
 }
