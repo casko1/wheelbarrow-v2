@@ -2,6 +2,7 @@ package com.casko1.wheelbarrow.bot;
 
 import com.casko1.wheelbarrow.bot.commands.basic.PingCommand;
 import com.casko1.wheelbarrow.bot.commands.basic.WeatherCommand;
+import com.casko1.wheelbarrow.bot.commands.image.WokeContextMenu;
 import com.casko1.wheelbarrow.bot.commands.music.*;
 import com.casko1.wheelbarrow.bot.music.QueuePaginator;
 import com.casko1.wheelbarrow.bot.server.ApiMessageServer;
@@ -43,6 +44,7 @@ public class Wheelbarrow {
         String ownerId = config.getProperty("ownerId");
         String weatherToken = config.getProperty("weatherToken");
         String enableApi = config.getProperty("enableApi");
+        String enableFaceApi = config.getProperty("enableFaceApi");
 
         EventWaiter waiter = new EventWaiter();
         EventWaiter reactionWaiter = new EventWaiter();
@@ -78,6 +80,12 @@ public class Wheelbarrow {
                 new BassboostCommand()
                 );
 
+        if(enableFaceApi.equals("true")){
+            client.addContextMenu(new WokeContextMenu());
+        }
+
+        client.forceGuildOnly("678056209324048412");
+
         JDABuilder.createDefault(
                 token,
                 GatewayIntent.GUILD_MEMBERS,
@@ -91,7 +99,6 @@ public class Wheelbarrow {
                         CacheFlag.EMOTE
                 ))
                 .enableCache(CacheFlag.VOICE_STATE)
-                //status while loading
                 .setStatus(OnlineStatus.DO_NOT_DISTURB)
                 .setActivity(Activity.playing("loading..."))
                 .addEventListeners(waiter, reactionWaiter, client.build())

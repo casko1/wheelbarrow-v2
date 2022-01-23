@@ -17,6 +17,10 @@ public final class PropertiesUtil {
         p.setProperty("enableSpotifyThumbnails", "false");
         p.setProperty("spotifyId", "replaceWithSpotifyId");
         p.setProperty("spotifySecret", "replaceWithSpotifySecret");
+        p.setProperty("enableFaceApi", "false");
+        p.setProperty("azureFaceApiToken", "replaceWithAzureFaceApiToken");
+        p.setProperty("azureFaceApiEndpoint", "replaceWithAzureFaceApiEndpoint");
+        p.setProperty("spotifySecret", "replaceWithSpotifySecret");
         p.setProperty("enableApi", "false");
 
 
@@ -38,5 +42,10 @@ public final class PropertiesUtil {
             initPropertiesFile();
             return null;
         }
+    }
+
+    public static String getProperty(String name) throws IOException {
+        Properties p = getProperties();
+        return p.getProperty(name);
     }
 }

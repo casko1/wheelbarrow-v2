@@ -11,6 +11,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
 
 import java.awt.*;
 import java.io.File;
@@ -56,12 +57,12 @@ public class NowPlayingCommand extends Command {
             //default case
             File file = addTrackData.getDefaultImage();
             eb.setThumbnail("attachment://thumbnail.png");
-            event.getTextChannel().sendMessage(eb.build()).addFile(file, "thumbnail.png").queue();
+            event.getTextChannel().sendMessageEmbeds(eb.build()).addFile(file, "thumbnail.png").queue();
         }
         else{
             //spotify api has found thumbnail
             eb.setThumbnail(addTrackData.getThumbnail());
-            event.getTextChannel().sendMessage(eb.build()).queue();
+            event.getTextChannel().sendMessageEmbeds(eb.build()).queue();
         }
     }
 }

@@ -5,10 +5,8 @@ import com.casko1.wheelbarrow.bot.music.lavaplayer.PlayerManager;
 import com.casko1.wheelbarrow.bot.utils.ArgumentsUtil;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
-import net.dv8tion.jda.api.entities.GuildVoiceState;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.VoiceChannel;
+import com.jagrosh.jdautilities.command.SlashCommand;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.managers.AudioManager;
 
 import java.util.ArrayList;
@@ -42,12 +40,12 @@ public class PlayCommand extends Command {
         Member member = event.getMember();
         GuildVoiceState memberVoiceState = member.getVoiceState();
 
-        if(!memberVoiceState.inVoiceChannel()){
+        if(!memberVoiceState.inAudioChannel()){
             event.reply("You must be in voice channel to use this command.");
             return;
         }
 
-        if(!selfVoiceState.inVoiceChannel()){
+        if(!selfVoiceState.inAudioChannel()){
             joinVoiceChannel(event, memberVoiceState, channel);
         }
         else if(!memberVoiceState.getChannel().equals(selfVoiceState.getChannel())){
@@ -62,7 +60,7 @@ public class PlayCommand extends Command {
     private void joinVoiceChannel(CommandEvent event, GuildVoiceState memberVoiceState, TextChannel channel){
 
         AudioManager audioManager = event.getGuild().getAudioManager();
-        VoiceChannel voiceChannel = memberVoiceState.getChannel();
+        AudioChannel voiceChannel = memberVoiceState.getChannel();
 
         audioManager.openAudioConnection(voiceChannel);
         event.replyFormatted("Joining %s.", voiceChannel.getName());

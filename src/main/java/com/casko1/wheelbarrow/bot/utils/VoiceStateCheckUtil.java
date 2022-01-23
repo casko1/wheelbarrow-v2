@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.Member;
     this util is used by numerous commands for checking
     if the command may be executed
  */
+
 @SuppressWarnings("ConstantConditions")
 public final class VoiceStateCheckUtil {
 
@@ -28,12 +29,12 @@ public final class VoiceStateCheckUtil {
         Member member = event.getMember();
         GuildVoiceState memberVoiceState = member.getVoiceState();
 
-        if(!memberVoiceState.inVoiceChannel()){
+        if(!memberVoiceState.inAudioChannel()){
             event.reply("You must be in voice channel to use this command.");
             return false;
         }
 
-        if(!selfVoiceState.inVoiceChannel()){
+        if(!selfVoiceState.inAudioChannel()){
             event.reply("I am not currently in a voice channel!");
             return false;
         }

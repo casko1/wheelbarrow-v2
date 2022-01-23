@@ -11,6 +11,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.awt.*;
@@ -136,12 +137,12 @@ public class AudioResultHandler implements AudioLoadResultHandler {
             //default case
 
             eb.setThumbnail("attachment://thumbnail.png");
-            channel.sendMessage(eb.build()).addFile(defaultImage, "thumbnail.png").queue();
+            channel.sendMessageEmbeds(eb.build()).addFile(defaultImage, "thumbnail.png").queue();
         }
         else{
             //spotify api has found thumbnail
             eb.setThumbnail(addTrackData.getThumbnail());
-            channel.sendMessage(eb.build()).queue();
+            channel.sendMessageEmbeds(eb.build()).queue();
         }
     }
 }
