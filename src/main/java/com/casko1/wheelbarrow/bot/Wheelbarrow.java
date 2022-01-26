@@ -80,11 +80,12 @@ public class Wheelbarrow {
                 new BassboostCommand()
                 );
 
+
         if(enableFaceApi.equals("true")){
             client.addContextMenu(new WokeContextMenu());
         }
 
-        client.forceGuildOnly("678056209324048412");
+        client.forceGuildOnly("597206662025314324");
 
         JDABuilder.createDefault(
                 token,
