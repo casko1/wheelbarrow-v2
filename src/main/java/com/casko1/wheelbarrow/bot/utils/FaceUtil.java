@@ -13,8 +13,7 @@ public final class FaceUtil {
                 .contentType("application/json")
                 .header("Ocp-Apim-Subscription-Key", PropertiesUtil.getProperty("azureFaceApiToken"))
                 .queryString("returnFaceLandmarks", "true")
-                .queryString("recognitionMode", "detection_02")
-                .queryString("recognitionModel", "recognition_02")
+                .queryString("recognitionMode", "detection_03")
                 .body("{\"url\": \"" + url + "\"}")
                 .asJsonAsync(response -> response.ifSuccess(r -> {
                     if(r.getBody().getArray().isEmpty()) {

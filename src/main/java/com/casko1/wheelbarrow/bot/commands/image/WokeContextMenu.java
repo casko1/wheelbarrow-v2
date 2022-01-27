@@ -4,21 +4,14 @@ import com.casko1.wheelbarrow.bot.utils.FaceUtil;
 import com.jagrosh.jdautilities.command.MessageContextMenu;
 import com.jagrosh.jdautilities.command.MessageContextMenuEvent;
 import kong.unirest.json.JSONObject;
+import net.coobird.thumbnailator.Thumbnails;
 import net.dv8tion.jda.api.entities.Message;
-import org.apache.commons.io.IOUtils;
-import org.bytedeco.javacpp.BytePointer;
-import org.bytedeco.opencv.opencv_core.*;
-import org.bytedeco.opencv.opencv_imgproc.*;
-import static org.bytedeco.opencv.global.opencv_core.*;
-import static org.bytedeco.opencv.global.opencv_imgproc.*;
-import static org.bytedeco.opencv.global.opencv_imgcodecs.*;
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class WokeContextMenu extends MessageContextMenu {
 
@@ -77,14 +70,31 @@ public class WokeContextMenu extends MessageContextMenu {
     }
 
     private void overlayImage(JSONObject landmarks, MessageContextMenuEvent event, String url) throws IOException {
-        event.getHook().editOriginal("Processing the image").queue();
+        BufferedImage image = ImageIO.read(new URL(url));
 
-        Mat im = imread(new BytePointer(IOUtils.toByteArray(new URL(url))));
+        int[] pupilPos = getPupilCoordinates(landmarks, image.getWidth()/2, image.getHeight()/2);
 
-        File h = File.createTempFile("tmp", "jpg");
+        BufferedImage overlay = Thumbnails.of(ImageIO.read(getClass().getResourceAsStream("/img/glow.png")))
+                .forceSize(image.getWidth()/2, image.getHeight()/2)
+                .asBufferedImage();
 
-        imwrite(h.getAbsolutePath(), im);
+        Graphics2D g = image.createGraphics();
+        g.drawImage(overlay, pupilPos[0], pupilPos[1], null);
+        g.drawImage(overlay, pupilPos[2],pupilPos[3], null);
+        g.dispose();
 
-        event.getHook().editOriginal(h).queue();
+        File outFile = File.createTempFile("tmp", ".png");
+        ImageIO.write(image, "png", outFile);
+
+        event.getHook().editOriginal(outFile).queue();
+    }
+
+    private int[] getPupilCoordinates(JSONObject landmarks, int width, int height) {
+        int leftPupilX = (int) landmarks.getJSONObject("pupilLeft").getDouble("x") - width/2;
+        int leftPupilY = (int) landmarks.getJSONObject("pupilLeft").getDouble("y") - height/2;
+        int rightPupilX = (int) landmarks.getJSONObject("pupilRight").getDouble("x") - width/2;
+        int rightPupilY = (int) landmarks.getJSONObject("pupilRight").getDouble("y") - height/2;
+
+        return new int[]{leftPupilX, leftPupilY, rightPupilX, rightPupilY};
     }
 }
