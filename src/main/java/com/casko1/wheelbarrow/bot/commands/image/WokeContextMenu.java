@@ -26,14 +26,14 @@ public class WokeContextMenu extends MessageContextMenu {
         String url = parseImage(target);
 
         if(url == null) {
-            event.getHook().editOriginal("Unable to parse the image.").queue();
+            event.getHook().editOriginal("Unable to parse the image").queue();
             return;
         }
 
         try {
             FaceUtil.getLandmarks(url, (v) -> {
                 if(v == null) {
-                    event.getHook().editOriginal("Unable to parse the image.").queue();
+                    event.getHook().editOriginal("Unable to parse the image").queue();
                 }
                 else {
                     try {
@@ -86,7 +86,14 @@ public class WokeContextMenu extends MessageContextMenu {
         File outFile = File.createTempFile("tmp", ".png");
         ImageIO.write(image, "png", outFile);
 
-        event.getHook().editOriginal(outFile).queue();
+        if(outFile.length() > 8000000) {
+            event.getHook().editOriginal("File too large").queue();
+        }
+        else {
+            event.getHook().editOriginal(outFile).queue();
+        }
+
+        deleteTempFile(outFile);
     }
 
     private int[] getPupilCoordinates(JSONObject landmarks, int width, int height) {
@@ -96,5 +103,13 @@ public class WokeContextMenu extends MessageContextMenu {
         int rightPupilY = (int) landmarks.getJSONObject("pupilRight").getDouble("y") - height/2;
 
         return new int[]{leftPupilX, leftPupilY, rightPupilX, rightPupilY};
+    }
+
+    private void deleteTempFile(File outFile) {
+        new Thread(() -> {
+            try  { Thread.sleep( 5000 ); }
+            catch (InterruptedException ignored)  {}
+            outFile.delete();
+        }).start();
     }
 }
