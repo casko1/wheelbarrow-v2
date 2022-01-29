@@ -1,4 +1,4 @@
-package com.casko1.wheelbarrow.bot.commands.music;
+package com.casko1.wheelbarrow.bot.commands.message.music;
 
 import com.casko1.wheelbarrow.bot.entities.AdditionalTrackData;
 import com.casko1.wheelbarrow.bot.utils.TimeConverterUtil;
@@ -11,7 +11,6 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.MessageBuilder;
 
 import java.awt.*;
 import java.io.File;

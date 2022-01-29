@@ -1,11 +1,10 @@
-package com.casko1.wheelbarrow.bot.commands.music;
+package com.casko1.wheelbarrow.bot.commands.message.music;
 
 import com.casko1.wheelbarrow.bot.entities.PlayRequest;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.PlayerManager;
 import com.casko1.wheelbarrow.bot.utils.ArgumentsUtil;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
-import com.jagrosh.jdautilities.command.SlashCommand;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.managers.AudioManager;
 
@@ -93,7 +92,7 @@ public class PlayCommand extends Command {
         }
         else{
             String query = link;
-            link = "ytmsearch:" + link;
+            link = "ytsearch:" + link;
             //false because we only take the first search result
             PlayRequest request = new PlayRequest(channel, link, query, false, member, false);
 

@@ -21,6 +21,8 @@ public final class PropertiesUtil {
         p.setProperty("azureFaceApiToken", "replaceWithAzureFaceApiToken");
         p.setProperty("azureFaceApiEndpoint", "replaceWithAzureFaceApiEndpoint");
         p.setProperty("spotifySecret", "replaceWithSpotifySecret");
+        p.setProperty("enableSongDetection", "false");
+        p.setProperty("shazamCoreApiKey", "replaceShazamCoreApiKey");
         p.setProperty("enableApi", "false");
 
 

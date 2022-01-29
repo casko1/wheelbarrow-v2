@@ -1,11 +1,18 @@
 package com.casko1.wheelbarrow.bot.utils;
 
+import java.net.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import kong.unirest.Unirest;
+import net.dv8tion.jda.api.entities.Message;
 import org.apache.commons.validator.routines.UrlValidator;
 
 public final class ArgumentsUtil {
+
+    static Set<String> allowedVideoTypes = new HashSet<>(Arrays.asList("video/quicktime", "video/mp4", "audio/mpeg",
+            "video/webm", "video/mpeg", "audio/ogg", "video/ogg", "audio/opus"));
 
     public static boolean isFloat(String arg){
         try {
@@ -64,5 +71,22 @@ public final class ArgumentsUtil {
         String[] split = url.split("/");
 
         return split[3];
+    }
+
+    public static String getContentUrl(Message message) {
+        String url = null;
+
+        if(message.getAttachments().size() > 0) url = message.getAttachments().get(0).getUrl();
+        if(message.getEmbeds().size() > 0) url = message.getEmbeds().get(0).getUrl();
+
+        return url;
+    }
+
+    public static String getUrlContentType(String url) {
+        return Unirest.head(url).asString().getHeaders().get("Content-Type").get(0);
+    }
+
+    public static boolean isValidVideoType(String contentType) {
+        return allowedVideoTypes.contains(contentType);
     }
 }

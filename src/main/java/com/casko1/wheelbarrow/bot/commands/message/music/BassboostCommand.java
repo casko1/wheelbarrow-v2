@@ -1,4 +1,4 @@
-package com.casko1.wheelbarrow.bot.commands.music;
+package com.casko1.wheelbarrow.bot.commands.message.music;
 
 public class BassboostCommand extends FilterCommand{
 

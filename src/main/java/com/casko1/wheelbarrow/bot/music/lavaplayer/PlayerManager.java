@@ -128,7 +128,7 @@ public class PlayerManager {
 
         for(int i = 0; i < 100; i++){
             PlayRequest trackRequest = new PlayRequest(request.getTextChannel(),
-                    String.format("ytmsearch:%s", getSpotifyTitle(trackIds.get(i))),
+                    String.format("ytsearch:%s", getSpotifyTitle(trackIds.get(i))),
                     "",
                     true,
                     request.getRequester(),
@@ -140,7 +140,7 @@ public class PlayerManager {
 
     public void loadSpotifyTrack(TextChannel channel, String url, Member requester) {
         String title = getSpotifyTitle(url);
-        String link = "ytmsearch:" + title;
+        String link = "ytsearch:" + title;
         PlayRequest request = new PlayRequest(channel, link, title, false, requester, false);
         loadAndPlay(request);
     }

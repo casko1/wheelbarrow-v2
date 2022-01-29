@@ -1,5 +1,6 @@
-package com.casko1.wheelbarrow.bot.commands.image;
+package com.casko1.wheelbarrow.bot.commands.menu.image;
 
+import com.casko1.wheelbarrow.bot.utils.ArgumentsUtil;
 import com.casko1.wheelbarrow.bot.utils.FaceUtil;
 import com.jagrosh.jdautilities.command.MessageContextMenu;
 import com.jagrosh.jdautilities.command.MessageContextMenuEvent;
@@ -50,10 +51,7 @@ public class WokeContextMenu extends MessageContextMenu {
     }
 
     private String parseImage(Message target) {
-        String url = null;
-
-        if(target.getAttachments().size() > 0) url = target.getAttachments().get(0).getUrl();
-        if(target.getEmbeds().size() > 0) url = target.getEmbeds().get(0).getUrl();
+        String url = ArgumentsUtil.getContentUrl(target);
 
         if(url == null) return null;
 
