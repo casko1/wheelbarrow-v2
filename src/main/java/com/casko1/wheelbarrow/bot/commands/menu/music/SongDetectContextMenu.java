@@ -10,7 +10,6 @@ import net.bramp.ffmpeg.FFmpeg;
 import net.bramp.ffmpeg.FFmpegExecutor;
 import net.bramp.ffmpeg.FFprobe;
 import net.bramp.ffmpeg.builder.FFmpegBuilder;
-import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.io.File;
 import java.io.IOException;
