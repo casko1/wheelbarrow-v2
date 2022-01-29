@@ -11,7 +11,7 @@
 
 This bot is best used for self hosted as it is not designed for large scale deployment 
 (would need to implement sharding and further code optimizations). To host the bot on 
-your local machine you'll first need to grab the JAR under releases or compile the project
+your local machine you'll first need to grab the JAR under releases (soon) or compile the project
 yourself using maven (`mvn package app`).
 
 Next start the bot up for the first time in order to generate the `wheelbarrow.properties` file.
