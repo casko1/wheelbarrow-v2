@@ -2,7 +2,6 @@ package com.casko1.wheelbarrow.bot.commands.menu.music;
 
 import com.casko1.wheelbarrow.bot.utils.ArgumentsUtil;
 import com.casko1.wheelbarrow.bot.utils.PropertiesUtil;
-import com.google.gson.JsonObject;
 import com.jagrosh.jdautilities.command.MessageContextMenu;
 import com.jagrosh.jdautilities.command.MessageContextMenuEvent;
 import kong.unirest.Unirest;
@@ -11,6 +10,7 @@ import net.bramp.ffmpeg.FFmpeg;
 import net.bramp.ffmpeg.FFmpegExecutor;
 import net.bramp.ffmpeg.FFprobe;
 import net.bramp.ffmpeg.builder.FFmpegBuilder;
+import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,8 +50,8 @@ public class SongDetectContextMenu extends MessageContextMenu {
             else {
                 String title = r.getJSONObject("track").getString("title");
                 String author = r.getJSONObject("track").getString("subtitle");
-
-                event.getHook().editOriginal("That appears to be: " + title + " by " + author).queue();
+                event.getHook().editOriginal(url + "\nDetected song: **"+ title +
+                        "** by **" + author + "**").queue();
             }
             deleteTempFile(f);
         });
@@ -88,11 +88,8 @@ public class SongDetectContextMenu extends MessageContextMenu {
                 .header("x-rapidapi-host", "shazam-core.p.rapidapi.com")
                 .header("x-rapidapi-key", PropertiesUtil.getProperty("shazamCoreApi"))
                 .field("file", file, "audio/ogg")
-                .asJsonAsync(response -> response.ifSuccess(r -> {
-                    callback.accept(response.getBody().getObject());
-                }).ifFailure(f -> {
-                    callback.accept(null);
-                }));
+                .asJsonAsync(response -> response.ifSuccess(r -> callback.accept(response.getBody().getObject()))
+                        .ifFailure(f -> callback.accept(null)));
     }
 
     private void deleteTempFile(File outFile) {
