@@ -10,8 +10,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <maven.compiler.source>14</maven.compiler.source>
-        <maven.compiler.target>14</maven.compiler.target>
+        <maven.compiler.source>16</maven.compiler.source>
+        <maven.compiler.target>16</maven.compiler.target>
         <jda.version>5.0.0-alpha.4</jda.version>
         <jda.utils.version>2.0-interactions-SNAPSHOT</jda.utils.version>
         <unirest.version>3.11.11</unirest.version>
