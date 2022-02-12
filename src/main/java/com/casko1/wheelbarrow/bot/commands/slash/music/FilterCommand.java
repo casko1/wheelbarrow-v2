@@ -1,11 +1,11 @@
-package com.casko1.wheelbarrow.bot.commands.message.music;
+package com.casko1.wheelbarrow.bot.commands.slash.music;
 
-import com.casko1.wheelbarrow.bot.music.lavaplayer.filters.FilterConfig;
-import com.casko1.wheelbarrow.bot.utils.ArgumentsUtil;
-import com.casko1.wheelbarrow.bot.utils.VoiceStateCheckUtil;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.FilterConfiguration;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.GuildMusicManager;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.PlayerManager;
+import com.casko1.wheelbarrow.bot.music.lavaplayer.filters.FilterConfig;
+import com.casko1.wheelbarrow.bot.utils.ArgumentsUtil;
+import com.casko1.wheelbarrow.bot.utils.VoiceStateCheckUtil;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 

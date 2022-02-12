@@ -1,4 +1,4 @@
-package com.casko1.wheelbarrow.bot.commands.message.music;
+package com.casko1.wheelbarrow.bot.commands.slash.music;
 
 public class RotationCommand extends FilterCommand{
 

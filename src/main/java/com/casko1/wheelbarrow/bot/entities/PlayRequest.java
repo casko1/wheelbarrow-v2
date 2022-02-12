@@ -1,21 +1,11 @@
 package com.casko1.wheelbarrow.bot.entities;
 
+import com.jagrosh.jdautilities.command.SlashCommandEvent;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.TextChannel;
 
 public class PlayRequest {
 
-    public PlayRequest(TextChannel textChannel, String searchString, String imageSearchString,
-                       boolean isPlaylist, Member requester, boolean shuffle){
-        this.textChannel = textChannel;
-        this.searchString = searchString;
-        this.imageSearchString = imageSearchString;
-        this.isPlaylist = isPlaylist;
-        this.requester = requester;
-        this.shuffle = shuffle;
-    }
-
-    private final TextChannel textChannel;
+    private final SlashCommandEvent event;
 
     private final String searchString;
 
@@ -25,14 +15,24 @@ public class PlayRequest {
 
     private final Member requester;
 
+    public PlayRequest(SlashCommandEvent event, String searchString, String imageSearchString,
+                       boolean isPlaylist, Member requester, boolean shuffle){
+        this.event = event;
+        this.searchString = searchString;
+        this.imageSearchString = imageSearchString;
+        this.isPlaylist = isPlaylist;
+        this.requester = requester;
+        this.shuffle = shuffle;
+    }
+
     public boolean isShuffle() {
         return shuffle;
     }
 
     private final boolean shuffle;
 
-    public TextChannel getTextChannel() {
-        return textChannel;
+    public SlashCommandEvent getEvent() {
+        return event;
     }
 
     public String getSearchString() {

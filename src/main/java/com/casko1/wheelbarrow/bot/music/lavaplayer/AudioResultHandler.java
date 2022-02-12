@@ -1,8 +1,9 @@
 package com.casko1.wheelbarrow.bot.music.lavaplayer;
 
 import com.casko1.wheelbarrow.bot.entities.AdditionalTrackData;
-import com.casko1.wheelbarrow.bot.utils.TrackUtil;
 import com.casko1.wheelbarrow.bot.entities.PlayRequest;
+import com.casko1.wheelbarrow.bot.utils.TrackUtil;
+import com.jagrosh.jdautilities.command.SlashCommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
@@ -11,8 +12,6 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.MessageBuilder;
-import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.awt.*;
 import java.io.File;
@@ -50,7 +49,7 @@ public class AudioResultHandler implements AudioLoadResultHandler {
                 audioTrackInfo.length,
                 defaultImage));
 
-        sendEmbed(audioTrack, request.getTextChannel());
+        sendEmbed(audioTrack, request.getEvent());
 
         scheduler.addToQueue(audioTrack);
     }
@@ -74,7 +73,7 @@ public class AudioResultHandler implements AudioLoadResultHandler {
                     defaultImage));
 
             if(!request.isPlaylist()){
-                sendEmbed(audioTrack, request.getTextChannel());
+                sendEmbed(audioTrack, request.getEvent());
             }
 
             scheduler.addToQueue(audioTrack);
@@ -97,30 +96,31 @@ public class AudioResultHandler implements AudioLoadResultHandler {
                 scheduler.addToQueue(audioTrack);
             }
 
-            request.getTextChannel().sendMessage("Added ")
-                    .append(String.valueOf(audioPlaylist.getTracks().size()))
-                    .append(" tracks from playlist ")
-                    .append(audioPlaylist.getName())
-                    .append(" to the queue.")
-                    .queue();
+            String out = "Added" +
+                    audioPlaylist.getTracks().size() +
+                    " tracks from playlist " +
+                    audioPlaylist.getName() +
+                    " to the queue.";
+
+            request.getEvent().getHook().editOriginal(out).queue();
         }
     }
 
     @Override
     public void noMatches() {
         if(!request.isPlaylist()){
-            request.getTextChannel().sendMessage("No results with that query were found").queue();
+            request.getEvent().getHook().editOriginal("No results with that query were found").queue();
         }
     }
 
     @Override
     public void loadFailed(FriendlyException e) {
         if(!request.isPlaylist()){
-            request.getTextChannel().sendMessage("Loading failed.").queue();
+            request.getEvent().getHook().editOriginal("Loading failed.").queue();
         }
     }
 
-    public void sendEmbed(AudioTrack audioTrack, TextChannel channel) {
+    public void sendEmbed(AudioTrack audioTrack, SlashCommandEvent event) {
         final AudioTrackInfo info = audioTrack.getInfo();
 
         final AdditionalTrackData addTrackData = audioTrack.getUserData(AdditionalTrackData.class);
@@ -137,12 +137,12 @@ public class AudioResultHandler implements AudioLoadResultHandler {
             //default case
 
             eb.setThumbnail("attachment://thumbnail.png");
-            channel.sendMessageEmbeds(eb.build()).addFile(defaultImage, "thumbnail.png").queue();
+            event.getHook().sendMessageEmbeds(eb.build()).addFile(defaultImage, "thumbnail.png").queue();
         }
         else{
             //spotify api has found thumbnail
             eb.setThumbnail(addTrackData.getThumbnail());
-            channel.sendMessageEmbeds(eb.build()).queue();
+            event.getHook().sendMessageEmbeds(eb.build()).queue();
         }
     }
 }

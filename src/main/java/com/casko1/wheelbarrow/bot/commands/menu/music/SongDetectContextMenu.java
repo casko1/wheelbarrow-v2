@@ -19,6 +19,7 @@ import java.util.function.Consumer;
 
 
 public class SongDetectContextMenu extends MessageContextMenu {
+
     public SongDetectContextMenu() {
         this.name = "detect song";
     }

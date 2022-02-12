@@ -25,7 +25,6 @@ public final class PropertiesUtil {
         p.setProperty("shazamCoreApiKey", "replaceShazamCoreApiKey");
         p.setProperty("enableApi", "false");
 
-
         p.store(os, "Automatically generated properties file. For basic functionality " +
                 "only botToken is required");
 
@@ -33,7 +32,6 @@ public final class PropertiesUtil {
     }
 
     public static Properties getProperties() throws IOException {
-
         try {
             Properties p = new Properties();
             InputStream configFile = new FileInputStream("wheelbarrow.properties");

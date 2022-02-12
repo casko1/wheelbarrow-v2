@@ -1,4 +1,4 @@
-package com.casko1.wheelbarrow.bot.commands.message.basic;
+package com.casko1.wheelbarrow.bot.commands.slash.basic;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
@@ -9,6 +9,7 @@ import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;

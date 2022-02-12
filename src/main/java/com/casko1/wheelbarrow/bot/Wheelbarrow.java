@@ -1,14 +1,13 @@
 package com.casko1.wheelbarrow.bot;
 
-import com.casko1.wheelbarrow.bot.commands.menu.music.SongDetectContextMenu;
-import com.casko1.wheelbarrow.bot.commands.message.basic.PingCommand;
-import com.casko1.wheelbarrow.bot.commands.message.basic.WeatherCommand;
 import com.casko1.wheelbarrow.bot.commands.menu.image.WokeContextMenu;
-import com.casko1.wheelbarrow.bot.commands.message.music.*;
+import com.casko1.wheelbarrow.bot.commands.menu.music.SongDetectContextMenu;
+import com.casko1.wheelbarrow.bot.commands.slash.basic.PingCommand;
+import com.casko1.wheelbarrow.bot.commands.slash.basic.WeatherCommand;
+import com.casko1.wheelbarrow.bot.commands.slash.music.*;
 import com.casko1.wheelbarrow.bot.music.QueuePaginator;
 import com.casko1.wheelbarrow.bot.server.ApiMessageServer;
 import com.casko1.wheelbarrow.bot.utils.PropertiesUtil;
-import com.casko1.wheelbarrow.bot.commands.message.music.SkipCommand;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.JDABuilder;
@@ -20,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
-import java.io.*;
+import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Properties;
 
@@ -63,7 +62,6 @@ public class Wheelbarrow {
                 new PingCommand(),
                 new WeatherCommand(weatherToken),
                 new JoinCommand(),
-                new PlayCommand(),
                 new StopCommand(),
                 new SkipCommand(),
                 new NowPlayingCommand(),
@@ -82,6 +80,8 @@ public class Wheelbarrow {
                 new BassboostCommand()
                 );
 
+        client.addSlashCommand(new PlayCommand());
+
 
         if(enableFaceApi.equals("true")){
             client.addContextMenu(new WokeContextMenu());
@@ -91,7 +91,8 @@ public class Wheelbarrow {
             client.addContextMenu(new SongDetectContextMenu());
         }
 
-        client.forceGuildOnly("678056209324048412");
+        //used for development
+        client.forceGuildOnly("597206662025314324");
 
         JDABuilder.createDefault(
                 token,

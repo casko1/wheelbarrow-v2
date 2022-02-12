@@ -1,4 +1,4 @@
-package com.casko1.wheelbarrow.bot.commands.message.basic;
+package com.casko1.wheelbarrow.bot.commands.slash.basic;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;

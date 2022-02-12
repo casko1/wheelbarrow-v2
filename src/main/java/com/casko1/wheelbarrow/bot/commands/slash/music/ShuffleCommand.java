@@ -1,8 +1,8 @@
-package com.casko1.wheelbarrow.bot.commands.message.music;
+package com.casko1.wheelbarrow.bot.commands.slash.music;
 
+import com.casko1.wheelbarrow.bot.music.lavaplayer.PlayerManager;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.TrackScheduler;
 import com.casko1.wheelbarrow.bot.utils.VoiceStateCheckUtil;
-import com.casko1.wheelbarrow.bot.music.lavaplayer.PlayerManager;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 

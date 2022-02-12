@@ -1,4 +1,4 @@
-package com.casko1.wheelbarrow.bot.commands.message.music;
+package com.casko1.wheelbarrow.bot.commands.slash.music;
 
 import com.casko1.wheelbarrow.bot.music.QueuePaginator;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.GuildMusicManager;

@@ -3,6 +3,7 @@ package com.casko1.wheelbarrow.bot.music.lavaplayer;
 import com.casko1.wheelbarrow.bot.entities.PlayRequest;
 import com.casko1.wheelbarrow.bot.utils.PropertiesUtil;
 import com.casko1.wheelbarrow.bot.utils.TrackUtil;
+import com.jagrosh.jdautilities.command.SlashCommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
@@ -32,7 +33,6 @@ public class PlayerManager {
 
 
     public PlayerManager() throws IOException, ParseException, SpotifyWebApiException {
-
         Properties config = PropertiesUtil.getProperties();
 
         assert config != null;
@@ -93,40 +93,38 @@ public class PlayerManager {
     }
 
     public void loadAndPlay(PlayRequest request) {
-        final GuildMusicManager musicManager = this.getMusicManager(request.getTextChannel().getGuild());
+        final GuildMusicManager musicManager = this.getMusicManager(request.getEvent().getGuild());
 
         this.audioPlayerManager.loadItemOrdered(musicManager, request.getSearchString(),
                 new AudioResultHandler(request, musicManager.trackScheduler, defaultImage, spotifyApi, clientCredentials));
     }
 
     public void loadSpotifyTracks(String type, PlayRequest request){
-
         List<String> trackIds;
 
         switch (type){
             case "playlist" -> trackIds = TrackUtil.getPlaylist(request.getSearchString(), spotifyApi, clientCredentials, request.isShuffle());
             case "album" -> trackIds = TrackUtil.getAlbum(request.getSearchString(), spotifyApi, clientCredentials);
             default -> {
-                request.getTextChannel().sendMessage("Could not process your request").queue();
+                request.getEvent().getHook().editOriginal("Could not process your request").queue();
                 return;
             }
         }
 
         if (trackIds == null) {
-            request.getTextChannel().sendMessage("An error occurred while loading the tracks.").queue();
+            request.getEvent().getHook().editOriginal("An error occurred while loading the tracks.").queue();
             return;
         }
 
-        request.getTextChannel().sendMessage("Added ")
-                .append(String.valueOf(Math.min(trackIds.size(), 100)))
-                .append(" tracks to the queue.")
-                .queue();
+        int trackCount = Math.min(trackIds.size(), 100);
+
+        request.getEvent().getHook().editOriginal(String.format("Added %d tracks to the queue",
+                trackCount)).queue();
 
         if (request.isShuffle()) Collections.shuffle(trackIds);
 
-
-        for(int i = 0; i < 100; i++){
-            PlayRequest trackRequest = new PlayRequest(request.getTextChannel(),
+        for(int i = 0; i < trackCount; i++){
+            PlayRequest trackRequest = new PlayRequest(request.getEvent(),
                     String.format("ytsearch:%s", getSpotifyTitle(trackIds.get(i))),
                     "",
                     true,
@@ -137,10 +135,10 @@ public class PlayerManager {
         }
     }
 
-    public void loadSpotifyTrack(TextChannel channel, String url, Member requester) {
+    public void loadSpotifyTrack(SlashCommandEvent event, String url, Member requester) {
         String title = getSpotifyTitle(url);
         String link = "ytsearch:" + title;
-        PlayRequest request = new PlayRequest(channel, link, title, false, requester, false);
+        PlayRequest request = new PlayRequest(event, link, title, false, requester, false);
         loadAndPlay(request);
     }
 
@@ -161,7 +159,6 @@ public class PlayerManager {
     }
 
     public static PlayerManager getInstance() {
-
         if (instance == null) {
             try {
                 instance = new PlayerManager();
