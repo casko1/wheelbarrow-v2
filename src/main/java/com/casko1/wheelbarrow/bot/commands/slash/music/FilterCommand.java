@@ -24,7 +24,7 @@ public class FilterCommand extends SlashCommand {
                 new OptionData(OptionType.STRING, "type", "Type of filter", true),
                 new OptionData(OptionType.STRING, "option", "Option of the filter", true, true),
                 new OptionData(OptionType.STRING, "value",
-                        "Value of the option (use anything for 'disable' option)", true)
+                        "Value of the option (use anything for 'disable' option)", true).setMinValue(0.01)
         );
 
         String[] filters = new String[]{"bassboost", "distortion", "karaoke", "rotation", "timescale", "tremolo"};
@@ -43,6 +43,7 @@ public class FilterCommand extends SlashCommand {
         String value = event.getOption("value").getAsString();
         FilterConfig filter = parseFilter(type, config);
 
+        //split into two commands "/filter apply ..." and "/filter disable ..."
         if(option.equals("disable")) {
             disableFilter(event, filter, guildMusicManager, type);
         }
@@ -57,6 +58,7 @@ public class FilterCommand extends SlashCommand {
         GuildMusicManager guildMusicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
         FilterConfiguration config = guildMusicManager.getFilterConfiguration();
 
+        //can be null if option gets forced before type
         String type = event.getOption("type").getAsString();
         List<String> options = config.getConfigs().get(type).getOptions();
         List<Command.Choice> choices = new ArrayList<>();
