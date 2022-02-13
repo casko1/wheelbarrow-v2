@@ -5,6 +5,10 @@ import com.sedmelluq.discord.lavaplayer.filter.AudioFilter;
 import com.sedmelluq.discord.lavaplayer.filter.FloatPcmAudioFilter;
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class KaraokeConfig extends FilterConfig {
 
     private float level = 1.0f;
@@ -44,6 +48,13 @@ public class KaraokeConfig extends FilterConfig {
 
     public boolean isEnabled(){
         return this.enabled;
+    }
+
+    public List<String> getOptions(){
+        List<String> options = new ArrayList<>(Arrays.asList("mono", "level"));
+        if(enabled) options.add("disable");
+
+        return options;
     }
 
     public void updateConfig(){

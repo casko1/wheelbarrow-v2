@@ -9,6 +9,7 @@ import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class FilterConfiguration {
@@ -19,18 +20,18 @@ public class FilterConfiguration {
     public TremoloConfig tremolo = new TremoloConfig();
     public RotationConfig rotation = new RotationConfig();
     public BassboostConfig bassboost = new BassboostConfig();
-    public List<FilterConfig> filterConfigs = new ArrayList<>();
+    public HashMap<String, FilterConfig> filterConfigs = new HashMap<>();
 
     public FilterConfiguration(){
-        filterConfigs.add(timescale);
-        filterConfigs.add(karaoke);
-        filterConfigs.add(distortion);
-        filterConfigs.add(tremolo);
-        filterConfigs.add(rotation);
-        filterConfigs.add(bassboost);
+        filterConfigs.put("timescale", timescale);
+        filterConfigs.put("karaoke", karaoke);
+        filterConfigs.put("distortion", distortion);
+        filterConfigs.put("tremolo", tremolo);
+        filterConfigs.put("rotation", rotation);
+        filterConfigs.put("bassboost", bassboost);
     }
 
-    private List<FilterConfig> getConfigs(){
+    public HashMap<String, FilterConfig> getConfigs(){
         return this.filterConfigs;
     }
 
@@ -50,13 +51,13 @@ public class FilterConfiguration {
         @Override
         public List<AudioFilter> buildChain(AudioTrack audioTrack, AudioDataFormat audioDataFormat, UniversalPcmAudioFilter output) {
 
-            List<FilterConfig> filterConfigs = filterConfiguration.getConfigs();
+            HashMap<String, FilterConfig> filterConfigs = filterConfiguration.getConfigs();
 
             List<AudioFilter> filterChain = new ArrayList<>();
 
             filterChain.add(output);
 
-            for(FilterConfig config : filterConfigs){
+            for(FilterConfig config : filterConfigs.values()){
                 if(config.isEnabled()){
                     filterChain.add(0, config.create(audioDataFormat, (FloatPcmAudioFilter) filterChain.get(0)));
                 }

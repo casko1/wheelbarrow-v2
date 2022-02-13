@@ -5,6 +5,10 @@ import com.sedmelluq.discord.lavaplayer.filter.AudioFilter;
 import com.sedmelluq.discord.lavaplayer.filter.FloatPcmAudioFilter;
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class DistortionConfig extends FilterConfig {
 
     private float scale = 1.0f;
@@ -34,6 +38,13 @@ public class DistortionConfig extends FilterConfig {
 
     public boolean isEnabled(){
         return this.enabled;
+    }
+
+    public List<String> getOptions(){
+        List<String> options = new ArrayList<>(Collections.singletonList("scale"));
+        if(enabled) options.add("disable");
+
+        return options;
     }
 
     public void updateConfig(){

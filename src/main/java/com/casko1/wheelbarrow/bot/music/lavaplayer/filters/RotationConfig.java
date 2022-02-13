@@ -5,6 +5,10 @@ import com.sedmelluq.discord.lavaplayer.filter.AudioFilter;
 import com.sedmelluq.discord.lavaplayer.filter.FloatPcmAudioFilter;
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class RotationConfig extends FilterConfig{
 
     private float rotationSpeed = 5.0f;
@@ -13,6 +17,14 @@ public class RotationConfig extends FilterConfig{
 
     public RotationConfig(){
         super("Rotation");
+    }
+
+    public float getRotationSpeed(){
+        return this.rotationSpeed;
+    }
+
+    public void setRotationSpeed(float speed) {
+        this.rotationSpeed = speed;
     }
 
     public void enable() {
@@ -28,12 +40,11 @@ public class RotationConfig extends FilterConfig{
         return this.enabled;
     }
 
-    public float getRotationSpeed(){
-        return this.rotationSpeed;
-    }
+    public List<String> getOptions(){
+        List<String> options = new ArrayList<>(Collections.singletonList("speed"));
+        if(enabled) options.add("disable");
 
-    public void setRotationSpeed(float speed) {
-        this.rotationSpeed = speed;
+        return options;
     }
 
     public void updateConfig() {

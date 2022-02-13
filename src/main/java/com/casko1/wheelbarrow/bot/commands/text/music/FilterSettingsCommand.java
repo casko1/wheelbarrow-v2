@@ -1,4 +1,4 @@
-package com.casko1.wheelbarrow.bot.commands.slash.music;
+package com.casko1.wheelbarrow.bot.commands.text.music;
 
 import com.casko1.wheelbarrow.bot.music.lavaplayer.GuildMusicManager;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.PlayerManager;
@@ -9,7 +9,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
-import java.util.List;
+import java.util.HashMap;
 
 public class FilterSettingsCommand extends Command {
 
@@ -25,7 +25,7 @@ public class FilterSettingsCommand extends Command {
         if(VoiceStateCheckUtil.isEligible(event, false)){
             GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
 
-            List<FilterConfig> configs = musicManager.getFilterConfiguration().filterConfigs;
+            HashMap<String, FilterConfig> configs = musicManager.getFilterConfiguration().filterConfigs;
 
             EmbedBuilder eb = new EmbedBuilder();
 
@@ -34,7 +34,7 @@ public class FilterSettingsCommand extends Command {
 
             StringBuilder sb = new StringBuilder();
 
-            for(FilterConfig config : configs){
+            for(FilterConfig config : configs.values()){
                 sb.append(String.format("%s: %s\n", config.getName(), config.isEnabled() ? ":white_check_mark:" : ":x:"));
             }
 

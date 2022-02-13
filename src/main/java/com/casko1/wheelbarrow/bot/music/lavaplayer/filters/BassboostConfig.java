@@ -5,6 +5,10 @@ import com.sedmelluq.discord.lavaplayer.filter.FloatPcmAudioFilter;
 import com.sedmelluq.discord.lavaplayer.filter.equalizer.Equalizer;
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class BassboostConfig extends FilterConfig {
 
     private boolean enabled = false;
@@ -40,6 +44,14 @@ public class BassboostConfig extends FilterConfig {
     @Override
     public boolean isEnabled() {
         return this.enabled;
+    }
+
+    @Override
+    public List<String> getOptions() {
+        List<String> options = new ArrayList<>(Collections.singletonList("gain"));
+        if(enabled) options.add("disable");
+
+        return options;
     }
 
     @Override

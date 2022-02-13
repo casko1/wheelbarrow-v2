@@ -4,6 +4,8 @@ import com.sedmelluq.discord.lavaplayer.filter.AudioFilter;
 import com.sedmelluq.discord.lavaplayer.filter.FloatPcmAudioFilter;
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
 
+import java.util.List;
+
 public abstract class FilterConfig {
 
     private final String name;
@@ -18,6 +20,8 @@ public abstract class FilterConfig {
 
     public abstract boolean isEnabled();
 
+    public abstract List<String> getOptions();
+
     public String getName(){
         return name;
     }
@@ -28,17 +32,17 @@ public abstract class FilterConfig {
 
     public abstract AudioFilter create(AudioDataFormat format, FloatPcmAudioFilter output);
 
-    public boolean applyConfig(String[] args, Float factor){
+    public boolean applyConfig(String type, Float factor){
         if(!isEnabled()){
             enable();
 
-            if(!parseOption(args[0], factor)){
+            if(!parseOption(type, factor)){
                 disable();
                 return false;
             }
         }
         else{
-            if(!parseOption(args[0], factor)){
+            if(!parseOption(type, factor)){
                 return false;
             }
 

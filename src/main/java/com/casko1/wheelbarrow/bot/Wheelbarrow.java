@@ -2,9 +2,11 @@ package com.casko1.wheelbarrow.bot;
 
 import com.casko1.wheelbarrow.bot.commands.menu.image.WokeContextMenu;
 import com.casko1.wheelbarrow.bot.commands.menu.music.SongDetectContextMenu;
-import com.casko1.wheelbarrow.bot.commands.slash.basic.PingCommand;
 import com.casko1.wheelbarrow.bot.commands.slash.basic.WeatherCommand;
-import com.casko1.wheelbarrow.bot.commands.slash.music.*;
+import com.casko1.wheelbarrow.bot.commands.slash.music.FilterCommand;
+import com.casko1.wheelbarrow.bot.commands.slash.music.PlayCommand;
+import com.casko1.wheelbarrow.bot.commands.text.basic.PingCommand;
+import com.casko1.wheelbarrow.bot.commands.text.music.*;
 import com.casko1.wheelbarrow.bot.music.QueuePaginator;
 import com.casko1.wheelbarrow.bot.server.ApiMessageServer;
 import com.casko1.wheelbarrow.bot.utils.PropertiesUtil;
@@ -60,27 +62,23 @@ public class Wheelbarrow {
 
         client.addCommands(
                 new PingCommand(),
-                new WeatherCommand(weatherToken),
                 new JoinCommand(),
                 new StopCommand(),
                 new SkipCommand(),
                 new NowPlayingCommand(),
-                new TimescaleCommand(),
-                new KaraokeCommand(),
-                new DistortionCommand(),
-                new TremoloCommand(),
-                new RotationCommand(),
                 new QueueCommand(paginatorBuilder),
                 new FilterSettingsCommand(),
                 new LoopCommand(),
                 new SeekCommand(),
                 new RemoveCommand(),
                 new ShuffleCommand(),
-                new ClearCommand(),
-                new BassboostCommand()
+                new ClearCommand()
                 );
 
-        client.addSlashCommand(new PlayCommand());
+        client.addSlashCommands(
+                new PlayCommand(),
+                new FilterCommand(),
+                new WeatherCommand(weatherToken));
 
 
         if(enableFaceApi.equals("true")){

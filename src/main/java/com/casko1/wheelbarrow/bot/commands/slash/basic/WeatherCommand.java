@@ -1,7 +1,7 @@
 package com.casko1.wheelbarrow.bot.commands.slash.basic;
 
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
+import com.jagrosh.jdautilities.command.SlashCommand;
+import com.jagrosh.jdautilities.command.SlashCommandEvent;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
@@ -9,6 +9,8 @@ import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -16,37 +18,32 @@ import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class WeatherCommand extends Command {
+public class WeatherCommand extends SlashCommand {
 
     private final String weatherToken;
     private String location;
 
     public WeatherCommand(String weatherToken){
         this.name = "weather";
-        this.help = "Displays 5 day weather forecast for specified location";
-        this.arguments = "<name of location>";
+        this.options.add(new OptionData(OptionType.STRING, "location", "Name of teh location", true));
         this.guildOnly = false;
         this.weatherToken = weatherToken;
     }
 
     @Override
-    protected void execute(CommandEvent event) throws ArrayIndexOutOfBoundsException{
+    protected void execute(SlashCommandEvent event) throws ArrayIndexOutOfBoundsException{
+        event.deferReply().queue();
 
-        this.location = event.getArgs();
+        location = event.getOption("location").getAsString();
 
-        if(location.isEmpty()){
-            event.reply("You must provide a location.");
-        }
-        else{
-            Unirest.get("https://api.openweathermap.org/data/2.5/forecast?q={location}&appid={token}")
-                    .routeParam("location", location)
-                    .routeParam("token", weatherToken)
-                    .asJsonAsync(response -> response.ifSuccess(r -> {
-                        MessageEmbed em = parseWeatherData(r);
-                        event.reply(em);
-                    })
-                            .ifFailure(e -> event.reply("An error occurred. Please try again.")));
-        }
+        Unirest.get("https://api.openweathermap.org/data/2.5/forecast?q={location}&appid={token}")
+                .routeParam("location", location)
+                .routeParam("token", weatherToken)
+                .asJsonAsync(response -> response.ifSuccess(r -> {
+                    MessageEmbed em = parseWeatherData(r);
+                    event.getHook().editOriginalEmbeds(em).queue();
+                })
+                .ifFailure(e -> event.getHook().editOriginal("An error occurred. Please try again.").queue()));
 
     }
 

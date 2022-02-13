@@ -5,6 +5,10 @@ import com.sedmelluq.discord.lavaplayer.filter.AudioFilter;
 import com.sedmelluq.discord.lavaplayer.filter.FloatPcmAudioFilter;
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class TimescaleConfig extends FilterConfig {
 
     private double speed = 1.0;
@@ -58,6 +62,15 @@ public class TimescaleConfig extends FilterConfig {
 
     public boolean isEnabled(){
         return this.enabled;
+    }
+
+    public List<String> getOptions(){
+        List<String> options = new ArrayList<>(Arrays.asList("speed", "pitch", "rate"));
+        if(this.enabled) {
+            options.add("disable");
+        }
+
+        return options;
     }
 
     public void updateConfig(){

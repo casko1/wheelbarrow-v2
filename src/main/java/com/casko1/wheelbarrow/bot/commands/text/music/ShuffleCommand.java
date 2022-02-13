@@ -1,4 +1,4 @@
-package com.casko1.wheelbarrow.bot.commands.slash.music;
+package com.casko1.wheelbarrow.bot.commands.text.music;
 
 import com.casko1.wheelbarrow.bot.music.lavaplayer.PlayerManager;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.TrackScheduler;
