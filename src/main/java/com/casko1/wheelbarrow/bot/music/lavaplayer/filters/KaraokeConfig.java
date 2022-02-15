@@ -17,7 +17,7 @@ public class KaraokeConfig extends FilterConfig {
     private boolean enabled = false;
 
     public KaraokeConfig(){
-        super("Karaoke");
+        super("karaoke");
     }
 
     public double getLevel() {

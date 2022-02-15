@@ -55,7 +55,17 @@ public class PlayCommand extends SlashCommand {
         GuildVoiceState memberVoiceState = member.getVoiceState();
 
         if(!memberVoiceState.inAudioChannel()){
-            event.reply("You must be in voice channel to use this command.").queue();
+            event.getHook().editOriginal("You must be in voice channel to use this command.").queue();
+            return;
+        }
+
+        if(isUrl && !ArgumentsUtil.isUrl(event.getOption("url").getAsString())) {
+            event.getHook().editOriginal("You must provide an URL when using this command").queue();
+            return;
+        }
+
+        if(!isUrl && !ArgumentsUtil.isUrl(event.getOption("query").getAsString())) {
+            event.getHook().editOriginal("You must select an option from the list").queue();
             return;
         }
 
@@ -63,12 +73,7 @@ public class PlayCommand extends SlashCommand {
             joinVoiceChannel(event, memberVoiceState, channel);
         }
         else if(!memberVoiceState.getChannel().equals(selfVoiceState.getChannel())){
-            event.reply("You must be in the same channel as me to use this command!").queue();
-            return;
-        }
-
-        if(isUrl && !ArgumentsUtil.isUrl(event.getOption("url").getAsString())) {
-            event.getHook().editOriginal("You must provide an URL when using this command").queue();
+            event.getHook().editOriginal("You must be in the same channel as me to use this command!").queue();
             return;
         }
 
@@ -167,6 +172,7 @@ public class PlayCommand extends SlashCommand {
 
             try {
                 List<Command.Choice> choice = new ArrayList<>();
+                //line below can produce null pointer for some reason
                 List<YouTubeTrack> results = searchClient.getTracksForSearch(query).getTracks();
 
                 for(int i = 0; i < Math.min(results.size(), 10); i++) {

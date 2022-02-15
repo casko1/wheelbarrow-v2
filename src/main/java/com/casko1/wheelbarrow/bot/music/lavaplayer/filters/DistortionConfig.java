@@ -16,7 +16,7 @@ public class DistortionConfig extends FilterConfig {
     private boolean enabled = false;
 
     public DistortionConfig(){
-        super("Distortion");
+        super("distortion");
     }
 
     public float getScale() {

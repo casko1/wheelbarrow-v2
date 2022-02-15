@@ -11,43 +11,36 @@ import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 
 public class FilterCommand extends SlashCommand {
 
+    private final String[] filters = new String[]{"bassboost", "distortion", "karaoke", "rotation", "timescale", "tremolo"};;
+
     public FilterCommand(){
         this.name = "filter";
-        this.options = Arrays.asList(
-                new OptionData(OptionType.STRING, "type", "Type of filter", true),
-                new OptionData(OptionType.STRING, "option", "Option of the filter", true, true),
-                new OptionData(OptionType.STRING, "value",
-                        "Value of the option (use anything for 'disable' option)", true).setMinValue(0.01)
-        );
-
-        String[] filters = new String[]{"bassboost", "distortion", "karaoke", "rotation", "timescale", "tremolo"};
-        for(String filter : filters) this.options.get(0).addChoices(new Command.Choice(filter, filter));
+        this.children = new SlashCommand[]{new Type(), new Disable()};
     }
 
     @Override
     protected void execute(SlashCommandEvent event) {
+    }
+
+    public void executeCommand(SlashCommandEvent event, String subCommand) {
         event.deferReply().queue();
 
         GuildMusicManager guildMusicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
         FilterConfiguration config = guildMusicManager.getFilterConfiguration();
-
         String type = event.getOption("type").getAsString();
-        String option = event.getOption("option").getAsString();
-        String value = event.getOption("value").getAsString();
         FilterConfig filter = parseFilter(type, config);
 
-        //split into two commands "/filter apply ..." and "/filter disable ..."
-        if(option.equals("disable")) {
+        if(subCommand.equals("disable")) {
             disableFilter(event, filter, guildMusicManager, type);
         }
         else {
+            String option = event.getOption("option").getAsString();
+            String value = event.getOption("value").getAsString();
             applyFilter(event, filter, guildMusicManager, type, option, value);
         }
     }
@@ -55,17 +48,13 @@ public class FilterCommand extends SlashCommand {
     @Override
     public void onAutoComplete(CommandAutoCompleteInteractionEvent event) {
         super.onAutoComplete(event);
-        GuildMusicManager guildMusicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
-        FilterConfiguration config = guildMusicManager.getFilterConfiguration();
 
-        //can be null if option gets forced before type
-        String type = event.getOption("type").getAsString();
-        List<String> options = config.getConfigs().get(type).getOptions();
-        List<Command.Choice> choices = new ArrayList<>();
+        if(event.getSubcommandName().equals("disable")) {
+            this.children[1].onAutoComplete(event);
+            return;
+        }
 
-        for(String op : options) choices.add(new Command.Choice(op, op));
-
-        event.replyChoices(choices).queue();
+        this.children[0].onAutoComplete(event);
     }
 
     private void disableFilter(SlashCommandEvent event, FilterConfig config,
@@ -104,5 +93,78 @@ public class FilterCommand extends SlashCommand {
         }
 
         return filterConfig;
+    }
+
+    private class Type extends SlashCommand {
+
+        public Type() {
+            this.name = "type";
+            this.options = Arrays.asList(
+                    new OptionData(OptionType.STRING, "type", "Type of filter", true),
+                    new OptionData(OptionType.STRING, "option", "Option of the filter", true, true),
+                    //fix that input may be string
+                    new OptionData(OptionType.STRING, "value", "Value of the option", true)
+            );
+
+            for(String filter : filters) this.options.get(0).addChoice(filter, filter);
+        }
+
+        @Override
+        protected void execute(SlashCommandEvent event) {
+            FilterCommand.this.executeCommand(event, "type");
+        }
+
+        @Override
+        public void onAutoComplete(CommandAutoCompleteInteractionEvent event) {
+            super.onAutoComplete(event);
+
+            if(event.getOption("type") == null) {
+                event.replyChoices(Collections.emptyList()).queue();
+                return;
+            }
+
+            GuildMusicManager guildMusicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
+            FilterConfiguration config = guildMusicManager.getFilterConfiguration();
+
+            String type = event.getOption("type").getAsString();
+            List<String> options = config.getConfigs().get(type).getOptions();
+            List<Command.Choice> choices = new ArrayList<>();
+
+            for(String op : options) choices.add(new Command.Choice(op, op));
+
+            event.replyChoices(choices).queue();
+        }
+    }
+
+    private class Disable extends SlashCommand {
+
+        public Disable() {
+            this.name = "disable";
+            this.options = Collections.singletonList(
+                    new OptionData(
+                            OptionType.STRING, "type", "Type of filter", true, true
+                    )
+            );
+        }
+
+        @Override
+        protected void execute(SlashCommandEvent event) {
+            FilterCommand.this.executeCommand(event, "disable");
+        }
+
+        @Override
+        public void onAutoComplete(CommandAutoCompleteInteractionEvent event) {
+            super.onAutoComplete(event);
+
+            GuildMusicManager guildMusicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
+            HashMap<String, FilterConfig> configs = guildMusicManager.getFilterConfiguration().getConfigs();
+
+            List<Command.Choice> choices = new ArrayList<>();
+            for(FilterConfig conf : configs.values()) {
+                if(conf.isEnabled()) choices.add(new Command.Choice(conf.getName(), conf.getName()));
+            }
+
+            event.replyChoices(choices).queue();
+        }
     }
 }

@@ -22,7 +22,7 @@ public class TimescaleConfig extends FilterConfig {
     }
 
     public String getName(){
-        return "Timescale";
+        return "timescale";
     }
 
     public double getSpeed() {

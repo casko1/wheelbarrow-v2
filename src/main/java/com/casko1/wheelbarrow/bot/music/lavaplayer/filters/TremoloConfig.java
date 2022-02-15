@@ -17,7 +17,7 @@ public class TremoloConfig extends FilterConfig {
     private boolean enabled = false;
 
     public TremoloConfig(){
-        super("Tremolo");
+        super("tremolo");
     }
 
     public float getFrequency() {

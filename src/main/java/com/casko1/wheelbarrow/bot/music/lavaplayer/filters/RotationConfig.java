@@ -16,7 +16,7 @@ public class RotationConfig extends FilterConfig{
     public RotationPcmAudioFilter rotationPcmAudioFilter;
 
     public RotationConfig(){
-        super("Rotation");
+        super("rotation");
     }
 
     public float getRotationSpeed(){

@@ -17,7 +17,7 @@ public class BassboostConfig extends FilterConfig {
 
 
     public BassboostConfig(){
-        super("Bassboost");
+        super("bassboost");
         bandMultipliers = new float[15];
     }
 
