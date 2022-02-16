@@ -90,7 +90,7 @@ public class Wheelbarrow {
         }
 
         //used for development
-        //client.forceGuildOnly("597206662025314324");
+        client.forceGuildOnly("597206662025314324");
 
         JDABuilder.createDefault(
                 token,

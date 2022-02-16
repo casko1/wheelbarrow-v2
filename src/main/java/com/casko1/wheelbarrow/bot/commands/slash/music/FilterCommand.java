@@ -4,6 +4,7 @@ import com.casko1.wheelbarrow.bot.music.lavaplayer.FilterConfiguration;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.GuildMusicManager;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.PlayerManager;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.filters.FilterConfig;
+import com.casko1.wheelbarrow.bot.utils.ArgumentsUtil;
 import com.jagrosh.jdautilities.command.SlashCommand;
 import com.jagrosh.jdautilities.command.SlashCommandEvent;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
@@ -41,6 +42,12 @@ public class FilterCommand extends SlashCommand {
         else {
             String option = event.getOption("option").getAsString();
             String value = event.getOption("value").getAsString();
+
+            if(!ArgumentsUtil.isFloat(value)) {
+                event.getHook().editOriginal("Value must be a number").queue();
+                return;
+            }
+
             applyFilter(event, filter, guildMusicManager, type, option, value);
         }
     }
