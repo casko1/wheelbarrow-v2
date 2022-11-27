@@ -1,6 +1,5 @@
 package com.casko1.wheelbarrow.bot;
 
-import com.casko1.wheelbarrow.bot.commands.menu.image.WokeContextMenu;
 import com.casko1.wheelbarrow.bot.commands.menu.music.SongDetectContextMenu;
 import com.casko1.wheelbarrow.bot.commands.slash.basic.WeatherCommand;
 import com.casko1.wheelbarrow.bot.commands.slash.music.FilterCommand;
@@ -80,29 +79,27 @@ public class Wheelbarrow {
                 new FilterCommand(),
                 new WeatherCommand(weatherToken));
 
-
-        if(enableFaceApi.equals("true")){
-            client.addContextMenu(new WokeContextMenu());
-        }
-
         if(enableSongDetection.equals("true")){
             client.addContextMenu(new SongDetectContextMenu());
         }
 
         //used for development
-        client.forceGuildOnly("597206662025314324");
+        //client.forceGuildOnly("597206662025314324");
 
         JDABuilder.createDefault(
                 token,
                 GatewayIntent.GUILD_MEMBERS,
                 GatewayIntent.GUILD_MESSAGES,
                 GatewayIntent.GUILD_VOICE_STATES,
-                GatewayIntent.GUILD_MESSAGE_REACTIONS
+                GatewayIntent.GUILD_MESSAGE_REACTIONS,
+                GatewayIntent.MESSAGE_CONTENT,
+                GatewayIntent.GUILD_EMOJIS_AND_STICKERS
                 )
                 .disableCache(EnumSet.of(
                         CacheFlag.CLIENT_STATUS,
                         CacheFlag.ACTIVITY,
-                        CacheFlag.EMOTE
+                        CacheFlag.EMOJI,
+                        CacheFlag.SCHEDULED_EVENTS
                 ))
                 .enableCache(CacheFlag.VOICE_STATE)
                 .setStatus(OnlineStatus.DO_NOT_DISTURB)

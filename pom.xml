@@ -12,8 +12,8 @@
     <properties>
         <maven.compiler.source>14</maven.compiler.source>
         <maven.compiler.target>14</maven.compiler.target>
-        <jda.version>5.0.0-alpha.5</jda.version>
-        <jda.utils.version>2.0-interactions-SNAPSHOT</jda.utils.version>
+        <jda.version>5.0.0-alpha.22</jda.version>
+        <jda.utils.version>2.0-SNAPSHOT</jda.utils.version>
         <unirest.version>3.11.11</unirest.version>
         <lavaplayer.version>1.3.78</lavaplayer.version>
         <spotify.api.version>6.5.4</spotify.api.version>
@@ -30,9 +30,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.Chew</groupId>
-            <artifactId>JDA-Chewtils</artifactId>
-            <version>bca16b3</version>
+            <groupId>pw.chew</groupId>
+            <artifactId>jda-chewtils</artifactId>
+            <version>2.0-SNAPSHOT</version>
             <scope>compile</scope>
             <type>pom</type>
         </dependency>
@@ -120,6 +120,11 @@
             <id>central</id>
             <name>bintray</name>
             <url>https://jcenter.bintray.com</url>
+        </repository>
+
+        <repository>
+            <id>chew-m2-snapshots</id>
+            <url>https://m2.chew.pro/snapshots/</url>
         </repository>
 
     </repositories>

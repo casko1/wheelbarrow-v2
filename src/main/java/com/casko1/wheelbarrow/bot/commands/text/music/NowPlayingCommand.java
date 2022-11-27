@@ -11,9 +11,9 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.utils.FileUpload;
 
 import java.awt.*;
-import java.io.File;
 
 public class NowPlayingCommand extends Command {
 
@@ -54,9 +54,9 @@ public class NowPlayingCommand extends Command {
 
         if(addTrackData.getThumbnail().equals("attachment")){
             //default case
-            File file = addTrackData.getDefaultImage();
+            FileUpload thumbnail = addTrackData.getDefaultImage();
             eb.setThumbnail("attachment://thumbnail.png");
-            event.getTextChannel().sendMessageEmbeds(eb.build()).addFile(file, "thumbnail.png").queue();
+            event.getTextChannel().sendMessageEmbeds(eb.build()).addFiles(thumbnail).queue();
         }
         else{
             //spotify api has found thumbnail

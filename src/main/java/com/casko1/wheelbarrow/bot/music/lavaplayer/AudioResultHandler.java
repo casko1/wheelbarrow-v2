@@ -12,6 +12,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.utils.FileUpload;
 
 import java.awt.*;
 import java.io.File;
@@ -22,7 +23,7 @@ public class AudioResultHandler implements AudioLoadResultHandler {
 
     private final TrackScheduler scheduler;
     private final PlayRequest request;
-    private final File defaultImage;
+    private final FileUpload defaultImage;
     private final SpotifyApi spotifyApi;
     private final ClientCredentials clientCredentials;
 
@@ -30,7 +31,7 @@ public class AudioResultHandler implements AudioLoadResultHandler {
                               SpotifyApi spotifyApi, ClientCredentials clientCredentials){
         this.scheduler = scheduler;
         this.request = request;
-        this.defaultImage = defaultImage;
+        this.defaultImage = FileUpload.fromData(defaultImage, "thumbnail.png");
         this.spotifyApi = spotifyApi;
         this.clientCredentials = clientCredentials;
     }
@@ -86,7 +87,7 @@ public class AudioResultHandler implements AudioLoadResultHandler {
             for(AudioTrack audioTrack : tracks){
                 AudioTrackInfo audioTrackInfo = audioTrack.getInfo();
 
-                //loading images for playlist is expensive so we use default image
+                //loading images for playlist is expensive, so we use default image
                 audioTrack.setUserData(new AdditionalTrackData(request.getRequester(),
                         "attachment",
                         audioTrackInfo.length,
@@ -137,7 +138,7 @@ public class AudioResultHandler implements AudioLoadResultHandler {
             //default case
 
             eb.setThumbnail("attachment://thumbnail.png");
-            event.getHook().sendMessageEmbeds(eb.build()).addFile(defaultImage, "thumbnail.png").queue();
+            event.getHook().sendMessageEmbeds(eb.build()).addFiles(defaultImage).queue();
         }
         else{
             //spotify api has found thumbnail

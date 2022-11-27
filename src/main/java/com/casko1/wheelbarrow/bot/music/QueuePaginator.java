@@ -3,14 +3,18 @@ package com.casko1.wheelbarrow.bot.music;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.jagrosh.jdautilities.menu.Menu;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
+import net.dv8tion.jda.api.utils.messages.MessageEditBuilder;
+import net.dv8tion.jda.api.utils.messages.MessageEditData;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -56,13 +60,13 @@ public class QueuePaginator extends Menu {
 
     //for new message
     public void paginate(MessageChannel channel, int pNum){
-        Message message = renderPage(Math.min(Math.max(1, pNum), numberOfPages));
+        MessageCreateData message = createMessage(Math.min(Math.max(1, pNum), numberOfPages));
         init(channel.sendMessage(message), pNum);
     }
 
     //for editing existing message
     public void paginate(Message message, int pNum){
-        Message msg = renderPage(Math.min(Math.max(1, pNum), numberOfPages));
+        MessageEditData msg = updateMessage(Math.min(Math.max(1, pNum), numberOfPages));
         init(message.editMessage(msg), pNum);
     }
 
@@ -70,16 +74,16 @@ public class QueuePaginator extends Menu {
     public void init(RestAction<Message> action, int pNum){
         if(items.size() > 10){
             action.queue(m -> {
-                m.addReaction(LEFT).queue();
-                m.addReaction(STOP).queue();
-                m.addReaction(RIGHT)
+                m.addReaction(Emoji.fromUnicode(LEFT)).queue();
+                m.addReaction(Emoji.fromUnicode(STOP)).queue();
+                m.addReaction(Emoji.fromUnicode(RIGHT))
                         .queue(v -> handlePagination(m, pNum),
                                 t -> handlePagination(m, pNum));
             });
         }
         else{
             action.queue(m -> {
-                m.addReaction(STOP).queue(v -> handlePagination(m, pNum),
+                m.addReaction(Emoji.fromUnicode(STOP)).queue(v -> handlePagination(m, pNum),
                         t -> handlePagination(m, pNum));
             });
         }
@@ -96,7 +100,7 @@ public class QueuePaginator extends Menu {
 
         if(event.getMessageIdLong() != messageId) return false;
 
-        return switch (event.getReactionEmote().getName()) {
+        return switch (event.getReaction().getEmoji().getName()) {
             case LEFT, STOP, RIGHT -> isValidUser(event.getUser(), event.isFromGuild() ? event.getGuild() : null);
             default -> false;
         };
@@ -105,7 +109,7 @@ public class QueuePaginator extends Menu {
     private void handleReaction(MessageReactionAddEvent event, Message message, int pNum){
         int newPageNum = pNum;
 
-        switch(event.getReaction().getReactionEmote().getName()){
+        switch(event.getReaction().getEmoji().getName()){
             case LEFT:
                 if(newPageNum > 1) newPageNum--;
                 break;
@@ -122,13 +126,42 @@ public class QueuePaginator extends Menu {
         } catch (PermissionException ignored) {}
 
         int n = newPageNum;
-        message.editMessage(renderPage(newPageNum)).queue(m -> handlePagination(m, n));
+        message.editMessage(updateMessage(newPageNum)).queue(m -> handlePagination(m, n));
     }
 
 
-    private Message renderPage(int pNum){
+    private MessageEditData updateMessage(int pNum) {
         EmbedBuilder eb = new EmbedBuilder();
-        MessageBuilder mb = new MessageBuilder();
+
+        MessageEditBuilder mb = new MessageEditBuilder();
+
+        int start = Math.max(0, (pNum - 1) * itemsPerPage);
+        int end = Math.min(items.size(), pNum * itemsPerPage);
+
+        StringBuilder sb = new StringBuilder();
+
+        for(int i = start; i < end; i++){
+            sb.append(String.format("%d. %s\n", i+1, items.get(i)));
+        }
+
+        eb.addField("Currently playing:", currentTrack, false);
+        eb.addField("**Tracks in queue:**", sb.toString(), false);
+        eb.setFooter(String.format("%s \n %s %d/%d",
+                "Use $$remove <number> to remove song from queue",
+                "Page", pNum, numberOfPages));
+
+        eb.setColor(color);
+
+        mb.setEmbeds(eb.build());
+
+        return mb.build();
+    }
+
+    private MessageCreateData createMessage(int pNum) {
+
+        EmbedBuilder eb = new EmbedBuilder();
+
+        MessageCreateBuilder mb = new MessageCreateBuilder();
 
         int start = Math.max(0, (pNum - 1) * itemsPerPage);
         int end = Math.min(items.size(), pNum * itemsPerPage);
@@ -156,9 +189,9 @@ public class QueuePaginator extends Menu {
     public static class Builder extends Menu.Builder<Builder, QueuePaginator>{
 
         private String currentTrack;
-        private Consumer<Message> finalAction = m -> m.delete().queue();
+        private final Consumer<Message> finalAction = m -> m.delete().queue();
         private int itemsPerPage = 10;
-        private List<String> items = new ArrayList<>();
+        private final List<String> items = new ArrayList<>();
         private Color color = Color.BLUE;
 
         @Override

@@ -29,6 +29,7 @@ public class FilterCommand extends SlashCommand {
     }
 
     public void executeCommand(SlashCommandEvent event, String subCommand) {
+        //TODO check if user is in a voice channel
         event.deferReply().queue();
 
         GuildMusicManager guildMusicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
