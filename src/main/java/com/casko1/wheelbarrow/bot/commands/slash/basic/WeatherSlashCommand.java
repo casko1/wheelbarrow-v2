@@ -18,12 +18,12 @@ import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class WeatherCommand extends SlashCommand {
+public class WeatherSlashCommand extends SlashCommand {
 
     private final String weatherToken;
     private String location;
 
-    public WeatherCommand(String weatherToken){
+    public WeatherSlashCommand(String weatherToken){
         this.name = "weather";
         this.options.add(new OptionData(OptionType.STRING, "location", "Name of teh location", true));
         this.guildOnly = false;

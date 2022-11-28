@@ -1,9 +1,9 @@
 package com.casko1.wheelbarrow.bot;
 
+import com.casko1.wheelbarrow.bot.commands.hybrid.music.PlayHybridCommand;
 import com.casko1.wheelbarrow.bot.commands.menu.music.SongDetectContextMenu;
-import com.casko1.wheelbarrow.bot.commands.slash.basic.WeatherCommand;
-import com.casko1.wheelbarrow.bot.commands.slash.music.FilterCommand;
-import com.casko1.wheelbarrow.bot.commands.slash.music.PlayCommand;
+import com.casko1.wheelbarrow.bot.commands.slash.basic.WeatherSlashCommand;
+import com.casko1.wheelbarrow.bot.commands.slash.music.FilterSlashCommand;
 import com.casko1.wheelbarrow.bot.commands.text.basic.PingCommand;
 import com.casko1.wheelbarrow.bot.commands.text.music.*;
 import com.casko1.wheelbarrow.bot.music.QueuePaginator;
@@ -71,13 +71,14 @@ public class Wheelbarrow {
                 new SeekCommand(),
                 new RemoveCommand(),
                 new ShuffleCommand(),
-                new ClearCommand()
+                new ClearCommand(),
+                new PlayHybridCommand()
                 );
 
         client.addSlashCommands(
-                new PlayCommand(),
-                new FilterCommand(),
-                new WeatherCommand(weatherToken));
+                new PlayHybridCommand(),
+                new FilterSlashCommand(),
+                new WeatherSlashCommand(weatherToken));
 
         if(enableSongDetection.equals("true")){
             client.addContextMenu(new SongDetectContextMenu());

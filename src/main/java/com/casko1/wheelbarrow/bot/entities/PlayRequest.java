@@ -1,11 +1,11 @@
 package com.casko1.wheelbarrow.bot.entities;
 
-import com.jagrosh.jdautilities.command.SlashCommandEvent;
+import com.casko1.wheelbarrow.bot.commands.interfaces.PlayEvent;
 import net.dv8tion.jda.api.entities.Member;
 
 public class PlayRequest {
 
-    private final SlashCommandEvent event;
+    private final PlayEvent event;
 
     private final String searchString;
 
@@ -15,7 +15,7 @@ public class PlayRequest {
 
     private final Member requester;
 
-    public PlayRequest(SlashCommandEvent event, String searchString, String imageSearchString,
+    public PlayRequest(PlayEvent event, String searchString, String imageSearchString,
                        boolean isPlaylist, Member requester, boolean shuffle){
         this.event = event;
         this.searchString = searchString;
@@ -31,7 +31,7 @@ public class PlayRequest {
 
     private final boolean shuffle;
 
-    public SlashCommandEvent getEvent() {
+    public PlayEvent getEvent() {
         return event;
     }
 

@@ -1,9 +1,9 @@
 package com.casko1.wheelbarrow.bot.music.lavaplayer;
 
+import com.casko1.wheelbarrow.bot.commands.interfaces.PlayEvent;
 import com.casko1.wheelbarrow.bot.entities.AdditionalTrackData;
 import com.casko1.wheelbarrow.bot.entities.PlayRequest;
 import com.casko1.wheelbarrow.bot.utils.TrackUtil;
-import com.jagrosh.jdautilities.command.SlashCommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
@@ -12,7 +12,6 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.utils.FileUpload;
 
 import java.awt.*;
 import java.io.File;
@@ -23,7 +22,7 @@ public class AudioResultHandler implements AudioLoadResultHandler {
 
     private final TrackScheduler scheduler;
     private final PlayRequest request;
-    private final FileUpload defaultImage;
+    private final File defaultImage;
     private final SpotifyApi spotifyApi;
     private final ClientCredentials clientCredentials;
 
@@ -31,7 +30,7 @@ public class AudioResultHandler implements AudioLoadResultHandler {
                               SpotifyApi spotifyApi, ClientCredentials clientCredentials){
         this.scheduler = scheduler;
         this.request = request;
-        this.defaultImage = FileUpload.fromData(defaultImage, "thumbnail.png");
+        this.defaultImage = defaultImage;
         this.spotifyApi = spotifyApi;
         this.clientCredentials = clientCredentials;
     }
@@ -103,25 +102,25 @@ public class AudioResultHandler implements AudioLoadResultHandler {
                     audioPlaylist.getName() +
                     " to the queue.";
 
-            request.getEvent().getHook().editOriginal(out).queue();
+            request.getEvent().reply(out);
         }
     }
 
     @Override
     public void noMatches() {
         if(!request.isPlaylist()){
-            request.getEvent().getHook().editOriginal("No results with that query were found").queue();
+            request.getEvent().reply("No results with that query were found");
         }
     }
 
     @Override
     public void loadFailed(FriendlyException e) {
         if(!request.isPlaylist()){
-            request.getEvent().getHook().editOriginal("Loading failed.").queue();
+            request.getEvent().reply("Loading failed.");
         }
     }
 
-    public void sendEmbed(AudioTrack audioTrack, SlashCommandEvent event) {
+    public void sendEmbed(AudioTrack audioTrack, PlayEvent event) {
         final AudioTrackInfo info = audioTrack.getInfo();
 
         final AdditionalTrackData addTrackData = audioTrack.getUserData(AdditionalTrackData.class);
@@ -138,12 +137,12 @@ public class AudioResultHandler implements AudioLoadResultHandler {
             //default case
 
             eb.setThumbnail("attachment://thumbnail.png");
-            event.getHook().sendMessageEmbeds(eb.build()).addFiles(defaultImage).queue();
+            event.replyEmbed(eb, defaultImage);
         }
         else{
             //spotify api has found thumbnail
             eb.setThumbnail(addTrackData.getThumbnail());
-            event.getHook().sendMessageEmbeds(eb.build()).queue();
+            event.replyEmbed(eb, null);
         }
     }
 }

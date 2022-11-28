@@ -3,16 +3,17 @@ package com.casko1.wheelbarrow.bot.entities;
 
 import com.casko1.wheelbarrow.bot.utils.TimeConverterUtil;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.utils.FileUpload;
+
+import java.io.File;
 
 public class AdditionalTrackData {
 
     final private Member requester;
     final private String thumbnail;
     final private String duration;
-    private final FileUpload defaultImage;
+    private final File defaultImage;
 
-    public AdditionalTrackData(Member requester, String thumbnail, long duration, FileUpload defaultImage){
+    public AdditionalTrackData(Member requester, String thumbnail, long duration, File defaultImage){
         this.requester = requester;
         this.thumbnail = thumbnail;
         this.duration = TimeConverterUtil.getMinutesAndSeconds(duration);
@@ -31,7 +32,7 @@ public class AdditionalTrackData {
         return duration;
     }
 
-    public FileUpload getDefaultImage() {
+    public File getDefaultImage() {
         return defaultImage;
     }
 }

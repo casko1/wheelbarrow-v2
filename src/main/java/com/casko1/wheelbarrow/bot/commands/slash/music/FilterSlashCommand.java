@@ -15,11 +15,11 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import java.util.*;
 
 
-public class FilterCommand extends SlashCommand {
+public class FilterSlashCommand extends SlashCommand {
 
     private final String[] filters = new String[]{"bassboost", "distortion", "karaoke", "rotation", "timescale", "tremolo"};;
 
-    public FilterCommand(){
+    public FilterSlashCommand(){
         this.name = "filter";
         this.children = new SlashCommand[]{new Type(), new Disable()};
     }
@@ -119,7 +119,7 @@ public class FilterCommand extends SlashCommand {
 
         @Override
         protected void execute(SlashCommandEvent event) {
-            FilterCommand.this.executeCommand(event, "type");
+            FilterSlashCommand.this.executeCommand(event, "type");
         }
 
         @Override
@@ -157,7 +157,7 @@ public class FilterCommand extends SlashCommand {
 
         @Override
         protected void execute(SlashCommandEvent event) {
-            FilterCommand.this.executeCommand(event, "disable");
+            FilterSlashCommand.this.executeCommand(event, "disable");
         }
 
         @Override

@@ -1,9 +1,9 @@
 package com.casko1.wheelbarrow.bot.music.lavaplayer;
 
+import com.casko1.wheelbarrow.bot.commands.interfaces.PlayEvent;
 import com.casko1.wheelbarrow.bot.entities.PlayRequest;
 import com.casko1.wheelbarrow.bot.utils.PropertiesUtil;
 import com.casko1.wheelbarrow.bot.utils.TrackUtil;
-import com.jagrosh.jdautilities.command.SlashCommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
@@ -106,20 +106,19 @@ public class PlayerManager {
             case "playlist" -> trackIds = TrackUtil.getPlaylist(request.getSearchString(), spotifyApi, clientCredentials, request.isShuffle());
             case "album" -> trackIds = TrackUtil.getAlbum(request.getSearchString(), spotifyApi, clientCredentials);
             default -> {
-                request.getEvent().getHook().editOriginal("Could not process your request").queue();
+                request.getEvent().reply("Could not process your request");
                 return;
             }
         }
 
         if (trackIds == null) {
-            request.getEvent().getHook().editOriginal("An error occurred while loading the tracks.").queue();
+            request.getEvent().reply("An error occurred while loading the tracks.");
             return;
         }
 
         int trackCount = Math.min(trackIds.size(), 100);
 
-        request.getEvent().getHook().editOriginal(String.format("Added %d tracks to the queue",
-                trackCount)).queue();
+        request.getEvent().reply(String.format("Added %d tracks to the queue", trackCount));
 
         if (request.isShuffle()) Collections.shuffle(trackIds);
 
@@ -135,7 +134,7 @@ public class PlayerManager {
         }
     }
 
-    public void loadSpotifyTrack(SlashCommandEvent event, String url, Member requester) {
+    public void loadSpotifyTrack(PlayEvent event, String url, Member requester) {
         String title = getSpotifyTitle(url);
         String link = "ytsearch:" + title;
         PlayRequest request = new PlayRequest(event, link, title, false, requester, false);

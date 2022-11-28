@@ -1,8 +1,11 @@
-package com.casko1.wheelbarrow.bot.commands.slash.music;
+package com.casko1.wheelbarrow.bot.commands.hybrid.music;
 
+import com.casko1.wheelbarrow.bot.commands.events.PlaySlashCommandEvent;
+import com.casko1.wheelbarrow.bot.commands.interfaces.PlayEvent;
 import com.casko1.wheelbarrow.bot.entities.PlayRequest;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.PlayerManager;
 import com.casko1.wheelbarrow.bot.utils.ArgumentsUtil;
+import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.command.SlashCommand;
 import com.jagrosh.jdautilities.command.SlashCommandEvent;
 import io.sfrei.tracksearch.clients.youtube.YouTubeClient;
@@ -24,16 +27,21 @@ import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
-public class PlayCommand extends SlashCommand {
+public class PlayHybridCommand extends SlashCommand {
 
     private final YouTubeClient searchClient;
 
-    public PlayCommand(){
+    public PlayHybridCommand(){
         this.name = "play";
         this.help = "Plays a song or playlist from specified url or query.";
         this.children = new SlashCommand[]{new Url(), new Search()};
         this.guildOnly = false;
         this.searchClient = new YouTubeClient();
+    }
+
+    @Override
+    protected void execute(CommandEvent event) {
+        event.reply("test");
     }
 
     @Override
@@ -45,42 +53,44 @@ public class PlayCommand extends SlashCommand {
         this.children[1].onAutoComplete(event);
     }
 
-    public void executeCommand(SlashCommandEvent event, boolean isUrl) {
-        event.deferReply().queue();
+    public void executeCommand(PlayEvent event) {
+
 
         TextChannel channel = event.getTextChannel();
-        GuildVoiceState selfVoiceState = event.getGuild().getSelfMember().getVoiceState();
+        GuildVoiceState selfVoiceState = event.getSelfVoiceState();
 
         Member member = event.getMember();
         GuildVoiceState memberVoiceState = member.getVoiceState();
 
         if(!memberVoiceState.inAudioChannel()){
-            event.getHook().editOriginal("You must be in voice channel to use this command.").queue();
+            event.reply("You must be in voice channel to use this command.");
             return;
         }
 
-        if(isUrl && !ArgumentsUtil.isUrl(event.getOption("url").getAsString())) {
-            event.getHook().editOriginal("You must provide an URL when using this command").queue();
-            return;
-        }
+        if(event.getEvent() instanceof SlashCommandEvent) {
+            if(event.isUrl() && !ArgumentsUtil.isUrl(event.getUrl())) {
+                event.reply("You must provide an URL when using this command");
+                return;
+            }
 
-        if(!isUrl && !ArgumentsUtil.isUrl(event.getOption("query").getAsString())) {
-            event.getHook().editOriginal("You must select an option from the list").queue();
-            return;
+            if(!event.isUrl() && !ArgumentsUtil.isUrl(event.getUrl())) {
+                event.reply("You must select an option from the list");
+                return;
+            }
         }
 
         if(!selfVoiceState.inAudioChannel()){
             joinVoiceChannel(event, memberVoiceState, channel);
         }
         else if(!memberVoiceState.getChannel().equals(selfVoiceState.getChannel())){
-            event.getHook().editOriginal("You must be in the same channel as me to use this command!").queue();
+            event.reply("You must select an option from the list");
             return;
         }
 
-        parseAndPlay(event, member, isUrl);
+        parseAndPlay(event, member);
     }
 
-    private void joinVoiceChannel(SlashCommandEvent event, GuildVoiceState memberVoiceState, TextChannel channel){
+    private void joinVoiceChannel(PlayEvent event, GuildVoiceState memberVoiceState, TextChannel channel){
 
         AudioManager audioManager = event.getGuild().getAudioManager();
         AudioChannel voiceChannel = memberVoiceState.getChannel();
@@ -90,31 +100,31 @@ public class PlayCommand extends SlashCommand {
         PlayerManager.getInstance().setTextChannel(event.getGuild(), channel);
     }
 
-    private void parseAndPlay(SlashCommandEvent event, Member member, boolean isUrl){
+    private void parseAndPlay(PlayEvent event, Member member){
 
-        String link = isUrl ? event.getOption("url").getAsString() : event.getOption("query").getAsString();
-        boolean shuffle = event.hasOption("shuffle") && event.getOption("shuffle").getAsBoolean();
+        String link = event.getUrl();
+        boolean shuffle = event.getShuffle();
 
         PlayRequest request = new PlayRequest(event, link, "", true, member, shuffle);
 
         switch(ArgumentsUtil.parseURL(link)){
             case "spotify.com", "open.spotify.com" -> playSpotify(link, request, member, event);
             case "soundcloud.com" -> playSoundcloud(event, link, member);
-            case "" -> event.reply("An error occurred. Please try again.").queue();
+            case "" -> event.reply("An error occurred. Please try again.");
             default -> PlayerManager.getInstance().loadAndPlay(request);
         }
     }
 
-    private void playSpotify(String link, PlayRequest request, Member member, SlashCommandEvent event){
+    private void playSpotify(String link, PlayRequest request, Member member, PlayEvent event){
         switch (ArgumentsUtil.parseSpotifyUrl(link)) {
             case "playlist" -> PlayerManager.getInstance().loadSpotifyTracks("playlist", request);
             case "album" -> PlayerManager.getInstance().loadSpotifyTracks("album", request);
             case "track" -> PlayerManager.getInstance().loadSpotifyTrack(event, link, member);
-            default -> event.reply("Spotify URL could not be parsed").queue();
+            default -> event.reply("Spotify URL could not be parsed");
         }
     }
 
-    private void playSoundcloud(SlashCommandEvent event, String link, Member member){
+    private void playSoundcloud(PlayEvent event, String link, Member member){
         String query = link;
         link = "scsearch:" + link;
         PlayRequest request = new PlayRequest(event, link, query, false, member, false);
@@ -138,7 +148,8 @@ public class PlayCommand extends SlashCommand {
 
         @Override
         protected void execute(SlashCommandEvent event) {
-            PlayCommand.this.executeCommand(event, true);
+            event.deferReply().queue();
+            PlayHybridCommand.this.executeCommand(new PlaySlashCommandEvent(event, true));
         }
     }
 
@@ -158,7 +169,8 @@ public class PlayCommand extends SlashCommand {
 
         @Override
         protected void execute(SlashCommandEvent event) {
-            PlayCommand.this.executeCommand(event, false);
+            event.deferReply().queue();
+            PlayHybridCommand.this.executeCommand(new PlaySlashCommandEvent(event, false));
         }
 
         @Override
