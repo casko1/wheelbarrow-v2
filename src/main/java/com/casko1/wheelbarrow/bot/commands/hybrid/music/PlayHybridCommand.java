@@ -1,6 +1,7 @@
 package com.casko1.wheelbarrow.bot.commands.hybrid.music;
 
 import com.casko1.wheelbarrow.bot.commands.events.PlaySlashCommandEvent;
+import com.casko1.wheelbarrow.bot.commands.events.PlayTextCommandEvent;
 import com.casko1.wheelbarrow.bot.commands.interfaces.PlayEvent;
 import com.casko1.wheelbarrow.bot.entities.PlayRequest;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.PlayerManager;
@@ -41,7 +42,7 @@ public class PlayHybridCommand extends SlashCommand {
 
     @Override
     protected void execute(CommandEvent event) {
-        event.reply("test");
+        executeCommand(new PlayTextCommandEvent(event));
     }
 
     @Override
@@ -67,23 +68,23 @@ public class PlayHybridCommand extends SlashCommand {
             return;
         }
 
-        if(event.getEvent() instanceof SlashCommandEvent) {
-            if(event.isUrl() && !ArgumentsUtil.isUrl(event.getUrl())) {
-                event.reply("You must provide an URL when using this command");
+        if(!event.verifyCommandArguments()) return;
+
+        if(!event.isUrl()) {
+            List<YouTubeTrack> results = getYouTubeTracks(event.getUrl());
+            if(results.size() == 0){
+                event.reply("No results found");
                 return;
             }
 
-            if(!event.isUrl() && !ArgumentsUtil.isUrl(event.getUrl())) {
-                event.reply("You must select an option from the list");
-                return;
-            }
+            event.setUrl(results.get(0).getUrl());
         }
 
         if(!selfVoiceState.inAudioChannel()){
             joinVoiceChannel(event, memberVoiceState, channel);
         }
         else if(!memberVoiceState.getChannel().equals(selfVoiceState.getChannel())){
-            event.reply("You must select an option from the list");
+            event.reply("You must be in the same channel as me to use this command!");
             return;
         }
 
@@ -130,6 +131,14 @@ public class PlayHybridCommand extends SlashCommand {
         PlayRequest request = new PlayRequest(event, link, query, false, member, false);
 
         PlayerManager.getInstance().loadAndPlay(request);
+    }
+
+    private List<YouTubeTrack> getYouTubeTracks(String query) {
+        try {
+            return searchClient.getTracksForSearch(query).getTracks();
+        } catch (TrackSearchException | NullPointerException e) {
+            return Collections.emptyList();
+        }
     }
 
     private class Url extends SlashCommand {
@@ -182,18 +191,18 @@ public class PlayHybridCommand extends SlashCommand {
                 return;
             }
 
-            try {
-                List<Command.Choice> choice = new ArrayList<>();
-                //line below can produce null pointer for some reason
-                List<YouTubeTrack> results = searchClient.getTracksForSearch(query).getTracks();
+            List<Command.Choice> choice = new ArrayList<>();
+            List<YouTubeTrack> results = getYouTubeTracks(query);
 
+            if(results.size() > 0) {
                 for(int i = 0; i < Math.min(results.size(), 10); i++) {
                     YouTubeTrack track = results.get(i);
                     choice.add(new Command.Choice(track.getTitle(), track.getUrl()));
                 }
 
                 event.replyChoices(choice).queue();
-            } catch (TrackSearchException e) {
+            }
+            else {
                 event.replyChoices(Collections.emptyList()).queue();
             }
         }

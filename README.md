@@ -4,7 +4,6 @@
 - Load playlist from various sources such as YouTube and Spotify
 - Offers support for displaying track thumbnails
 - Recognize music from video URLs
-- Image effects
 - Display weather forecast
 
 #### Setting up the bot
@@ -22,8 +21,7 @@ generated the following needs to be configured:
 All the other fields are optional and can be left as they are as they require you to get your own API keys. Here is a short
 explanation of what each API enables:
 
-- spotifyId, spotifySecret: [Spotify's API](https://developer.spotify.com/) which is used for fetching thumbnails and loading spotify playlists 
-- azureFaceApiToken: [Microsoft's face API](https://azure.microsoft.com/en-us/pricing/details/cognitive-services/face-api/) used for face recognition which is used for image effects
+- spotifyId, spotifySecret: [Spotify's API](https://developer.spotify.com/) which is used for fetching thumbnails and loading spotify playlists
 - shazamCoreApi: An API used for the song recognition command which can be obtained at the [RapidAPI website](https://rapidapi.com/tipsters/api/shazam-core/)
 - weatherToken: used for the weather forecast. Uses [OpenWeather's API](https://openweathermap.org/api).
 

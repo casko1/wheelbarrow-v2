@@ -147,7 +147,7 @@ public class QueuePaginator extends Menu {
         eb.addField("Currently playing:", currentTrack, false);
         eb.addField("**Tracks in queue:**", sb.toString(), false);
         eb.setFooter(String.format("%s \n %s %d/%d",
-                "Use $$remove <number> to remove song from queue",
+                "Use --remove <number> to remove song from queue",
                 "Page", pNum, numberOfPages));
 
         eb.setColor(color);
@@ -175,7 +175,7 @@ public class QueuePaginator extends Menu {
         eb.addField("Currently playing:", currentTrack, false);
         eb.addField("**Tracks in queue:**", sb.toString(), false);
         eb.setFooter(String.format("%s \n %s %d/%d",
-                "Use $$remove <number> to remove song from queue",
+                "Use --remove <number> to remove song from queue",
                 "Page", pNum, numberOfPages));
 
         eb.setColor(color);

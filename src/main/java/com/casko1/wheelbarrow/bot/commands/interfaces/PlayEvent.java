@@ -11,7 +11,6 @@ import java.io.File;
 
 public interface PlayEvent {
 
-    Object getEvent();
     AudioManager getAudioManager();
 
     GuildVoiceState getSelfVoiceState();
@@ -24,6 +23,8 @@ public interface PlayEvent {
 
     String getUrl();
 
+    void setUrl(String url);
+
     boolean getShuffle();
 
     void reply(String message);
@@ -31,4 +32,6 @@ public interface PlayEvent {
     void replyEmbed(EmbedBuilder eb, File image);
 
     boolean isUrl();
+
+    boolean verifyCommandArguments();
 }

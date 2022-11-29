@@ -19,13 +19,12 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Properties;
 
 public class Wheelbarrow {
-    public static void main(String[] args) throws IOException, LoginException, IllegalArgumentException {
+    public static void main(String[] args) throws IOException, IllegalArgumentException {
 
         Logger logger = LoggerFactory.getLogger(Wheelbarrow.class);
 
@@ -45,7 +44,6 @@ public class Wheelbarrow {
         String ownerId = config.getProperty("ownerId");
         String weatherToken = config.getProperty("weatherToken");
         String enableApi = config.getProperty("enableApi");
-        String enableFaceApi = config.getProperty("enableFaceApi");
         String enableSongDetection = config.getProperty("enableSongDetection");
 
         EventWaiter waiter = new EventWaiter();
