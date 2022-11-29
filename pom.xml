@@ -10,8 +10,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <maven.compiler.source>14</maven.compiler.source>
-        <maven.compiler.target>14</maven.compiler.target>
+        <maven.compiler.source>16</maven.compiler.source>
+        <maven.compiler.target>16</maven.compiler.target>
         <jda.version>5.0.0-alpha.22</jda.version>
         <jda.utils.version>2.0-SNAPSHOT</jda.utils.version>
         <unirest.version>3.11.11</unirest.version>
@@ -35,6 +35,24 @@
             <version>2.0-SNAPSHOT</version>
             <scope>compile</scope>
             <type>pom</type>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.14.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.14.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.14.0</version>
         </dependency>
 
         <dependency>
@@ -125,6 +143,11 @@
         <repository>
             <id>chew-m2-snapshots</id>
             <url>https://m2.chew.pro/snapshots/</url>
+        </repository>
+        <repository>
+            <id>maven_central</id>
+            <name>Maven Central</name>
+            <url>https://repo.maven.apache.org/maven2/</url>
         </repository>
 
     </repositories>
