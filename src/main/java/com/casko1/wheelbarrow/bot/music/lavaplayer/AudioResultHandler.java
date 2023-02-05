@@ -56,6 +56,11 @@ public class AudioResultHandler implements AudioLoadResultHandler {
 
     @Override
     public void playlistLoaded(AudioPlaylist audioPlaylist) {
+        if (audioPlaylist.getTracks().isEmpty()) {
+            request.getEvent().reply("There was an issue playing that track. ");
+            return;
+        }
+
         //search result
         if(audioPlaylist.isSearchResult()){
             AudioTrack audioTrack = audioPlaylist.getTracks().get(0);

@@ -72,7 +72,7 @@ public class PlayHybridCommand extends SlashCommand {
 
         if(!event.isUrl()) {
             List<YouTubeTrack> results = getYouTubeTracks(event.getUrl());
-            if(results.size() == 0){
+            if(results.isEmpty()){
                 event.reply("No results found");
                 return;
             }
