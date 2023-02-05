@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 /**
  * Following utility class contains several utilities for
  * processing track requests; thumbnails, titles, etc.
- *
+ * <p>
  * Also takes care of refreshing spotify token when passed
  * spotify client
  */
@@ -51,7 +51,6 @@ public final class TrackUtil {
     }
 
     public static String getTitle(String query, SpotifyApi spotifyApi, ClientCredentials clientCredentials){
-
         String res = "";
 
         Track track = getTrack(query, spotifyApi, clientCredentials);
@@ -129,11 +128,10 @@ public final class TrackUtil {
         while(tracks.size() < itemsToLoad){
 
             try{
-
                 tracks.addAll(Arrays.stream(request.execute().getItems())
                         .map(PlaylistTrack::getTrack)
                         .map(IPlaylistItem::getId)
-                        .collect(Collectors.toList()));
+                        .toList());
             } catch (IOException | SpotifyWebApiException | ParseException e){
                 if(e instanceof NotFoundException) return null;
 

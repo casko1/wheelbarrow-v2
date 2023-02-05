@@ -6,9 +6,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 
-/*
-    this util is used by numerous commands for checking
-    if the command may be executed
+/**
+ * This utility is used by numerous commands for checking if the command may be executed
  */
 
 @SuppressWarnings("ConstantConditions")

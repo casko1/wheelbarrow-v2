@@ -1,13 +1,14 @@
 package com.casko1.wheelbarrow.bot.utils;
 
-import java.net.*;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import kong.unirest.Unirest;
 import net.dv8tion.jda.api.entities.Message;
 import org.apache.commons.validator.routines.UrlValidator;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public final class ArgumentsUtil {
 
@@ -76,8 +77,8 @@ public final class ArgumentsUtil {
     public static String getContentUrl(Message message) {
         String url = null;
 
-        if(message.getAttachments().size() > 0) url = message.getAttachments().get(0).getUrl();
-        if(message.getEmbeds().size() > 0) url = message.getEmbeds().get(0).getUrl();
+        if(!message.getAttachments().isEmpty()) url = message.getAttachments().get(0).getUrl();
+        if(!message.getEmbeds().isEmpty()) url = message.getEmbeds().get(0).getUrl();
 
         return url;
     }
