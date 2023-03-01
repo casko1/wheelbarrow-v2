@@ -41,10 +41,7 @@ public class DistortionConfig extends FilterConfig {
     }
 
     public List<String> getOptions(){
-        List<String> options = new ArrayList<>(Collections.singletonList("scale"));
-        if(enabled) options.add("disable");
-
-        return options;
+        return new ArrayList<>(Collections.singletonList("scale"));
     }
 
     public void updateConfig(){

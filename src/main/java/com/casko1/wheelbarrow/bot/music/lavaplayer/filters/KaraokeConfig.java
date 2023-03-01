@@ -51,10 +51,7 @@ public class KaraokeConfig extends FilterConfig {
     }
 
     public List<String> getOptions(){
-        List<String> options = new ArrayList<>(Arrays.asList("mono", "level"));
-        if(enabled) options.add("disable");
-
-        return options;
+        return new ArrayList<>(Arrays.asList("mono", "level"));
     }
 
     public void updateConfig(){

@@ -65,12 +65,7 @@ public class TimescaleConfig extends FilterConfig {
     }
 
     public List<String> getOptions(){
-        List<String> options = new ArrayList<>(Arrays.asList("speed", "pitch", "rate"));
-        if(this.enabled) {
-            options.add("disable");
-        }
-
-        return options;
+        return new ArrayList<>(Arrays.asList("speed", "pitch", "rate"));
     }
 
     public void updateConfig(){

@@ -51,10 +51,7 @@ public class TremoloConfig extends FilterConfig {
     }
 
     public List<String> getOptions(){
-        List<String> options = new ArrayList<>(Arrays.asList("depth", "freq"));
-        if(enabled) options.add("disable");
-
-        return options;
+        return new ArrayList<>(Arrays.asList("depth", "freq"));
     }
 
     public void updateConfig(){

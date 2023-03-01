@@ -48,10 +48,7 @@ public class BassboostConfig extends FilterConfig {
 
     @Override
     public List<String> getOptions() {
-        List<String> options = new ArrayList<>(Collections.singletonList("gain"));
-        if(enabled) options.add("disable");
-
-        return options;
+        return new ArrayList<>(Collections.singletonList("gain"));
     }
 
     @Override

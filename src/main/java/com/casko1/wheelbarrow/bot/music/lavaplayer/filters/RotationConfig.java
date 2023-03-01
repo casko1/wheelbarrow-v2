@@ -41,10 +41,7 @@ public class RotationConfig extends FilterConfig{
     }
 
     public List<String> getOptions(){
-        List<String> options = new ArrayList<>(Collections.singletonList("speed"));
-        if(enabled) options.add("disable");
-
-        return options;
+        return new ArrayList<>(Collections.singletonList("speed"));
     }
 
     public void updateConfig() {
