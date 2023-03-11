@@ -32,3 +32,22 @@ jobs:
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:
         arguments: build
+
+  create_release:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: Get version number
+      id: get_version
+      run: echo "::set-output name=version::$(cat VERSION)"
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.get_version.outputs.version }}
+        release_name: RELEASE-${{ steps.get_version.outputs.version }}
+        body: Automated release created by GitHub Actions.
