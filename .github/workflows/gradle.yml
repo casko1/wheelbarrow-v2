@@ -40,7 +40,9 @@ jobs:
     steps:
     - name: Get version number
       id: get_version
-      run: echo "::set-output name=version::$(cat VERSION)"
+      run: |
+        VER=$(cat VERSION)
+        echo "version=$VER" >> $GITHUB_ENV
 
     - name: Create Release
       id: create_release
@@ -48,6 +50,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ steps.get_version.outputs.version }}
-        release_name: RELEASE-${{ steps.get_version.outputs.version }}
+        tag_name: ${{ env.version }}
+        release_name: RELEASE-${{ env.version }}
         body: Automated release created by GitHub Actions.
