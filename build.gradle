@@ -8,6 +8,11 @@ plugins {
 }
 
 repositories {
+    jcenter {
+        content {
+            includeGroupByRegex "com\\.github\\.natanbc.*"
+        }
+    }
     mavenLocal()
     maven {
         url = uri('https://m2.dv8tion.net/releases')
