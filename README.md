@@ -48,6 +48,6 @@ After the config is set-up the bot can again be started with the previously ment
 Wheelbarrow also supports slash commands. The help for these comments will automatically show up when entering the command
 
 `/play url <url>` - plays specified url  
-`/play search <search term>` - plays the selected track. The command autocompletes the search results, enabling you to search for tracks/videos inside Discord itself
+`/play search <search term>` - plays the selected track. The command autocompletes the search results, enabling you to search for tracks/videos inside Discord itself  
 `/filter` - used for applying audio filters to currently playing and any susequent tracks
 
