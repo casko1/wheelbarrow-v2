@@ -41,8 +41,7 @@ jobs:
     - name: Get version number
       id: get_version
       run: |
-        ls
-        VER=$(cat VERSION)
+        VER=$(cat /home/runner/work/wheelbarrow-v2/wheelbarrow-v2/VERSION)
         echo "version=$VER" >> $GITHUB_ENV
 
     - name: Create Release
