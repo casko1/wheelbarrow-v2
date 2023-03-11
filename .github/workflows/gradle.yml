@@ -38,10 +38,12 @@ jobs:
     needs: build
 
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
     - name: Get version number
       id: get_version
       run: |
-        VER=$(cat /home/runner/work/wheelbarrow-v2/wheelbarrow-v2/VERSION)
+        VER=$(cat VERSION)
         echo "version=$VER" >> $GITHUB_ENV
 
     - name: Create Release
