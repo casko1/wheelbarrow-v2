@@ -7,6 +7,7 @@
 - Display weather forecast
 
 #### Setting up the bot
+##### FFmpeg is needed for some of the functionallities so make sure it is installed and reachable from the command propts on you system
 
 To host the bot on your local machine you'll first need to grab the JAR from the releases sidebar or compile the project
 yourself by cloning the repository and building the project using gradle (`gradle build`).
