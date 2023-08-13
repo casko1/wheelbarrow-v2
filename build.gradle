@@ -46,7 +46,7 @@ dependencies {
     implementation 'com.github.natanbc:lavadsp:0.7.7'
     implementation 'ch.qos.logback:logback-classic:1.2.10'
     implementation 'commons-validator:commons-validator:1.7'
-    implementation 'com.github.Walkyst:lavaplayer-fork:1.4.0'
+    implementation 'dev.arbjerg:lavaplayer:2.0.0'
     implementation 'commons-io:commons-io:2.11.0'
     implementation 'net.bramp.ffmpeg:ffmpeg:0.6.2'
     implementation 'io.sfrei:tracksearch:0.7.1'
@@ -54,7 +54,7 @@ dependencies {
 }
 
 group = 'com.casko1'
-version = '1.2.0'
+version = '1.2.1'
 description = 'wheelbarrow-bot'
 java.sourceCompatibility = JavaVersion.VERSION_16
 
