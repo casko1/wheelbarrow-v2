@@ -1,6 +1,6 @@
 package com.casko1.wheelbarrow.bot;
 
-import com.casko1.wheelbarrow.bot.commands.hybrid.music.PlayHybridCommand;
+import com.casko1.wheelbarrow.bot.commands.hybrid.music.*;
 import com.casko1.wheelbarrow.bot.commands.menu.music.SongDetectContextMenu;
 import com.casko1.wheelbarrow.bot.commands.slash.basic.WeatherSlashCommand;
 import com.casko1.wheelbarrow.bot.commands.slash.music.FilterSlashCommand;
@@ -61,15 +61,15 @@ public class Wheelbarrow {
         client.addCommands(
                 new PingCommand(),
                 new JoinCommand(),
-                new StopCommand(),
-                new SkipCommand(),
-                new NowPlayingCommand(),
+                new StopHybridCommand(),
+                new SkipHybridCommand(),
+                new NowPlayingHybridCommand(),
                 new QueueCommand(paginatorBuilder),
                 new FilterSettingsCommand(),
-                new LoopCommand(),
+                new LoopHybridCommand(),
                 new SeekCommand(),
                 new RemoveCommand(),
-                new ShuffleCommand(),
+                new ShuffleHybridCommand(),
                 new ClearCommand(),
                 new PlayHybridCommand(),
                 new InspireMeCommand()
@@ -78,14 +78,20 @@ public class Wheelbarrow {
         client.addSlashCommands(
                 new PlayHybridCommand(),
                 new FilterSlashCommand(),
-                new WeatherSlashCommand(weatherToken));
+                new WeatherSlashCommand(weatherToken),
+                new StopHybridCommand(),
+                new SkipHybridCommand(),
+                new LoopHybridCommand(),
+                new ShuffleHybridCommand(),
+                new NowPlayingHybridCommand()
+        );
 
         if (enableSongDetection.equals("true")) {
             client.addContextMenu(new SongDetectContextMenu());
         }
 
         //used for development
-        //client.forceGuildOnly("597206662025314324");
+        //client.forceGuildOnly("guildId");
 
         JDABuilder.createDefault(
                         token,

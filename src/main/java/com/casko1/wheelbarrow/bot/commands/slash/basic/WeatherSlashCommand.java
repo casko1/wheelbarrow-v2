@@ -39,11 +39,12 @@ public class WeatherSlashCommand extends SlashCommand {
         Unirest.get("https://api.openweathermap.org/data/2.5/forecast?q={location}&appid={token}")
                 .routeParam("location", location)
                 .routeParam("token", weatherToken)
-                .asJsonAsync(response -> response.ifSuccess(r -> {
-                    MessageEmbed em = parseWeatherData(r);
-                    event.getHook().editOriginalEmbeds(em).queue();
-                })
-                .ifFailure(e -> event.getHook().editOriginal("An error occurred. Please try again.").queue()));
+                .asJsonAsync(response -> response
+                        .ifSuccess(r -> {
+                            MessageEmbed em = parseWeatherData(r);
+                            event.getHook().editOriginalEmbeds(em).queue();
+                        })
+                        .ifFailure(e -> event.getHook().editOriginal("An error occurred. Please try again.").queue()));
 
     }
 
@@ -76,7 +77,7 @@ public class WeatherSlashCommand extends SlashCommand {
 
         JSONObject initialObject = parsed.getJSONObject(0);
 
-        //fail safe for special case of first day being almost over
+        //fail-safe for special case of first day being almost over
         String firstDay = initialObject.getString("dt_txt").split("\\s+")[0];
 
         String initialDay = getDayFromDate(initialObject);

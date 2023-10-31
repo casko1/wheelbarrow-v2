@@ -14,7 +14,9 @@ public class InspireMeCommand extends Command {
 
     @Override
     protected void execute(CommandEvent event) {
-        Unirest.get("https://inspirobot.me/api?generate=true").asStringAsync(response -> response.ifSuccess(r -> event.reply(r.getBody()))
-                .ifFailure(e -> event.reply("An error occurred. Please try again.")));
+        Unirest.get("https://inspirobot.me/api?generate=true")
+                .asStringAsync(response -> response
+                        .ifSuccess(r -> event.reply(r.getBody()))
+                        .ifFailure(e -> event.reply("An error occurred. Please try again.")));
     }
 }

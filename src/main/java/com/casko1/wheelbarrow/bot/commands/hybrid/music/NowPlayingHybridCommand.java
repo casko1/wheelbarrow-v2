@@ -1,23 +1,22 @@
-package com.casko1.wheelbarrow.bot.commands.text.music;
+package com.casko1.wheelbarrow.bot.commands.hybrid.music;
 
+import com.casko1.wheelbarrow.bot.commands.hybrid.SimpleHybridCommand;
+import com.casko1.wheelbarrow.bot.commands.interfaces.CommonEvent;
 import com.casko1.wheelbarrow.bot.entities.AdditionalTrackData;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.GuildMusicManager;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.PlayerManager;
 import com.casko1.wheelbarrow.bot.utils.TimeConverterUtil;
 import com.casko1.wheelbarrow.bot.utils.VoiceStateCheckUtil;
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.utils.FileUpload;
 
 import java.awt.*;
 
-public class NowPlayingCommand extends Command {
+public class NowPlayingHybridCommand extends SimpleHybridCommand {
 
-    public NowPlayingCommand() {
+    public NowPlayingHybridCommand() {
         this.name = "nowplaying";
         this.help = "Displays information about current track.";
         this.guildOnly = false;
@@ -25,7 +24,7 @@ public class NowPlayingCommand extends Command {
     }
 
     @Override
-    protected void execute(CommandEvent event) {
+    protected void execute(CommonEvent event) {
         if (VoiceStateCheckUtil.isEligible(event, false)) {
             final GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
 
@@ -41,7 +40,7 @@ public class NowPlayingCommand extends Command {
         }
     }
 
-    private void buildEmbed(AudioTrackInfo info, AudioTrack audioTrack, AdditionalTrackData addTrackData, CommandEvent event) {
+    private void buildEmbed(AudioTrackInfo info, AudioTrack audioTrack, AdditionalTrackData addTrackData, CommonEvent event) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(Color.BLUE);
 
@@ -54,13 +53,12 @@ public class NowPlayingCommand extends Command {
 
         if (addTrackData.getThumbnail().equals("attachment")) {
             //default case
-            FileUpload thumbnail = FileUpload.fromData(addTrackData.getDefaultImage());
             eb.setThumbnail("attachment://thumbnail.png");
-            event.getTextChannel().sendMessageEmbeds(eb.build()).addFiles(thumbnail).queue();
+            event.replyEmbed(eb, addTrackData.getDefaultImage());
         } else {
             //spotify api has found thumbnail
             eb.setThumbnail(addTrackData.getThumbnail());
-            event.getTextChannel().sendMessageEmbeds(eb.build()).queue();
+            event.replyEmbed(eb, null);
         }
     }
 }

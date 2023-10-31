@@ -55,8 +55,6 @@ public class PlayHybridCommand extends SlashCommand {
     }
 
     public void executeCommand(PlayEvent event) {
-
-
         TextChannel channel = event.getTextChannel();
         GuildVoiceState selfVoiceState = event.getSelfVoiceState();
 
