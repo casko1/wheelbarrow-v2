@@ -28,7 +28,7 @@ public class Wheelbarrow {
 
         Logger logger = LoggerFactory.getLogger(Wheelbarrow.class);
 
-        Properties config = PropertiesUtil.getProperties();
+        Properties config = PropertiesUtil.getInstance();
 
         if(config == null) {
             logger.info("Generating properties file. Please enter your bot token in wheelbarrow.properties file!");

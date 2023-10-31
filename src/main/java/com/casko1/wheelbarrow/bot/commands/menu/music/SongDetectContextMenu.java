@@ -86,7 +86,7 @@ public class SongDetectContextMenu extends MessageContextMenu {
     private void getTrack(File file, Consumer<JSONObject> callback) throws IOException {
         Unirest.post("https://shazam-core.p.rapidapi.com/v1/tracks/recognize")
                 .header("x-rapidapi-host", "shazam-core.p.rapidapi.com")
-                .header("x-rapidapi-key", PropertiesUtil.getProperty("shazamCoreApi"))
+                .header("x-rapidapi-key", PropertiesUtil.getInstance().getProperty("shazamCoreApi"))
                 .field("file", file, "audio/ogg")
                 .asJsonAsync(response -> response.ifSuccess(r -> callback.accept(response.getBody().getObject()))
                         .ifFailure(f -> callback.accept(null)));

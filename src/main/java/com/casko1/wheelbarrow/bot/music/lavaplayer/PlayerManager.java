@@ -33,7 +33,7 @@ public class PlayerManager {
 
 
     public PlayerManager() throws IOException, ParseException, SpotifyWebApiException {
-        Properties config = PropertiesUtil.getProperties();
+        Properties config = PropertiesUtil.getInstance();
 
         assert config != null;
         String spotifyId = config.getProperty("spotifyId");
