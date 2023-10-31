@@ -13,7 +13,7 @@ import java.util.HashMap;
 
 public class FilterSettingsCommand extends Command {
 
-    public FilterSettingsCommand(){
+    public FilterSettingsCommand() {
         this.name = "filters";
         this.help = "Displays enabled filters";
         this.guildOnly = false;
@@ -22,7 +22,7 @@ public class FilterSettingsCommand extends Command {
     @Override
     protected void execute(CommandEvent event) {
 
-        if(VoiceStateCheckUtil.isEligible(event, false)){
+        if (VoiceStateCheckUtil.isEligible(event, false)) {
             GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
 
             HashMap<String, FilterConfig> configs = musicManager.getFilterConfiguration().filterConfigs;
@@ -34,7 +34,7 @@ public class FilterSettingsCommand extends Command {
 
             StringBuilder sb = new StringBuilder();
 
-            for(FilterConfig config : configs.values()){
+            for (FilterConfig config : configs.values()) {
                 sb.append(String.format("%s: %s\n", config.getName(), config.isEnabled() ? ":white_check_mark:" : ":x:"));
             }
 

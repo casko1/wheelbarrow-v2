@@ -23,7 +23,7 @@ public class WeatherSlashCommand extends SlashCommand {
     private final String weatherToken;
     private String location;
 
-    public WeatherSlashCommand(String weatherToken){
+    public WeatherSlashCommand(String weatherToken) {
         this.name = "weather";
         this.options.add(new OptionData(OptionType.STRING, "location", "Name of teh location", true));
         this.guildOnly = false;
@@ -31,7 +31,7 @@ public class WeatherSlashCommand extends SlashCommand {
     }
 
     @Override
-    protected void execute(SlashCommandEvent event) throws ArrayIndexOutOfBoundsException{
+    protected void execute(SlashCommandEvent event) throws ArrayIndexOutOfBoundsException {
         event.deferReply().queue();
 
         location = event.getOption("location").getAsString();
@@ -47,7 +47,7 @@ public class WeatherSlashCommand extends SlashCommand {
 
     }
 
-    private MessageEmbed parseWeatherData(HttpResponse<JsonNode> data){
+    private MessageEmbed parseWeatherData(HttpResponse<JsonNode> data) {
         EmbedBuilder eb = new EmbedBuilder();
         int timezone = data.getBody().getObject().getJSONObject("city").getInt("timezone") / 3600;
 
@@ -61,9 +61,9 @@ public class WeatherSlashCommand extends SlashCommand {
         ArrayList<ArrayList<JSONObject>> split = new ArrayList<>();
 
         //initialize empty arraylists
-        for(int i=0; i < 5; i++){
+        for (int i = 0; i < 5; i++) {
             ArrayList<JSONObject> tmp = new ArrayList<>();
-            for(int j = 0; j < 3; j++){
+            for (int j = 0; j < 3; j++) {
                 tmp.add(null);
             }
             split.add(tmp);
@@ -83,23 +83,22 @@ public class WeatherSlashCommand extends SlashCommand {
         String initialTime = getTimeFromDate(initialObject);
 
         int tmp = timeCheck(initialTime);
-        if(tmp >= 0){
+        if (tmp >= 0) {
             currentDayArray.set(tmp, parsed.getJSONObject(0));
         }
 
 
-        for(int i = 1; i < parsed.length(); i++){
+        for (int i = 1; i < parsed.length(); i++) {
             JSONObject current = parsed.getJSONObject(i);
             String nextDay = getDayFromDate(current);
             String nextDayTime = getTimeFromDate(current);
 
             tmp = timeCheck(nextDayTime);
-            if(tmp >= 0){
-                if(nextDay.equals(initialDay)){
+            if (tmp >= 0) {
+                if (nextDay.equals(initialDay)) {
                     currentDayArray.set(tmp, current);
-                }
-                else{
-                    if(day == 4) break;
+                } else {
+                    if (day == 4) break;
                     day++;
                     currentDayArray = split.get(day);
                     currentDayArray.set(tmp, current);
@@ -111,23 +110,22 @@ public class WeatherSlashCommand extends SlashCommand {
         //adding fields to embed
 
         StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < 5; i++){
+        for (int i = 0; i < 5; i++) {
             sb.setLength(0);
             ArrayList<JSONObject> currentDay = split.get(i);
             String dayOfWeek = "";
 
-            for(int j = 0; j < 3; j++){
+            for (int j = 0; j < 3; j++) {
                 JSONObject currentHour = currentDay.get(j);
-                if(currentHour == null){
+                if (currentHour == null) {
                     sb.append(9 + j * 6).append(":00: :x:");
-                }
-                else{
+                } else {
                     sb.append(9 + j * 6)
                             .append(":00: ")
                             .append(getEmoji(currentHour.getJSONArray("weather").getJSONObject(0).getString("main")))
                             .append(" ");
 
-                    if(dayOfWeek.equals("")){
+                    if (dayOfWeek.equals("")) {
                         String date = currentHour.getString("dt_txt").split("\\s+")[0];
                         dayOfWeek = getDayOfWeek(currentHour.getString("dt_txt").split("\\s+")[0]) + " " + date;
                     }
@@ -135,7 +133,7 @@ public class WeatherSlashCommand extends SlashCommand {
             }
 
             //special case where first day is almost over
-            if(dayOfWeek.equals("")){
+            if (dayOfWeek.equals("")) {
                 dayOfWeek = getDayOfWeek(firstDay) + " " + firstDay;
             }
 
@@ -144,11 +142,10 @@ public class WeatherSlashCommand extends SlashCommand {
         }
 
 
-
         return eb.build();
     }
 
-    private int timeCheck(String time){
+    private int timeCheck(String time) {
         return switch (time) {
             case "09" -> 0;
             case "15" -> 1;
@@ -157,12 +154,12 @@ public class WeatherSlashCommand extends SlashCommand {
         };
     }
 
-    private String getTimeFromDate(JSONObject input){
+    private String getTimeFromDate(JSONObject input) {
         return input.getString("dt_txt").split("\\s+")[1].split(":")[0];
     }
 
-    private String getDayFromDate(JSONObject input){
-        return  input.getString("dt_txt").split("\\s+")[0].split("-")[2];
+    private String getDayFromDate(JSONObject input) {
+        return input.getString("dt_txt").split("\\s+")[0].split("-")[2];
     }
 
     private String getDayOfWeek(String date) {
@@ -172,7 +169,7 @@ public class WeatherSlashCommand extends SlashCommand {
                 .toUpperCase();
     }
 
-    private String getEmoji(String weather){
+    private String getEmoji(String weather) {
         return switch (weather) {
             case "Clear" -> ":sunny:";
             case "Clouds" -> ":cloud:";

@@ -11,7 +11,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 
 public class SeekCommand extends Command {
 
-    public SeekCommand(){
+    public SeekCommand() {
         this.name = "seek";
         this.help = "Seeks current track to specified timestamp (in seconds)";
         this.arguments = "<timestamp in seconds>";
@@ -21,32 +21,29 @@ public class SeekCommand extends Command {
 
     @Override
     protected void execute(CommandEvent event) {
-        if(VoiceStateCheckUtil.isEligible(event, false)){
+        if (VoiceStateCheckUtil.isEligible(event, false)) {
             GuildMusicManager guildMusicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
 
             TrackScheduler trackScheduler = guildMusicManager.trackScheduler;
 
             String[] args = event.getArgs().split(" ");
 
-            if(ArgumentsUtil.isInteger(args[0]) && trackScheduler.seek((long) Integer.parseInt(args[0]) * 1000)){
+            if (ArgumentsUtil.isInteger(args[0]) && trackScheduler.seek((long) Integer.parseInt(args[0]) * 1000)) {
                 sendTimestampMessage(event, Integer.parseInt(args[0]), trackScheduler.player.getPlayingTrack().getDuration());
-            }
-            else{
+            } else {
                 event.reply("Track cannot be seeked or the command was used incorrectly");
             }
         }
     }
 
 
-    private void sendTimestampMessage(CommandEvent event, int timeStamp, long trackDuration){
+    private void sendTimestampMessage(CommandEvent event, int timeStamp, long trackDuration) {
 
-        if(timeStamp <= 0){
+        if (timeStamp <= 0) {
             event.reply("Seeking current track to 0:00");
-        }
-        else if(timeStamp * 1000 > trackDuration){
+        } else if (timeStamp * 1000 > trackDuration) {
             event.reply("Seeking beyond song duration. Skipping current track");
-        }
-        else{
+        } else {
             event.reply(String.format("Seeking current track to %s",
                     TimeConverterUtil.getMinutesAndSeconds(timeStamp * 1000)));
         }

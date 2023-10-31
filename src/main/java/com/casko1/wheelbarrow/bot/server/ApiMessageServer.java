@@ -17,22 +17,22 @@ public class ApiMessageServer {
 
     Logger logger = LoggerFactory.getLogger(Wheelbarrow.class);
 
-    public ApiMessageServer(){
-        try{
+    public ApiMessageServer() {
+        try {
             serverSocket = new ServerSocket(9090, 0, InetAddress.getByName(null));
             logger.info("API functionality enabled. Server socket created.");
             waitForConnection();
-        }catch(IOException e){
+        } catch (IOException e) {
             logger.error("Creating server socket failed!");
         }
     }
 
 
     public void startListening() throws IOException {
-        DataInputStream dis=new DataInputStream(socket.getInputStream());
+        DataInputStream dis = new DataInputStream(socket.getInputStream());
         String str;
         while (!(str = dis.readUTF()).equals("exit")) {
-            System.out.println("message="+str);
+            System.out.println("message=" + str);
         }
         logger.info("Client closed connection! Waiting for new connection...");
         socket.close();
@@ -44,7 +44,7 @@ public class ApiMessageServer {
             socket = serverSocket.accept();
             logger.info("Connection to API client established, listening for messages...");
             startListening();
-        } catch (IOException e){
+        } catch (IOException e) {
             logger.warn("Accepting connection failed or connection closed by remote host!");
             waitForConnection();
         }

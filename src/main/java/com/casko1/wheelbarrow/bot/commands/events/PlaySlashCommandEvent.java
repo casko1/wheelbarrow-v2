@@ -18,7 +18,7 @@ public class PlaySlashCommandEvent implements PlayEvent {
     public final SlashCommandEvent event;
     private final boolean isUrl;
 
-    public PlaySlashCommandEvent(SlashCommandEvent event, boolean isUrl){
+    public PlaySlashCommandEvent(SlashCommandEvent event, boolean isUrl) {
         this.event = event;
         this.isUrl = isUrl;
     }
@@ -70,11 +70,10 @@ public class PlaySlashCommandEvent implements PlayEvent {
 
     @Override
     public void replyEmbed(EmbedBuilder eb, File image) {
-        if(image != null) {
+        if (image != null) {
             FileUpload fileUpload = FileUpload.fromData(image, "thumbnail.png");
             event.getHook().sendMessageEmbeds(eb.build()).addFiles(fileUpload).queue();
-        }
-        else {
+        } else {
             event.getHook().sendMessageEmbeds(eb.build()).queue();
         }
     }
@@ -85,12 +84,12 @@ public class PlaySlashCommandEvent implements PlayEvent {
 
     @Override
     public boolean verifyCommandArguments() {
-        if(isUrl && !ArgumentsUtil.isUrl(getUrl())) {
+        if (isUrl && !ArgumentsUtil.isUrl(getUrl())) {
             reply("You must provide an URL when using this command");
             return false;
         }
 
-        if(!isUrl && !ArgumentsUtil.isUrl(getUrl())) {
+        if (!isUrl && !ArgumentsUtil.isUrl(getUrl())) {
             reply("You must select an option from the list");
             return false;
         }

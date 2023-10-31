@@ -4,6 +4,7 @@ import com.casko1.wheelbarrow.bot.commands.hybrid.music.PlayHybridCommand;
 import com.casko1.wheelbarrow.bot.commands.menu.music.SongDetectContextMenu;
 import com.casko1.wheelbarrow.bot.commands.slash.basic.WeatherSlashCommand;
 import com.casko1.wheelbarrow.bot.commands.slash.music.FilterSlashCommand;
+import com.casko1.wheelbarrow.bot.commands.text.basic.InspireMeCommand;
 import com.casko1.wheelbarrow.bot.commands.text.basic.PingCommand;
 import com.casko1.wheelbarrow.bot.commands.text.music.*;
 import com.casko1.wheelbarrow.bot.music.QueuePaginator;
@@ -30,12 +31,12 @@ public class Wheelbarrow {
 
         Properties config = PropertiesUtil.getInstance();
 
-        if(config == null) {
+        if (config == null) {
             logger.info("Generating properties file. Please enter your bot token in wheelbarrow.properties file!");
             return;
         }
 
-        if(config.getProperty("botToken").equals("replaceWithBotToken")) {
+        if (config.getProperty("botToken").equals("replaceWithBotToken")) {
             logger.info("Detected default botToken value. Please enter your bot token in wheelbarrow.properties file!");
             return;
         }
@@ -70,15 +71,16 @@ public class Wheelbarrow {
                 new RemoveCommand(),
                 new ShuffleCommand(),
                 new ClearCommand(),
-                new PlayHybridCommand()
-                );
+                new PlayHybridCommand(),
+                new InspireMeCommand()
+        );
 
         client.addSlashCommands(
                 new PlayHybridCommand(),
                 new FilterSlashCommand(),
                 new WeatherSlashCommand(weatherToken));
 
-        if(enableSongDetection.equals("true")){
+        if (enableSongDetection.equals("true")) {
             client.addContextMenu(new SongDetectContextMenu());
         }
 
@@ -86,13 +88,13 @@ public class Wheelbarrow {
         //client.forceGuildOnly("597206662025314324");
 
         JDABuilder.createDefault(
-                token,
-                GatewayIntent.GUILD_MEMBERS,
-                GatewayIntent.GUILD_MESSAGES,
-                GatewayIntent.GUILD_VOICE_STATES,
-                GatewayIntent.GUILD_MESSAGE_REACTIONS,
-                GatewayIntent.MESSAGE_CONTENT,
-                GatewayIntent.GUILD_EMOJIS_AND_STICKERS
+                        token,
+                        GatewayIntent.GUILD_MEMBERS,
+                        GatewayIntent.GUILD_MESSAGES,
+                        GatewayIntent.GUILD_VOICE_STATES,
+                        GatewayIntent.GUILD_MESSAGE_REACTIONS,
+                        GatewayIntent.MESSAGE_CONTENT,
+                        GatewayIntent.GUILD_EMOJIS_AND_STICKERS
                 )
                 .disableCache(EnumSet.of(
                         CacheFlag.CLIENT_STATUS,
@@ -107,7 +109,7 @@ public class Wheelbarrow {
                 .build(); //start the bot
 
 
-        if(enableApi.equals("true")){
+        if (enableApi.equals("true")) {
             new ApiMessageServer();
         }
 

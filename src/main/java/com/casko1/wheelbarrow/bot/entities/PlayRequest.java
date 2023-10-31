@@ -16,7 +16,7 @@ public class PlayRequest {
     private final Member requester;
 
     public PlayRequest(PlayEvent event, String searchString, String imageSearchString,
-                       boolean isPlaylist, Member requester, boolean shuffle){
+                       boolean isPlaylist, Member requester, boolean shuffle) {
         this.event = event;
         this.searchString = searchString;
         this.imageSearchString = imageSearchString;

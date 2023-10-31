@@ -16,16 +16,16 @@ public class BassboostConfig extends FilterConfig {
     public float[] bandMultipliers;
 
 
-    public BassboostConfig(){
+    public BassboostConfig() {
         super("bassboost");
         bandMultipliers = new float[15];
     }
 
-    public void setGain(float gain){
+    public void setGain(float gain) {
         float eGain = Math.min(Math.max(gain, 0), 10) / 10;
         bandMultipliers[0] = (float) 0.3 * eGain;
         bandMultipliers[1] = (float) 0.57 * eGain;
-        bandMultipliers[2] = (float) 0.7* eGain;
+        bandMultipliers[2] = (float) 0.7 * eGain;
         bandMultipliers[3] = (float) -0.028 * eGain;
         bandMultipliers[4] = (float) -0.08 * eGain;
         bandMultipliers[5] = (float) -0.04 * eGain;

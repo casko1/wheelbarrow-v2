@@ -9,14 +9,14 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 public class ShuffleCommand extends Command {
 
     public ShuffleCommand() {
-        this.name="shuffle";
+        this.name = "shuffle";
         this.help = "Shuffles current queue.";
         this.guildOnly = false;
     }
 
     @Override
     protected void execute(CommandEvent event) {
-        if(VoiceStateCheckUtil.isEligible(event, false)){
+        if (VoiceStateCheckUtil.isEligible(event, false)) {
             TrackScheduler trackScheduler = PlayerManager.getInstance().getMusicManager(event.getGuild()).trackScheduler;
 
             trackScheduler.shuffle();

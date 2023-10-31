@@ -7,9 +7,9 @@ import java.time.temporal.ChronoUnit;
 
 public class PingCommand extends Command {
 
-    public PingCommand(){
+    public PingCommand() {
         this.name = "ping";
-        this.help = "reports latency to the API";
+        this.help = "Reports latency to the API";
         this.guildOnly = false;
     }
 
@@ -17,7 +17,7 @@ public class PingCommand extends Command {
     protected void execute(CommandEvent event) {
         event.reply("Pinging: ...", m -> {
             long ping = event.getMessage().getTimeCreated().until(m.getTimeCreated(), ChronoUnit.MILLIS);
-            m.editMessage("Ping: " + ping  + "ms | Websocket: " + event.getJDA().getGatewayPing() + "ms").queue();
+            m.editMessage("Ping: " + ping + "ms | Websocket: " + event.getJDA().getGatewayPing() + "ms").queue();
         });
     }
 }

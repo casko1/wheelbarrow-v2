@@ -27,7 +27,7 @@ public class AudioResultHandler implements AudioLoadResultHandler {
     private final ClientCredentials clientCredentials;
 
     public AudioResultHandler(PlayRequest request, TrackScheduler scheduler, File defaultImage,
-                              SpotifyApi spotifyApi, ClientCredentials clientCredentials){
+                              SpotifyApi spotifyApi, ClientCredentials clientCredentials) {
         this.scheduler = scheduler;
         this.request = request;
         this.defaultImage = defaultImage;
@@ -62,13 +62,13 @@ public class AudioResultHandler implements AudioLoadResultHandler {
         }
 
         //search result
-        if(audioPlaylist.isSearchResult()){
+        if (audioPlaylist.isSearchResult()) {
             AudioTrack audioTrack = audioPlaylist.getTracks().get(0);
 
             AudioTrackInfo audioTrackInfo = audioTrack.getInfo();
             String thumbnail = "attachment";
 
-            if(!request.isPlaylist()){
+            if (!request.isPlaylist()) {
                 thumbnail = TrackUtil.getThumbnail(request.getImageSearchString(), spotifyApi, clientCredentials);
             }
 
@@ -77,18 +77,17 @@ public class AudioResultHandler implements AudioLoadResultHandler {
                     audioTrackInfo.length,
                     defaultImage));
 
-            if(!request.isPlaylist()){
+            if (!request.isPlaylist()) {
                 sendEmbed(audioTrack, request.getEvent());
             }
 
             scheduler.addToQueue(audioTrack);
-        }
-        else{
+        } else {
             List<AudioTrack> tracks = audioPlaylist.getTracks();
 
-            if(request.isShuffle()) Collections.shuffle(tracks);
+            if (request.isShuffle()) Collections.shuffle(tracks);
 
-            for(AudioTrack audioTrack : tracks){
+            for (AudioTrack audioTrack : tracks) {
                 AudioTrackInfo audioTrackInfo = audioTrack.getInfo();
 
                 //loading images for playlist is expensive, so we use default image
@@ -113,14 +112,14 @@ public class AudioResultHandler implements AudioLoadResultHandler {
 
     @Override
     public void noMatches() {
-        if(!request.isPlaylist()){
+        if (!request.isPlaylist()) {
             request.getEvent().reply("No results with that query were found");
         }
     }
 
     @Override
     public void loadFailed(FriendlyException e) {
-        if(!request.isPlaylist()){
+        if (!request.isPlaylist()) {
             request.getEvent().reply("Loading failed.");
         }
     }
@@ -135,16 +134,15 @@ public class AudioResultHandler implements AudioLoadResultHandler {
 
         eb.addField("Adding to queue", String.format("[%s by %s](%s)", info.title, info.author, info.uri), false);
         eb.addField("Duration: ", addTrackData.getDuration(), true);
-        eb.addField("Requested by: ",addTrackData.getRequester().getAsMention(), true);
+        eb.addField("Requested by: ", addTrackData.getRequester().getAsMention(), true);
 
 
-        if(addTrackData.getThumbnail().equals("attachment")){
+        if (addTrackData.getThumbnail().equals("attachment")) {
             //default case
 
             eb.setThumbnail("attachment://thumbnail.png");
             event.replyEmbed(eb, defaultImage);
-        }
-        else{
+        } else {
             //spotify api has found thumbnail
             eb.setThumbnail(addTrackData.getThumbnail());
             event.replyEmbed(eb, null);

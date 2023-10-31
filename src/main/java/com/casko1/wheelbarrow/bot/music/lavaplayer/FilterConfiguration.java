@@ -22,7 +22,7 @@ public class FilterConfiguration {
     public BassboostConfig bassboost = new BassboostConfig();
     public HashMap<String, FilterConfig> filterConfigs = new HashMap<>();
 
-    public FilterConfiguration(){
+    public FilterConfiguration() {
         filterConfigs.put("timescale", timescale);
         filterConfigs.put("karaoke", karaoke);
         filterConfigs.put("distortion", distortion);
@@ -31,11 +31,11 @@ public class FilterConfiguration {
         filterConfigs.put("bassboost", bassboost);
     }
 
-    public HashMap<String, FilterConfig> getConfigs(){
+    public HashMap<String, FilterConfig> getConfigs() {
         return this.filterConfigs;
     }
 
-    public PcmFilterFactory createFactory(){
+    public PcmFilterFactory createFactory() {
         return new Factory(this);
     }
 
@@ -43,7 +43,7 @@ public class FilterConfiguration {
 
         private final FilterConfiguration filterConfiguration;
 
-        private Factory(FilterConfiguration filterConfiguration){
+        private Factory(FilterConfiguration filterConfiguration) {
             this.filterConfiguration = filterConfiguration;
         }
 
@@ -57,13 +57,13 @@ public class FilterConfiguration {
 
             filterChain.add(output);
 
-            for(FilterConfig config : filterConfigs.values()){
-                if(config.isEnabled()){
+            for (FilterConfig config : filterConfigs.values()) {
+                if (config.isEnabled()) {
                     filterChain.add(0, config.create(audioDataFormat, (FloatPcmAudioFilter) filterChain.get(0)));
                 }
             }
 
-            return filterChain.subList(0, filterChain.size()-1);
+            return filterChain.subList(0, filterChain.size() - 1);
         }
     }
 }

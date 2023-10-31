@@ -22,7 +22,7 @@ public abstract class FilterConfig {
 
     public abstract List<String> getOptions();
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
@@ -32,17 +32,16 @@ public abstract class FilterConfig {
 
     public abstract AudioFilter create(AudioDataFormat format, FloatPcmAudioFilter output);
 
-    public boolean applyConfig(String type, Float factor){
-        if(!isEnabled()){
+    public boolean applyConfig(String type, Float factor) {
+        if (!isEnabled()) {
             enable();
 
-            if(!parseOption(type, factor)){
+            if (!parseOption(type, factor)) {
                 disable();
                 return false;
             }
-        }
-        else{
-            if(!parseOption(type, factor)){
+        } else {
+            if (!parseOption(type, factor)) {
                 return false;
             }
 

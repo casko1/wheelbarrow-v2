@@ -17,7 +17,7 @@ import java.awt.*;
 
 public class NowPlayingCommand extends Command {
 
-    public NowPlayingCommand(){
+    public NowPlayingCommand() {
         this.name = "nowplaying";
         this.help = "Displays information about current track.";
         this.guildOnly = false;
@@ -26,7 +26,7 @@ public class NowPlayingCommand extends Command {
 
     @Override
     protected void execute(CommandEvent event) {
-        if(VoiceStateCheckUtil.isEligible(event, false)){
+        if (VoiceStateCheckUtil.isEligible(event, false)) {
             final GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
 
             final AudioPlayer audioPlayer = musicManager.audioPlayer;
@@ -41,7 +41,7 @@ public class NowPlayingCommand extends Command {
         }
     }
 
-    private void buildEmbed(AudioTrackInfo info, AudioTrack audioTrack, AdditionalTrackData addTrackData, CommandEvent event){
+    private void buildEmbed(AudioTrackInfo info, AudioTrack audioTrack, AdditionalTrackData addTrackData, CommandEvent event) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(Color.BLUE);
 
@@ -52,13 +52,12 @@ public class NowPlayingCommand extends Command {
 
         eb.addField("Requested by: ", addTrackData.getRequester().getAsMention(), true);
 
-        if(addTrackData.getThumbnail().equals("attachment")){
+        if (addTrackData.getThumbnail().equals("attachment")) {
             //default case
             FileUpload thumbnail = FileUpload.fromData(addTrackData.getDefaultImage());
             eb.setThumbnail("attachment://thumbnail.png");
             event.getTextChannel().sendMessageEmbeds(eb.build()).addFiles(thumbnail).queue();
-        }
-        else{
+        } else {
             //spotify api has found thumbnail
             eb.setThumbnail(addTrackData.getThumbnail());
             event.getTextChannel().sendMessageEmbeds(eb.build()).queue();

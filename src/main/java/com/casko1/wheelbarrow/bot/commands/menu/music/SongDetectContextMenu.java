@@ -29,28 +29,26 @@ public class SongDetectContextMenu extends MessageContextMenu {
         event.deferReply().queue();
         String url = ArgumentsUtil.getContentUrl(event.getTarget());
 
-        if(url == null) {
+        if (url == null) {
             event.getHook().editOriginal("Cannot find audio to recognize").queue();
             return;
         }
 
-        if(!ArgumentsUtil.isValidVideoType(ArgumentsUtil.getUrlContentType(url))) {
+        if (!ArgumentsUtil.isValidVideoType(ArgumentsUtil.getUrlContentType(url))) {
             event.getHook().editOriginal("Unsupported video format or the URL cannot be read from." +
                     " Try uploading the file").queue();
             return;
         }
 
         recognize(url, (r, f) -> {
-            if(f == null || r == null) {
+            if (f == null || r == null) {
                 event.getHook().editOriginal("An error occurred").queue();
-            }
-            else if(!r.has("track")) {
+            } else if (!r.has("track")) {
                 event.getHook().editOriginal("No matches found").queue();
-            }
-            else {
+            } else {
                 String title = r.getJSONObject("track").getString("title");
                 String author = r.getJSONObject("track").getString("subtitle");
-                event.getHook().editOriginal(url + "\nDetected song: **"+ title +
+                event.getHook().editOriginal(url + "\nDetected song: **" + title +
                         "** by **" + author + "**").queue();
             }
             deleteTempFile(f);
@@ -94,8 +92,10 @@ public class SongDetectContextMenu extends MessageContextMenu {
 
     private void deleteTempFile(File outFile) {
         new Thread(() -> {
-            try  { Thread.sleep( 5000 ); }
-            catch (InterruptedException ignored)  {}
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException ignored) {
+            }
             outFile.delete();
         }).start();
     }

@@ -12,7 +12,7 @@ import net.dv8tion.jda.api.managers.AudioManager;
 @SuppressWarnings("ConstantConditions")
 public class JoinCommand extends Command {
 
-    public JoinCommand(){
+    public JoinCommand() {
         this.name = "join";
         this.help = "Makes bot join the voice channel you are currently in.";
         this.guildOnly = false;
@@ -24,7 +24,7 @@ public class JoinCommand extends Command {
         Member self = event.getSelfMember();
         GuildVoiceState selfVoiceState = self.getVoiceState();
 
-        if(selfVoiceState.inAudioChannel()){
+        if (selfVoiceState.inAudioChannel()) {
             event.reply("Already in voice channel.");
             return;
         }
@@ -32,7 +32,7 @@ public class JoinCommand extends Command {
         Member member = event.getMember();
         GuildVoiceState memberVoiceState = member.getVoiceState();
 
-        if(!memberVoiceState.inAudioChannel()){
+        if (!memberVoiceState.inAudioChannel()) {
             event.reply("You must be in voice channel to use this command.");
             return;
         }

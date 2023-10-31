@@ -17,9 +17,9 @@ import java.util.*;
 
 public class FilterSlashCommand extends SlashCommand {
 
-    private final String[] filters = new String[]{"bassboost", "distortion", "karaoke", "rotation", "timescale", "tremolo"};;
+    private final String[] filters = new String[]{"bassboost", "distortion", "karaoke", "rotation", "timescale", "tremolo"};
 
-    public FilterSlashCommand(){
+    public FilterSlashCommand() {
         this.name = "filter";
         this.children = new SlashCommand[]{new Type(), new Disable()};
     }
@@ -37,14 +37,13 @@ public class FilterSlashCommand extends SlashCommand {
         String type = event.getOption("type").getAsString();
         FilterConfig filter = parseFilter(type, config);
 
-        if(subCommand.equals("disable")) {
+        if (subCommand.equals("disable")) {
             disableFilter(event, filter, guildMusicManager, type);
-        }
-        else {
+        } else {
             String option = event.getOption("option").getAsString();
             String value = event.getOption("value").getAsString();
 
-            if(!ArgumentsUtil.isFloat(value)) {
+            if (!ArgumentsUtil.isFloat(value)) {
                 event.getHook().editOriginal("Value must be a number").queue();
                 return;
             }
@@ -57,7 +56,7 @@ public class FilterSlashCommand extends SlashCommand {
     public void onAutoComplete(CommandAutoCompleteInteractionEvent event) {
         super.onAutoComplete(event);
 
-        if(event.getSubcommandName().equals("disable")) {
+        if (event.getSubcommandName().equals("disable")) {
             this.children[1].onAutoComplete(event);
             return;
         }
@@ -66,29 +65,28 @@ public class FilterSlashCommand extends SlashCommand {
     }
 
     private void disableFilter(SlashCommandEvent event, FilterConfig config,
-                               GuildMusicManager guildMusicManager, String filterName){
+                               GuildMusicManager guildMusicManager, String filterName) {
         event.getHook().editOriginal(String.format("Disabling **%s** filter.", filterName)).queue();
         config.disable();
         guildMusicManager.setFilters();
     }
 
     private void applyFilter(SlashCommandEvent event, FilterConfig filterConfig, GuildMusicManager guildMusicManager,
-                             String filterName, String option, String value){
+                             String filterName, String option, String value) {
         float factor = Float.parseFloat(value);
 
         boolean enabled = filterConfig.isEnabled();
 
-        if(filterConfig.applyConfig(option, factor)){
+        if (filterConfig.applyConfig(option, factor)) {
             event.getHook().editOriginal(String.format("Setting %s/**%s** to **%.1fx**", filterName, option, factor)).queue();
 
-            if(!enabled) guildMusicManager.setFilters();
-        }
-        else{
+            if (!enabled) guildMusicManager.setFilters();
+        } else {
             event.getHook().editOriginal("Incorrect command usage").queue();
         }
     }
 
-    private FilterConfig parseFilter(String filterName, FilterConfiguration config){
+    private FilterConfig parseFilter(String filterName, FilterConfiguration config) {
         FilterConfig filterConfig = null;
 
         switch (filterName) {
@@ -114,7 +112,7 @@ public class FilterSlashCommand extends SlashCommand {
                     new OptionData(OptionType.STRING, "value", "Value of the option", true)
             );
 
-            for(String filter : filters) this.options.get(0).addChoice(filter, filter);
+            for (String filter : filters) this.options.get(0).addChoice(filter, filter);
         }
 
         @Override
@@ -126,7 +124,7 @@ public class FilterSlashCommand extends SlashCommand {
         public void onAutoComplete(CommandAutoCompleteInteractionEvent event) {
             super.onAutoComplete(event);
 
-            if(event.getOption("type") == null) {
+            if (event.getOption("type") == null) {
                 event.replyChoices(Collections.emptyList()).queue();
                 return;
             }
@@ -138,7 +136,7 @@ public class FilterSlashCommand extends SlashCommand {
             List<String> options = config.getConfigs().get(type).getOptions();
             List<Command.Choice> choices = new ArrayList<>();
 
-            for(String op : options) choices.add(new Command.Choice(op, op));
+            for (String op : options) choices.add(new Command.Choice(op, op));
 
             event.replyChoices(choices).queue();
         }
@@ -168,8 +166,8 @@ public class FilterSlashCommand extends SlashCommand {
             HashMap<String, FilterConfig> configs = guildMusicManager.getFilterConfiguration().getConfigs();
 
             List<Command.Choice> choices = new ArrayList<>();
-            for(FilterConfig conf : configs.values()) {
-                if(conf.isEnabled()) choices.add(new Command.Choice(conf.getName(), conf.getName()));
+            for (FilterConfig conf : configs.values()) {
+                if (conf.isEnabled()) choices.add(new Command.Choice(conf.getName(), conf.getName()));
             }
 
             event.replyChoices(choices).queue();

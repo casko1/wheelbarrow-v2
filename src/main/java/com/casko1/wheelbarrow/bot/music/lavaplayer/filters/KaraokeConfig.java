@@ -16,7 +16,7 @@ public class KaraokeConfig extends FilterConfig {
     private KaraokePcmAudioFilter karaokePcmAudioFilter;
     private boolean enabled = false;
 
-    public KaraokeConfig(){
+    public KaraokeConfig() {
         super("karaoke");
     }
 
@@ -36,30 +36,30 @@ public class KaraokeConfig extends FilterConfig {
         this.monoLevel = monoLevel;
     }
 
-    public void disable(){
+    public void disable() {
         this.level = 1.0f;
         this.monoLevel = 1.0f;
         this.enabled = false;
     }
 
-    public void enable(){
+    public void enable() {
         this.enabled = true;
     }
 
-    public boolean isEnabled(){
+    public boolean isEnabled() {
         return this.enabled;
     }
 
-    public List<String> getOptions(){
+    public List<String> getOptions() {
         return new ArrayList<>(Arrays.asList("mono", "level"));
     }
 
-    public void updateConfig(){
+    public void updateConfig() {
         this.karaokePcmAudioFilter.setLevel(this.level)
                 .setMonoLevel(this.monoLevel);
     }
 
-    public AudioFilter create(AudioDataFormat format, FloatPcmAudioFilter output){
+    public AudioFilter create(AudioDataFormat format, FloatPcmAudioFilter output) {
 
         this.karaokePcmAudioFilter = new KaraokePcmAudioFilter(output, format.channelCount, format.sampleRate)
                 .setLevel(this.level)

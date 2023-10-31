@@ -25,15 +25,14 @@ public class PlayTextCommandEvent implements PlayEvent {
     private String args;
 
 
-    public PlayTextCommandEvent(CommandEvent event){
+    public PlayTextCommandEvent(CommandEvent event) {
         this.event = event;
         shuffle = setShuffle(event);
 
-        if(shuffle) {
+        if (shuffle) {
             String[] split = event.getArgs().split("\\s+");
             args = Arrays.stream(split).limit(split.length - 1).collect(Collectors.joining("\\s+"));
-        }
-        else {
+        } else {
             args = event.getArgs();
         }
 
@@ -94,11 +93,10 @@ public class PlayTextCommandEvent implements PlayEvent {
 
     @Override
     public void replyEmbed(EmbedBuilder eb, File image) {
-        if(image != null) {
+        if (image != null) {
             FileUpload fileUpload = FileUpload.fromData(image, "thumbnail.png");
             event.getTextChannel().sendMessageEmbeds(eb.build()).addFiles(fileUpload).queue();
-        }
-        else {
+        } else {
             event.getTextChannel().sendMessageEmbeds(eb.build()).queue();
         }
     }
@@ -110,7 +108,7 @@ public class PlayTextCommandEvent implements PlayEvent {
 
     @Override
     public boolean verifyCommandArguments() {
-        if(event.getArgs().isBlank()){
+        if (event.getArgs().isBlank()) {
             event.reply("You need to provide link or a query.");
             return false;
         }

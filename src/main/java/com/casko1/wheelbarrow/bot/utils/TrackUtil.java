@@ -28,12 +28,12 @@ import java.util.stream.Collectors;
 
 public final class TrackUtil {
 
-    public static String getThumbnail(String query, SpotifyApi spotifyApi, ClientCredentials clientCredentials){
+    public static String getThumbnail(String query, SpotifyApi spotifyApi, ClientCredentials clientCredentials) {
         String res = "attachment";
 
         Paging<Track> trackPaging = queryTracks(query, spotifyApi, clientCredentials);
 
-        if(trackPaging.getTotal() > 0){
+        if (trackPaging.getTotal() > 0) {
             Image[] images = trackPaging.getItems()[0].getAlbum().getImages();
             res = images.length > 1 ? images[1].getUrl() : images[0].getUrl();
         }
@@ -41,50 +41,50 @@ public final class TrackUtil {
         return res;
     }
 
-    private static String getNewAccessToken(SpotifyApi spotifyApi, ClientCredentials clientCredentials){
-        try{
+    private static String getNewAccessToken(SpotifyApi spotifyApi, ClientCredentials clientCredentials) {
+        try {
             clientCredentials = spotifyApi.clientCredentials().build().execute();
-        } catch (IOException | SpotifyWebApiException | ParseException e){
+        } catch (IOException | SpotifyWebApiException | ParseException e) {
             System.out.println(e);
         }
         return clientCredentials.getAccessToken();
     }
 
-    public static String getTitle(String query, SpotifyApi spotifyApi, ClientCredentials clientCredentials){
+    public static String getTitle(String query, SpotifyApi spotifyApi, ClientCredentials clientCredentials) {
         String res = "";
 
         Track track = getTrack(query, spotifyApi, clientCredentials);
 
-        if(track != null){
+        if (track != null) {
             res = String.format("%s %s", track.getName(), track.getArtists()[0].getName());
         }
 
         return res;
     }
 
-    private static Paging<Track> queryTracks(String query, SpotifyApi spotifyApi, ClientCredentials clientCredentials){
+    private static Paging<Track> queryTracks(String query, SpotifyApi spotifyApi, ClientCredentials clientCredentials) {
 
         SearchTracksRequest searchTracksRequest = spotifyApi.searchTracks(query)
                 .limit(1)
                 .build();
 
-        try{
+        try {
             return searchTracksRequest.execute();
-        } catch (IOException | SpotifyWebApiException | ParseException e){
+        } catch (IOException | SpotifyWebApiException | ParseException e) {
             spotifyApi.setAccessToken(getNewAccessToken(spotifyApi, clientCredentials));
             return queryTracks(query, spotifyApi, clientCredentials);
         }
     }
 
-    public static List<String> getPlaylist(String query, SpotifyApi spotifyApi, ClientCredentials clientCredentials, boolean shuffle){
+    public static List<String> getPlaylist(String query, SpotifyApi spotifyApi, ClientCredentials clientCredentials, boolean shuffle) {
         String id = getSpotifyID(query);
 
         GetPlaylistsItemsRequest getPlaylistItemsRequest = spotifyApi.getPlaylistsItems(getSpotifyID(query)).build();
 
-        try{
+        try {
             int size = getPlaylistItemsRequest.execute().getTotal();
 
-            if(size > 100 && shuffle) return loadBigPlaylist(size, spotifyApi, clientCredentials, id);
+            if (size > 100 && shuffle) return loadBigPlaylist(size, spotifyApi, clientCredentials, id);
 
             getPlaylistItemsRequest = spotifyApi.getPlaylistsItems(getSpotifyID(query)).build();
 
@@ -92,8 +92,8 @@ public final class TrackUtil {
                     .map(PlaylistTrack::getTrack)
                     .map(IPlaylistItem::getId)
                     .collect(Collectors.toList());
-        } catch (IOException | SpotifyWebApiException | ParseException e){
-            if(e instanceof NotFoundException) return null;
+        } catch (IOException | SpotifyWebApiException | ParseException e) {
+            if (e instanceof NotFoundException) return null;
 
             spotifyApi.setAccessToken(getNewAccessToken(spotifyApi, clientCredentials));
             return getPlaylist(query, spotifyApi, clientCredentials, shuffle);
@@ -101,15 +101,15 @@ public final class TrackUtil {
     }
 
 
-    public static List<String> getAlbum(String query, SpotifyApi spotifyApi, ClientCredentials clientCredentials){
+    public static List<String> getAlbum(String query, SpotifyApi spotifyApi, ClientCredentials clientCredentials) {
         GetAlbumRequest getAlbumRequest = spotifyApi.getAlbum(getSpotifyID(query)).build();
 
-        try{
+        try {
             return Arrays.stream(getAlbumRequest.execute().getTracks().getItems())
                     .map(TrackSimplified::getId)
                     .collect(Collectors.toList());
-        } catch (IOException | SpotifyWebApiException | ParseException e){
-            if(e instanceof NotFoundException) return null;
+        } catch (IOException | SpotifyWebApiException | ParseException e) {
+            if (e instanceof NotFoundException) return null;
 
             spotifyApi.setAccessToken(getNewAccessToken(spotifyApi, clientCredentials));
             return getAlbum(query, spotifyApi, clientCredentials);
@@ -125,15 +125,15 @@ public final class TrackUtil {
 
         int i = 1;
 
-        while(tracks.size() < itemsToLoad){
+        while (tracks.size() < itemsToLoad) {
 
-            try{
+            try {
                 tracks.addAll(Arrays.stream(request.execute().getItems())
                         .map(PlaylistTrack::getTrack)
                         .map(IPlaylistItem::getId)
                         .toList());
-            } catch (IOException | SpotifyWebApiException | ParseException e){
-                if(e instanceof NotFoundException) return null;
+            } catch (IOException | SpotifyWebApiException | ParseException e) {
+                if (e instanceof NotFoundException) return null;
 
                 spotifyApi.setAccessToken(getNewAccessToken(spotifyApi, clientCredentials));
                 continue;
@@ -146,27 +146,27 @@ public final class TrackUtil {
         return tracks;
     }
 
-    private static Track getTrack(String query, SpotifyApi spotifyApi, ClientCredentials clientCredentials){
+    private static Track getTrack(String query, SpotifyApi spotifyApi, ClientCredentials clientCredentials) {
 
         String id = query;
 
-        if(ArgumentsUtil.isUrl(query)){
+        if (ArgumentsUtil.isUrl(query)) {
             id = getSpotifyID(query);
         }
 
         GetTrackRequest getTrackRequest = spotifyApi.getTrack(id).build();
 
-        try{
+        try {
             return getTrackRequest.execute();
-        } catch (IOException | SpotifyWebApiException | ParseException e){
-            if(e instanceof NotFoundException) return null;
+        } catch (IOException | SpotifyWebApiException | ParseException e) {
+            if (e instanceof NotFoundException) return null;
 
             spotifyApi.setAccessToken(getNewAccessToken(spotifyApi, clientCredentials));
             return getTrack(query, spotifyApi, clientCredentials);
         }
     }
 
-    private static String getSpotifyID(String link){
+    private static String getSpotifyID(String link) {
         return link.split("/")[4].split("\\?")[0];
     }
 }

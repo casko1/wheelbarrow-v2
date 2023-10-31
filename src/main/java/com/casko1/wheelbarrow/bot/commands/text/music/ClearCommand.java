@@ -8,7 +8,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 
 public class ClearCommand extends Command {
 
-    public ClearCommand(){
+    public ClearCommand() {
         this.name = "clear";
         this.help = "Clears the entire queue";
         this.guildOnly = false;
@@ -16,7 +16,7 @@ public class ClearCommand extends Command {
 
     @Override
     protected void execute(CommandEvent event) {
-        if(VoiceStateCheckUtil.isEligible(event, false)){
+        if (VoiceStateCheckUtil.isEligible(event, false)) {
             GuildMusicManager manager = PlayerManager.getInstance().getMusicManager(event.getGuild());
             manager.trackScheduler.queue.clear();
 

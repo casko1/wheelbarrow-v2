@@ -8,7 +8,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 
 public class SkipCommand extends Command {
 
-    public SkipCommand(){
+    public SkipCommand() {
         this.name = "skip";
         this.help = "Skips the current track";
         this.guildOnly = false;
@@ -17,7 +17,7 @@ public class SkipCommand extends Command {
     @Override
     protected void execute(CommandEvent event) {
 
-        if(VoiceStateCheckUtil.isEligible(event, true)){
+        if (VoiceStateCheckUtil.isEligible(event, true)) {
             final GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
 
             event.reply("Skipped current track.");

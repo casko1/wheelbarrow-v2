@@ -21,7 +21,7 @@ public class TimescaleConfig extends FilterConfig {
         super("Timescale");
     }
 
-    public String getName(){
+    public String getName() {
         return "timescale";
     }
 
@@ -49,32 +49,32 @@ public class TimescaleConfig extends FilterConfig {
         this.rate = rate;
     }
 
-    public void disable(){
+    public void disable() {
         this.speed = 1.0;
         this.pitch = 1.0;
         this.rate = 1.0;
         this.enabled = false;
     }
 
-    public void enable(){
+    public void enable() {
         this.enabled = true;
     }
 
-    public boolean isEnabled(){
+    public boolean isEnabled() {
         return this.enabled;
     }
 
-    public List<String> getOptions(){
+    public List<String> getOptions() {
         return new ArrayList<>(Arrays.asList("speed", "pitch", "rate"));
     }
 
-    public void updateConfig(){
+    public void updateConfig() {
         this.timescalePcmAudioFilter.setSpeed(this.speed)
                 .setPitch(this.pitch)
                 .setRate(this.rate);
     }
 
-    public AudioFilter create(AudioDataFormat format, FloatPcmAudioFilter output){
+    public AudioFilter create(AudioDataFormat format, FloatPcmAudioFilter output) {
         this.timescalePcmAudioFilter = new TimescalePcmAudioFilter(output, format.channelCount, format.sampleRate)
                 .setSpeed(this.speed)
                 .setPitch(this.pitch)
@@ -83,7 +83,7 @@ public class TimescaleConfig extends FilterConfig {
         return this.timescalePcmAudioFilter;
     }
 
-    public boolean parseOption(String setting, float factor){
+    public boolean parseOption(String setting, float factor) {
         switch (setting) {
             case "speed" -> setSpeed(factor);
             case "pitch" -> setPitch(factor);

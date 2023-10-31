@@ -13,7 +13,7 @@ public class GuildMusicManager {
 
     private final FilterConfiguration filterConfiguration;
 
-    public GuildMusicManager(AudioPlayerManager manager, Guild guild){
+    public GuildMusicManager(AudioPlayerManager manager, Guild guild) {
         this.audioPlayer = manager.createPlayer();
         this.trackScheduler = new TrackScheduler(this.audioPlayer, guild);
 
@@ -33,7 +33,7 @@ public class GuildMusicManager {
     }
 
     // only called when a filter gets enabled
-    public void setFilters(){
+    public void setFilters() {
         this.audioPlayer.setFilterFactory(this.filterConfiguration.createFactory());
     }
 }

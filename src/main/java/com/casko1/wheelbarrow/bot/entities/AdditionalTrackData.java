@@ -13,7 +13,7 @@ public class AdditionalTrackData {
     final private String duration;
     private final File defaultImage;
 
-    public AdditionalTrackData(Member requester, String thumbnail, long duration, File defaultImage){
+    public AdditionalTrackData(Member requester, String thumbnail, long duration, File defaultImage) {
         this.requester = requester;
         this.thumbnail = thumbnail;
         this.duration = TimeConverterUtil.getMinutesAndSeconds(duration);

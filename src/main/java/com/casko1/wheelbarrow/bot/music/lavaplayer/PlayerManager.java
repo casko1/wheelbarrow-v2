@@ -99,11 +99,12 @@ public class PlayerManager {
                 new AudioResultHandler(request, musicManager.trackScheduler, defaultImage, spotifyApi, clientCredentials));
     }
 
-    public void loadSpotifyTracks(String type, PlayRequest request){
+    public void loadSpotifyTracks(String type, PlayRequest request) {
         List<String> trackIds;
 
-        switch (type){
-            case "playlist" -> trackIds = TrackUtil.getPlaylist(request.getSearchString(), spotifyApi, clientCredentials, request.isShuffle());
+        switch (type) {
+            case "playlist" ->
+                    trackIds = TrackUtil.getPlaylist(request.getSearchString(), spotifyApi, clientCredentials, request.isShuffle());
             case "album" -> trackIds = TrackUtil.getAlbum(request.getSearchString(), spotifyApi, clientCredentials);
             default -> {
                 request.getEvent().reply("Could not process your request");
@@ -122,7 +123,7 @@ public class PlayerManager {
 
         if (request.isShuffle()) Collections.shuffle(trackIds);
 
-        for(int i = 0; i < trackCount; i++){
+        for (int i = 0; i < trackCount; i++) {
             PlayRequest trackRequest = new PlayRequest(request.getEvent(),
                     String.format("ytsearch:%s", getSpotifyTitle(trackIds.get(i))),
                     "",

@@ -22,7 +22,7 @@ public class TrackScheduler extends AudioEventAdapter {
     private final Guild guild;
     private boolean loop = false;
 
-    public TrackScheduler(AudioPlayer player, Guild guild){
+    public TrackScheduler(AudioPlayer player, Guild guild) {
         this.player = player;
         this.queue = new LinkedBlockingQueue<>();
         this.guild = guild;
@@ -30,8 +30,8 @@ public class TrackScheduler extends AudioEventAdapter {
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        if(endReason.mayStartNext){
-            if(this.loop){
+        if (endReason.mayStartNext) {
+            if (this.loop) {
                 this.player.startTrack(track.makeClone(), false);
                 return;
             }
@@ -40,7 +40,7 @@ public class TrackScheduler extends AudioEventAdapter {
         }
     }
 
-    public void shuffle(){
+    public void shuffle() {
         List<AudioTrack> list = new ArrayList<>(queue);
 
         Collections.shuffle(list);
@@ -48,14 +48,14 @@ public class TrackScheduler extends AudioEventAdapter {
         queue = new LinkedBlockingQueue<>(list);
     }
 
-    public void remove(int position){
+    public void remove(int position) {
         Iterator<AudioTrack> iterator = queue.iterator();
 
         int index = 1;
 
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             iterator.next();
-            if(index == position){
+            if (index == position) {
                 iterator.remove();
                 break;
             }
@@ -64,27 +64,26 @@ public class TrackScheduler extends AudioEventAdapter {
         }
     }
 
-    public boolean seek(long timestamp){
+    public boolean seek(long timestamp) {
         AudioTrack current = player.getPlayingTrack();
 
-        if(current.isSeekable()){
+        if (current.isSeekable()) {
             current.setPosition(timestamp);
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
 
-    public void addToQueue(AudioTrack track){
+    public void addToQueue(AudioTrack track) {
         //if a track is already playing it adds track to the queue
         //in that case startTrack return false
-        if(!this.player.startTrack(track, true)){
+        if (!this.player.startTrack(track, true)) {
             this.queue.offer(track);
         }
     }
 
-    public void toggleLoop(){
+    public void toggleLoop() {
         loop = !loop;
     }
 
@@ -99,9 +98,9 @@ public class TrackScheduler extends AudioEventAdapter {
         textChannel.sendMessage("There was an error playing that track.").queue();
     }
 
-    public void nextTrack(){
+    public void nextTrack() {
         AudioTrack track = this.queue.poll();
-        if(track == null){
+        if (track == null) {
             this.player.stopTrack();
             PlayerManager playerManager = PlayerManager.getInstance();
             TextChannel textChannel = playerManager.getTextChannel(guild);
@@ -109,8 +108,7 @@ public class TrackScheduler extends AudioEventAdapter {
             playerManager.removeTextChannel(guild);
             guild.getAudioManager().closeAudioConnection();
             playerManager.removeMusicManager(guild.getIdLong());
-        }
-        else{
+        } else {
             this.player.startTrack(track, false);
         }
 

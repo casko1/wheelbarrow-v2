@@ -10,35 +10,33 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 
 public class RemoveCommand extends Command {
 
-    public RemoveCommand(){
+    public RemoveCommand() {
         this.name = "remove";
         this.help = "Removes a track from the queue";
-        this.arguments  = "<position in queue>";
+        this.arguments = "<position in queue>";
         this.guildOnly = false;
     }
 
 
     @Override
     protected void execute(CommandEvent event) {
-        if(VoiceStateCheckUtil.isEligible(event, false)){
+        if (VoiceStateCheckUtil.isEligible(event, false)) {
             GuildMusicManager guildMusicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
 
             String[] args = event.getArgs().split(" ");
 
-            if(ArgumentsUtil.isInteger(args[0])){
+            if (ArgumentsUtil.isInteger(args[0])) {
                 TrackScheduler trackScheduler = guildMusicManager.trackScheduler;
 
                 int position = Integer.parseInt(args[0]);
 
-                if(position < 1 || position > trackScheduler.queue.size()){
+                if (position < 1 || position > trackScheduler.queue.size()) {
                     event.reply("Position out of bounds.");
-                }
-                else{
+                } else {
                     trackScheduler.remove(position);
                     event.reply(String.format("Removed track at position %d", position));
                 }
-            }
-            else{
+            } else {
                 event.reply("Incorrect command usage.");
             }
         }

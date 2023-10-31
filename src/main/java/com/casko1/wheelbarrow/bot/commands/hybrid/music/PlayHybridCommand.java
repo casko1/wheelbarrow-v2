@@ -32,7 +32,7 @@ public class PlayHybridCommand extends SlashCommand {
 
     private final YouTubeClient searchClient;
 
-    public PlayHybridCommand(){
+    public PlayHybridCommand() {
         this.name = "play";
         this.help = "Plays a song or playlist from specified url or query.";
         this.children = new SlashCommand[]{new Url(), new Search()};
@@ -63,16 +63,16 @@ public class PlayHybridCommand extends SlashCommand {
         Member member = event.getMember();
         GuildVoiceState memberVoiceState = member.getVoiceState();
 
-        if(!memberVoiceState.inAudioChannel()){
+        if (!memberVoiceState.inAudioChannel()) {
             event.reply("You must be in voice channel to use this command.");
             return;
         }
 
-        if(!event.verifyCommandArguments()) return;
+        if (!event.verifyCommandArguments()) return;
 
-        if(!event.isUrl()) {
+        if (!event.isUrl()) {
             List<YouTubeTrack> results = getYouTubeTracks(event.getUrl());
-            if(results.isEmpty()){
+            if (results.isEmpty()) {
                 event.reply("No results found");
                 return;
             }
@@ -80,10 +80,9 @@ public class PlayHybridCommand extends SlashCommand {
             event.setUrl(results.get(0).getUrl());
         }
 
-        if(!selfVoiceState.inAudioChannel()){
+        if (!selfVoiceState.inAudioChannel()) {
             joinVoiceChannel(event, memberVoiceState, channel);
-        }
-        else if(!memberVoiceState.getChannel().equals(selfVoiceState.getChannel())){
+        } else if (!memberVoiceState.getChannel().equals(selfVoiceState.getChannel())) {
             event.reply("You must be in the same channel as me to use this command!");
             return;
         }
@@ -91,7 +90,7 @@ public class PlayHybridCommand extends SlashCommand {
         parseAndPlay(event, member);
     }
 
-    private void joinVoiceChannel(PlayEvent event, GuildVoiceState memberVoiceState, TextChannel channel){
+    private void joinVoiceChannel(PlayEvent event, GuildVoiceState memberVoiceState, TextChannel channel) {
 
         AudioManager audioManager = event.getGuild().getAudioManager();
         AudioChannel voiceChannel = memberVoiceState.getChannel();
@@ -101,14 +100,14 @@ public class PlayHybridCommand extends SlashCommand {
         PlayerManager.getInstance().setTextChannel(event.getGuild(), channel);
     }
 
-    private void parseAndPlay(PlayEvent event, Member member){
+    private void parseAndPlay(PlayEvent event, Member member) {
 
         String link = event.getUrl();
         boolean shuffle = event.getShuffle();
 
         PlayRequest request = new PlayRequest(event, link, "", true, member, shuffle);
 
-        switch(ArgumentsUtil.parseURL(link)){
+        switch (ArgumentsUtil.parseURL(link)) {
             case "spotify.com", "open.spotify.com" -> playSpotify(link, request, member, event);
             case "soundcloud.com" -> playSoundcloud(event, link, member);
             case "" -> event.reply("An error occurred. Please try again.");
@@ -116,7 +115,7 @@ public class PlayHybridCommand extends SlashCommand {
         }
     }
 
-    private void playSpotify(String link, PlayRequest request, Member member, PlayEvent event){
+    private void playSpotify(String link, PlayRequest request, Member member, PlayEvent event) {
         switch (ArgumentsUtil.parseSpotifyUrl(link)) {
             case "playlist" -> PlayerManager.getInstance().loadSpotifyTracks("playlist", request);
             case "album" -> PlayerManager.getInstance().loadSpotifyTracks("album", request);
@@ -125,7 +124,7 @@ public class PlayHybridCommand extends SlashCommand {
         }
     }
 
-    private void playSoundcloud(PlayEvent event, String link, Member member){
+    private void playSoundcloud(PlayEvent event, String link, Member member) {
         String query = link;
         link = "scsearch:" + link;
         PlayRequest request = new PlayRequest(event, link, query, false, member, false);
@@ -165,7 +164,7 @@ public class PlayHybridCommand extends SlashCommand {
     private class Search extends SlashCommand {
 
         public Search() {
-            this.name="search";
+            this.name = "search";
             this.options = Arrays.asList(
                     new OptionData(
                             OptionType.STRING, "query", "Name of the song/playlist", true, true
@@ -186,7 +185,7 @@ public class PlayHybridCommand extends SlashCommand {
         public void onAutoComplete(CommandAutoCompleteInteractionEvent event) {
             super.onAutoComplete(event);
             String query = event.getOption("query").getAsString();
-            if(query.length() <= 3) {
+            if (query.length() <= 3) {
                 event.replyChoices(Collections.emptyList()).queue();
                 return;
             }
@@ -194,15 +193,14 @@ public class PlayHybridCommand extends SlashCommand {
             List<Command.Choice> choice = new ArrayList<>();
             List<YouTubeTrack> results = getYouTubeTracks(query);
 
-            if(results.size() > 0) {
-                for(int i = 0; i < Math.min(results.size(), 10); i++) {
+            if (results.size() > 0) {
+                for (int i = 0; i < Math.min(results.size(), 10); i++) {
                     YouTubeTrack track = results.get(i);
                     choice.add(new Command.Choice(track.getTitle(), track.getUrl()));
                 }
 
                 event.replyChoices(choice).queue();
-            }
-            else {
+            } else {
                 event.replyChoices(Collections.emptyList()).queue();
             }
         }

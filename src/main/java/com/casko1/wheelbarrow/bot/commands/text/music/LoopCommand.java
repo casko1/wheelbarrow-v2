@@ -8,7 +8,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 
 public class LoopCommand extends Command {
 
-    public LoopCommand(){
+    public LoopCommand() {
         this.name = "loop";
         this.help = "Loops current track";
         this.guildOnly = false;
@@ -16,17 +16,16 @@ public class LoopCommand extends Command {
 
     @Override
     protected void execute(CommandEvent event) {
-        if(VoiceStateCheckUtil.isEligible(event, false)){
+        if (VoiceStateCheckUtil.isEligible(event, false)) {
             GuildMusicManager guildMusicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
 
             boolean loopState = guildMusicManager.trackScheduler.isLoop();
 
             guildMusicManager.trackScheduler.toggleLoop();
 
-            if(loopState){
+            if (loopState) {
                 event.reply(":repeat: Un-Looping current track");
-            }
-            else{
+            } else {
                 event.reply(":repeat: Looping current track");
             }
         }

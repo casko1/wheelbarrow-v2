@@ -9,17 +9,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class RotationConfig extends FilterConfig{
+public class RotationConfig extends FilterConfig {
 
     private float rotationSpeed = 5.0f;
     private boolean enabled = false;
     public RotationPcmAudioFilter rotationPcmAudioFilter;
 
-    public RotationConfig(){
+    public RotationConfig() {
         super("rotation");
     }
 
-    public float getRotationSpeed(){
+    public float getRotationSpeed() {
         return this.rotationSpeed;
     }
 
@@ -40,7 +40,7 @@ public class RotationConfig extends FilterConfig{
         return this.enabled;
     }
 
-    public List<String> getOptions(){
+    public List<String> getOptions() {
         return new ArrayList<>(Collections.singletonList("speed"));
     }
 

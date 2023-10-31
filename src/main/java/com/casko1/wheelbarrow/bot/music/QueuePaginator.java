@@ -37,8 +37,8 @@ public class QueuePaginator extends Menu {
     public static final String RIGHT = "\u25B6";
 
     QueuePaginator(EventWaiter waiter, Set<User> users, Set<Role> roles, long timeout,
-                             TimeUnit unit, int itemsPerPage, List<String> items, Consumer<Message> finalAction,
-                             String currentTrack, Color color) {
+                   TimeUnit unit, int itemsPerPage, List<String> items, Consumer<Message> finalAction,
+                   String currentTrack, Color color) {
         super(waiter, users, roles, timeout, unit);
         this.itemsPerPage = itemsPerPage;
         this.items = items;
@@ -59,20 +59,20 @@ public class QueuePaginator extends Menu {
     }
 
     //for new message
-    public void paginate(MessageChannel channel, int pNum){
+    public void paginate(MessageChannel channel, int pNum) {
         MessageCreateData message = createMessage(Math.min(Math.max(1, pNum), numberOfPages));
         init(channel.sendMessage(message), pNum);
     }
 
     //for editing existing message
-    public void paginate(Message message, int pNum){
+    public void paginate(Message message, int pNum) {
         MessageEditData msg = updateMessage(Math.min(Math.max(1, pNum), numberOfPages));
         init(message.editMessage(msg), pNum);
     }
 
 
-    public void init(RestAction<Message> action, int pNum){
-        if(items.size() > 10){
+    public void init(RestAction<Message> action, int pNum) {
+        if (items.size() > 10) {
             action.queue(m -> {
                 m.addReaction(Emoji.fromUnicode(LEFT)).queue();
                 m.addReaction(Emoji.fromUnicode(STOP)).queue();
@@ -80,8 +80,7 @@ public class QueuePaginator extends Menu {
                         .queue(v -> handlePagination(m, pNum),
                                 t -> handlePagination(m, pNum));
             });
-        }
-        else{
+        } else {
             action.queue(m -> {
                 m.addReaction(Emoji.fromUnicode(STOP)).queue(v -> handlePagination(m, pNum),
                         t -> handlePagination(m, pNum));
@@ -89,16 +88,16 @@ public class QueuePaginator extends Menu {
         }
     }
 
-    private void handlePagination(Message message, int pNum){
+    private void handlePagination(Message message, int pNum) {
         waiter.waitForEvent(MessageReactionAddEvent.class,
                 event -> checkReaction(event, message.getIdLong()),
                 event -> handleReaction(event, message, pNum),
                 timeout, unit, () -> finalAction.accept(message));
     }
 
-    private boolean checkReaction(MessageReactionAddEvent event, long messageId){
+    private boolean checkReaction(MessageReactionAddEvent event, long messageId) {
 
-        if(event.getMessageIdLong() != messageId) return false;
+        if (event.getMessageIdLong() != messageId) return false;
 
         return switch (event.getReaction().getEmoji().getName()) {
             case LEFT, STOP, RIGHT -> isValidUser(event.getUser(), event.isFromGuild() ? event.getGuild() : null);
@@ -106,24 +105,25 @@ public class QueuePaginator extends Menu {
         };
     }
 
-    private void handleReaction(MessageReactionAddEvent event, Message message, int pNum){
+    private void handleReaction(MessageReactionAddEvent event, Message message, int pNum) {
         int newPageNum = pNum;
 
-        switch(event.getReaction().getEmoji().getName()){
+        switch (event.getReaction().getEmoji().getName()) {
             case LEFT:
-                if(newPageNum > 1) newPageNum--;
+                if (newPageNum > 1) newPageNum--;
                 break;
             case RIGHT:
-                if(newPageNum < numberOfPages) newPageNum++;
+                if (newPageNum < numberOfPages) newPageNum++;
                 break;
             case STOP:
                 finalAction.accept(message);
                 return;
         }
 
-        try{
+        try {
             event.getReaction().removeReaction(event.getUser()).queue();
-        } catch (PermissionException ignored) {}
+        } catch (PermissionException ignored) {
+        }
 
         int n = newPageNum;
         message.editMessage(updateMessage(newPageNum)).queue(m -> handlePagination(m, n));
@@ -140,8 +140,8 @@ public class QueuePaginator extends Menu {
 
         StringBuilder sb = new StringBuilder();
 
-        for(int i = start; i < end; i++){
-            sb.append(String.format("%d. %s\n", i+1, items.get(i)));
+        for (int i = start; i < end; i++) {
+            sb.append(String.format("%d. %s\n", i + 1, items.get(i)));
         }
 
         eb.addField("Currently playing:", currentTrack, false);
@@ -168,8 +168,8 @@ public class QueuePaginator extends Menu {
 
         StringBuilder sb = new StringBuilder();
 
-        for(int i = start; i < end; i++){
-            sb.append(String.format("%d. %s\n", i+1, items.get(i)));
+        for (int i = start; i < end; i++) {
+            sb.append(String.format("%d. %s\n", i + 1, items.get(i)));
         }
 
         eb.addField("Currently playing:", currentTrack, false);
@@ -186,7 +186,7 @@ public class QueuePaginator extends Menu {
     }
 
 
-    public static class Builder extends Menu.Builder<Builder, QueuePaginator>{
+    public static class Builder extends Menu.Builder<Builder, QueuePaginator> {
 
         private String currentTrack;
         private final Consumer<Message> finalAction = m -> m.delete().queue();
@@ -200,28 +200,28 @@ public class QueuePaginator extends Menu {
                     itemsPerPage, items, finalAction, currentTrack, color);
         }
 
-        public Builder setCurrentTrack(String track){
+        public Builder setCurrentTrack(String track) {
             currentTrack = track;
             return this;
         }
 
-        public Builder setItemsPerPage(int count){
+        public Builder setItemsPerPage(int count) {
             itemsPerPage = count;
             return this;
         }
 
-        public Builder clearItems(){
+        public Builder clearItems() {
             items.clear();
             return this;
         }
 
-        public Builder setItems(List<String> tracks){
+        public Builder setItems(List<String> tracks) {
             items.clear();
             items.addAll(tracks);
             return this;
         }
 
-        public Builder setColor(Color color){
+        public Builder setColor(Color color) {
             this.color = color;
             return this;
         }

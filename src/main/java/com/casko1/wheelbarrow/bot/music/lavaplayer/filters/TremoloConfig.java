@@ -16,7 +16,7 @@ public class TremoloConfig extends FilterConfig {
     private TremoloPcmAudioFilter tremoloPcmAudioFilter;
     private boolean enabled = false;
 
-    public TremoloConfig(){
+    public TremoloConfig() {
         super("tremolo");
     }
 
@@ -36,30 +36,30 @@ public class TremoloConfig extends FilterConfig {
         this.depth = depth;
     }
 
-    public void disable(){
+    public void disable() {
         this.frequency = 2.0f;
         this.depth = 0.5f;
         this.enabled = false;
     }
 
-    public void enable(){
+    public void enable() {
         this.enabled = true;
     }
 
-    public boolean isEnabled(){
+    public boolean isEnabled() {
         return this.enabled;
     }
 
-    public List<String> getOptions(){
+    public List<String> getOptions() {
         return new ArrayList<>(Arrays.asList("depth", "freq"));
     }
 
-    public void updateConfig(){
+    public void updateConfig() {
         this.tremoloPcmAudioFilter.setDepth(this.depth)
                 .setFrequency(this.frequency);
     }
 
-    public AudioFilter create(AudioDataFormat format, FloatPcmAudioFilter output){
+    public AudioFilter create(AudioDataFormat format, FloatPcmAudioFilter output) {
 
         this.tremoloPcmAudioFilter = new TremoloPcmAudioFilter(output, format.channelCount, format.sampleRate)
                 .setDepth(this.depth)

@@ -15,7 +15,7 @@ public class DistortionConfig extends FilterConfig {
     public DistortionPcmAudioFilter distortionPcmAudioFilter;
     private boolean enabled = false;
 
-    public DistortionConfig(){
+    public DistortionConfig() {
         super("distortion");
     }
 
@@ -27,28 +27,28 @@ public class DistortionConfig extends FilterConfig {
         this.scale = scale;
     }
 
-    public void disable(){
+    public void disable() {
         this.scale = 1.0f;
         this.enabled = false;
     }
 
-    public void enable(){
+    public void enable() {
         this.enabled = true;
     }
 
-    public boolean isEnabled(){
+    public boolean isEnabled() {
         return this.enabled;
     }
 
-    public List<String> getOptions(){
+    public List<String> getOptions() {
         return new ArrayList<>(Collections.singletonList("scale"));
     }
 
-    public void updateConfig(){
+    public void updateConfig() {
         this.distortionPcmAudioFilter.setScale(this.scale);
     }
 
-    public AudioFilter create(AudioDataFormat format, FloatPcmAudioFilter output){
+    public AudioFilter create(AudioDataFormat format, FloatPcmAudioFilter output) {
 
         this.distortionPcmAudioFilter = new DistortionPcmAudioFilter(output, format.channelCount)
                 .setScale(this.scale);

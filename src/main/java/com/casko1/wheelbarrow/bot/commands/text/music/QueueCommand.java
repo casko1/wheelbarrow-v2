@@ -17,7 +17,7 @@ public class QueueCommand extends Command {
 
     private final QueuePaginator.Builder builder;
 
-    public QueueCommand(QueuePaginator.Builder builder){
+    public QueueCommand(QueuePaginator.Builder builder) {
         this.name = "queue";
         this.help = "Return the current music queue.";
         this.aliases = new String[]{"q"};
@@ -29,7 +29,7 @@ public class QueueCommand extends Command {
     @Override
     protected void execute(CommandEvent event) {
 
-        if(VoiceStateCheckUtil.isEligible(event, false)){
+        if (VoiceStateCheckUtil.isEligible(event, false)) {
 
             GuildMusicManager manager = PlayerManager.getInstance().getMusicManager(event.getGuild());
 
@@ -39,11 +39,11 @@ public class QueueCommand extends Command {
         }
     }
 
-    public void renderQueue(BlockingQueue<AudioTrack> queue, GuildMusicManager manager, CommandEvent event){
+    public void renderQueue(BlockingQueue<AudioTrack> queue, GuildMusicManager manager, CommandEvent event) {
 
         List<String> list = new ArrayList<>();
 
-        for(AudioTrack track : queue){
+        for (AudioTrack track : queue) {
             list.add(track.getInfo().title);
         }
 

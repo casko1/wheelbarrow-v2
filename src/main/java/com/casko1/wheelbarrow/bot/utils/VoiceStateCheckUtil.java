@@ -14,7 +14,7 @@ import net.dv8tion.jda.api.entities.Member;
 public final class VoiceStateCheckUtil {
 
     //override is used for stop and skip command in case audio track somehow ends up null
-    public static boolean isEligible(CommandEvent event, boolean override){
+    public static boolean isEligible(CommandEvent event, boolean override) {
 
         AudioTrack audioTrack = PlayerManager
                 .getInstance()
@@ -28,22 +28,22 @@ public final class VoiceStateCheckUtil {
         Member member = event.getMember();
         GuildVoiceState memberVoiceState = member.getVoiceState();
 
-        if(!memberVoiceState.inAudioChannel()){
+        if (!memberVoiceState.inAudioChannel()) {
             event.reply("You must be in voice channel to use this command.");
             return false;
         }
 
-        if(!selfVoiceState.inAudioChannel()){
+        if (!selfVoiceState.inAudioChannel()) {
             event.reply("I am not currently in a voice channel!");
             return false;
         }
 
-        if(!memberVoiceState.getChannel().equals(selfVoiceState.getChannel())){
+        if (!memberVoiceState.getChannel().equals(selfVoiceState.getChannel())) {
             event.reply("You must be in the same channel as me to use this command!");
             return false;
         }
 
-        if(audioTrack == null && !override){
+        if (audioTrack == null && !override) {
             event.reply("Nothing is playing right now.");
             return false;
         }
