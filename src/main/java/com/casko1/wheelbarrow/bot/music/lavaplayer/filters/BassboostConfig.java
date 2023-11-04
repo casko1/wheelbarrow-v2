@@ -23,12 +23,21 @@ public class BassboostConfig extends FilterConfig {
 
     public void setGain(float gain) {
         float eGain = Math.min(Math.max(gain, 0), 10) / 10;
-        bandMultipliers[0] = (float) 0.3 * eGain;
-        bandMultipliers[1] = (float) 0.57 * eGain;
-        bandMultipliers[2] = (float) 0.7 * eGain;
-        bandMultipliers[3] = (float) -0.028 * eGain;
-        bandMultipliers[4] = (float) -0.08 * eGain;
-        bandMultipliers[5] = (float) -0.04 * eGain;
+        bandMultipliers[0] = 0.2f * eGain;
+        bandMultipliers[1] = 0.15f * eGain;
+        bandMultipliers[2] = 0.1f * eGain;
+        bandMultipliers[3] = 0.05f * eGain;
+        bandMultipliers[4] = 0.0f * eGain;
+        bandMultipliers[5] = -0.05f * eGain;
+        bandMultipliers[6] = -0.1f * eGain;
+        bandMultipliers[7] = -0.1f * eGain;
+        bandMultipliers[8] = -0.1f * eGain;
+        bandMultipliers[9] = -0.1f * eGain;
+        bandMultipliers[10] = -0.1f * eGain;
+        bandMultipliers[11] = -0.1f * eGain;
+        bandMultipliers[12] = -0.1f * eGain;
+        bandMultipliers[13] = -0.1f * eGain;
+        bandMultipliers[14] = -0.1f * eGain;
     }
 
     @Override
