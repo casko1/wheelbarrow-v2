@@ -65,14 +65,15 @@ public class Wheelbarrow {
                 new SkipHybridCommand(),
                 new NowPlayingHybridCommand(),
                 new QueueCommand(paginatorBuilder),
-                new FilterSettingsCommand(),
+                new FilterSettingsHybridCommand(),
                 new LoopHybridCommand(),
                 new SeekCommand(),
                 new RemoveCommand(),
                 new ShuffleHybridCommand(),
-                new ClearCommand(),
+                new ClearHybridCommand(),
                 new PlayHybridCommand(),
-                new InspireMeCommand()
+                new InspireMeCommand(),
+                new PauseHybridCommand()
         );
 
         client.addSlashCommands(
@@ -83,7 +84,10 @@ public class Wheelbarrow {
                 new SkipHybridCommand(),
                 new LoopHybridCommand(),
                 new ShuffleHybridCommand(),
-                new NowPlayingHybridCommand()
+                new NowPlayingHybridCommand(),
+                new FilterSettingsHybridCommand(),
+                new ClearHybridCommand(),
+                new PauseHybridCommand()
         );
 
         if (enableSongDetection.equals("true")) {
