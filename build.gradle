@@ -54,7 +54,7 @@ dependencies {
 }
 
 group = 'com.casko1'
-version = '1.3.3'
+version = '1.3.4'
 description = 'wheelbarrow-bot'
 java.sourceCompatibility = JavaVersion.VERSION_16
 
