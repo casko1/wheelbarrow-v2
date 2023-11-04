@@ -11,6 +11,8 @@ import java.io.File;
 public interface CommonEvent {
     void reply(String message);
 
+    void replyEmbed(EmbedBuilder eb);
+
     void replyEmbed(EmbedBuilder eb, File image);
 
     Guild getGuild();

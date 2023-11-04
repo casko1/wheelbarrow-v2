@@ -25,13 +25,14 @@ public class CommonTextCommandEvent implements CommonEvent {
     }
 
     @Override
+    public void replyEmbed(EmbedBuilder eb) {
+        event.getTextChannel().sendMessageEmbeds(eb.build()).queue();
+    }
+
+    @Override
     public void replyEmbed(EmbedBuilder eb, File image) {
-        if (image != null) {
-            FileUpload fileUpload = FileUpload.fromData(image, "thumbnail.png");
-            event.getTextChannel().sendMessageEmbeds(eb.build()).addFiles(fileUpload).queue();
-        } else {
-            event.getTextChannel().sendMessageEmbeds(eb.build()).queue();
-        }
+        FileUpload fileUpload = FileUpload.fromData(image, "thumbnail.png");
+        event.getTextChannel().sendMessageEmbeds(eb.build()).addFiles(fileUpload).queue();
     }
 
     @Override

@@ -139,13 +139,12 @@ public class AudioResultHandler implements AudioLoadResultHandler {
 
         if (addTrackData.getThumbnail().equals("attachment")) {
             //default case
-
             eb.setThumbnail("attachment://thumbnail.png");
             event.replyEmbed(eb, defaultImage);
         } else {
             //spotify api has found thumbnail
             eb.setThumbnail(addTrackData.getThumbnail());
-            event.replyEmbed(eb, null);
+            event.replyEmbed(eb);
         }
     }
 }

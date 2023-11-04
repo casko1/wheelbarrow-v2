@@ -58,7 +58,7 @@ public class NowPlayingHybridCommand extends SimpleHybridCommand {
         } else {
             //spotify api has found thumbnail
             eb.setThumbnail(addTrackData.getThumbnail());
-            event.replyEmbed(eb, null);
+            event.replyEmbed(eb);
         }
     }
 }
