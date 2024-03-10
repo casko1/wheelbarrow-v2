@@ -14,6 +14,8 @@ repositories {
         }
     }
     mavenLocal()
+    mavenCentral()
+
     maven {
         url = uri('https://m2.dv8tion.net/releases')
     }
@@ -24,6 +26,10 @@ repositories {
 
     maven {
         url = uri('https://repo.maven.apache.org/maven2/')
+    }
+
+    maven {
+        url = uri('https://maven.lavalink.dev/snapshots')
     }
 
     maven {
@@ -46,7 +52,7 @@ dependencies {
     implementation 'com.github.natanbc:lavadsp:0.7.7'
     implementation 'ch.qos.logback:logback-classic:1.2.10'
     implementation 'commons-validator:commons-validator:1.7'
-    implementation 'dev.arbjerg:lavaplayer:2.0.0'
+    implementation("dev.arbjerg:lavaplayer:727959e9f621fc457b3a5adafcfffb55fdeaa538-SNAPSHOT")
     implementation 'commons-io:commons-io:2.11.0'
     implementation 'net.bramp.ffmpeg:ffmpeg:0.6.2'
     implementation 'io.sfrei:tracksearch:0.7.1'
