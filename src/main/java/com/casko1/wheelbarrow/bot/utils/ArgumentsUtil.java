@@ -24,15 +24,6 @@ public final class ArgumentsUtil {
         }
     }
 
-    public static boolean isDouble(String arg) {
-        try {
-            Double.parseDouble(arg);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
     public static boolean isInteger(String arg) {
         try {
             Integer.parseInt(arg);
