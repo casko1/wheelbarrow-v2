@@ -132,7 +132,7 @@ public class PlayHybridCommand extends SlashCommand {
 
     private List<YouTubeTrack> getYouTubeTracks(String query) {
         try {
-            return searchClient.getTracksForSearch(query).getTracks();
+            return searchClient.getTracksForSearch(query).next();
         } catch (TrackSearchException | NullPointerException e) {
             return Collections.emptyList();
         }
