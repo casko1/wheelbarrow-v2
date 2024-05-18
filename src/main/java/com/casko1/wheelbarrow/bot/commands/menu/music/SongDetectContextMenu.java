@@ -40,8 +40,6 @@ public class SongDetectContextMenu extends MessageContextMenu {
             return;
         }
         String type = ArgumentsUtil.getUrlContentType(url);
-        logger.info(type);
-        logger.info(url);
 
         if (!ArgumentsUtil.isValidVideoType(type)) {
             event.getHook().editOriginal("Unsupported video format or the URL cannot be read from." +

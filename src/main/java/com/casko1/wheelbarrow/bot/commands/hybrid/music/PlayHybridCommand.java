@@ -38,7 +38,14 @@ public class PlayHybridCommand extends SlashCommand {
     public PlayHybridCommand() {
         this.name = "play";
         this.help = "Plays a song or playlist from specified url or query.";
-        this.children = new SlashCommand[]{new Url(), new Search()};
+        this.options = Arrays.asList(
+                new OptionData(
+                        OptionType.STRING, "url-or-search", "URL or name of the song/playlist, optionally select an option from the list", true, true
+                ),
+                new OptionData(
+                        OptionType.BOOLEAN, "shuffle", "Shuffle the playlist", false
+                )
+        );
         this.guildOnly = false;
         this.searchClient = new YouTubeClient();
     }
@@ -50,11 +57,34 @@ public class PlayHybridCommand extends SlashCommand {
 
     @Override
     protected void execute(SlashCommandEvent event) {
+        event.deferReply().queue();
+        PlayHybridCommand.this.executeCommand(new PlaySlashCommandEvent(event));
     }
 
+    @Override
     public void onAutoComplete(CommandAutoCompleteInteractionEvent event) {
         super.onAutoComplete(event);
-        this.children[1].onAutoComplete(event);
+        String query = event.getOption("url-or-search").getAsString();
+        if (query.length() <= 3 || ArgumentsUtil.isUrl(query)) {
+            event.replyChoices(Collections.emptyList()).queue();
+            return;
+        }
+
+        List<Command.Choice> choice = new ArrayList<>();
+        List<YouTubeTrack> results = getYouTubeTracks(query);
+
+        if (results.size() > 0) {
+            for (int i = 0; i < Math.min(results.size(), 10); i++) {
+                YouTubeTrack track = results.get(i);
+                String title = track.getTitle();
+                String clampedTitle = title.substring(0, Math.min(100, title.length()));
+                choice.add(new Command.Choice(clampedTitle, track.getUrl()));
+            }
+
+            event.replyChoices(choice).queue();
+        } else {
+            event.replyChoices(Collections.emptyList()).queue();
+        }
     }
 
     public void executeCommand(PlayEvent event) {
@@ -139,72 +169,6 @@ public class PlayHybridCommand extends SlashCommand {
         } catch (TrackSearchException | NullPointerException e) {
             logger.error("An error occurred while searching for tracks: {}", e.toString());
             return Collections.emptyList();
-        }
-    }
-
-    private class Url extends SlashCommand {
-
-        public Url() {
-            this.name = "url";
-            this.options = Arrays.asList(
-                    new OptionData(
-                            OptionType.STRING, "url", "URL of the song/playlist", true
-                    ),
-                    new OptionData(
-                            OptionType.BOOLEAN, "shuffle", "Shuffle the playlist", false
-                    )
-            );
-        }
-
-        @Override
-        protected void execute(SlashCommandEvent event) {
-            event.deferReply().queue();
-            PlayHybridCommand.this.executeCommand(new PlaySlashCommandEvent(event, false));
-        }
-    }
-
-    private class Search extends SlashCommand {
-
-        public Search() {
-            this.name = "search";
-            this.options = Arrays.asList(
-                    new OptionData(
-                            OptionType.STRING, "query", "Name of the song/playlist", true, true
-                    ),
-                    new OptionData(
-                            OptionType.BOOLEAN, "shuffle", "Shuffle the playlist", false
-                    )
-            );
-        }
-
-        @Override
-        protected void execute(SlashCommandEvent event) {
-            event.deferReply().queue();
-            PlayHybridCommand.this.executeCommand(new PlaySlashCommandEvent(event, true));
-        }
-
-        @Override
-        public void onAutoComplete(CommandAutoCompleteInteractionEvent event) {
-            super.onAutoComplete(event);
-            String query = event.getOption("query").getAsString();
-            if (query.length() <= 3) {
-                event.replyChoices(Collections.emptyList()).queue();
-                return;
-            }
-
-            List<Command.Choice> choice = new ArrayList<>();
-            List<YouTubeTrack> results = getYouTubeTracks(query);
-
-            if (results.size() > 0) {
-                for (int i = 0; i < Math.min(results.size(), 10); i++) {
-                    YouTubeTrack track = results.get(i);
-                    choice.add(new Command.Choice(track.getTitle(), track.getUrl()));
-                }
-
-                event.replyChoices(choice).queue();
-            } else {
-                event.replyChoices(Collections.emptyList()).queue();
-            }
         }
     }
 }
