@@ -19,7 +19,7 @@ public class SkipHybridCommand extends SimpleHybridCommand {
         if (VoiceStateCheckUtil.isEligible(event, true)) {
             GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
 
-            event.reply("Skipped current track.");
+            event.reply("Skipped current track");
             musicManager.trackScheduler.nextTrack();
         }
     }

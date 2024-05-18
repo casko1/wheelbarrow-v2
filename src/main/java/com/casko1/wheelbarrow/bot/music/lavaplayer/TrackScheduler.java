@@ -7,6 +7,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,6 +18,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class TrackScheduler extends AudioEventAdapter {
+
+    private static final Logger logger = LoggerFactory.getLogger(TrackScheduler.class);
 
     public final AudioPlayer player;
     public BlockingQueue<AudioTrack> queue;
@@ -93,9 +97,10 @@ public class TrackScheduler extends AudioEventAdapter {
 
     @Override
     public void onTrackException(AudioPlayer player, AudioTrack track, FriendlyException exception) {
+        logger.error("An error occurred while playing the track: {}", exception.toString());
         PlayerManager playerManager = PlayerManager.getInstance();
         TextChannel textChannel = playerManager.getTextChannel(guild);
-        textChannel.sendMessage("There was an error playing that track.").queue();
+        textChannel.sendMessage("There was an error playing that track").queue();
     }
 
     public void nextTrack() {
@@ -104,7 +109,7 @@ public class TrackScheduler extends AudioEventAdapter {
             this.player.stopTrack();
             PlayerManager playerManager = PlayerManager.getInstance();
             TextChannel textChannel = playerManager.getTextChannel(guild);
-            textChannel.sendMessage("Nothing left to play. Leaving the voice channel.").queue();
+            textChannel.sendMessage("Nothing left to play. Leaving the voice channel").queue();
             playerManager.removeTextChannel(guild);
             guild.getAudioManager().closeAudioConnection();
             playerManager.removeMusicManager(guild.getIdLong());

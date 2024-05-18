@@ -4,12 +4,16 @@ import com.casko1.wheelbarrow.bot.utils.ArgumentsUtil;
 import com.casko1.wheelbarrow.bot.utils.PropertiesUtil;
 import com.jagrosh.jdautilities.command.MessageContextMenu;
 import com.jagrosh.jdautilities.command.MessageContextMenuEvent;
+import kong.unirest.HttpResponse;
+import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
 import kong.unirest.json.JSONObject;
 import net.bramp.ffmpeg.FFmpeg;
 import net.bramp.ffmpeg.FFmpegExecutor;
 import net.bramp.ffmpeg.FFprobe;
 import net.bramp.ffmpeg.builder.FFmpegBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +23,8 @@ import java.util.function.Consumer;
 
 
 public class SongDetectContextMenu extends MessageContextMenu {
+
+    private static final Logger logger = LoggerFactory.getLogger(SongDetectContextMenu.class);
 
     public SongDetectContextMenu() {
         this.name = "detect song";
@@ -33,8 +39,11 @@ public class SongDetectContextMenu extends MessageContextMenu {
             event.getHook().editOriginal("Cannot find audio to recognize").queue();
             return;
         }
+        String type = ArgumentsUtil.getUrlContentType(url);
+        logger.info(type);
+        logger.info(url);
 
-        if (!ArgumentsUtil.isValidVideoType(ArgumentsUtil.getUrlContentType(url))) {
+        if (!ArgumentsUtil.isValidVideoType(type)) {
             event.getHook().editOriginal("Unsupported video format or the URL cannot be read from." +
                     " Try uploading the file").queue();
             return;
@@ -76,6 +85,7 @@ public class SongDetectContextMenu extends MessageContextMenu {
 
                 getTrack(out, (r) -> callback.accept(r, out));
             } catch (IOException e) {
+                logger.error("An error occurred while processing audio file with ffmpeg: {}", e.toString());
                 callback.accept(null, null);
             }
         }).start();
@@ -86,15 +96,24 @@ public class SongDetectContextMenu extends MessageContextMenu {
                 .header("x-rapidapi-host", "shazam-core.p.rapidapi.com")
                 .header("x-rapidapi-key", PropertiesUtil.getInstance().getProperty("shazamCoreApi"))
                 .field("file", file, "audio/ogg")
-                .asJsonAsync(response -> response.ifSuccess(r -> callback.accept(response.getBody().getObject()))
-                        .ifFailure(f -> callback.accept(null)));
+                .asJsonAsync(response -> processApiResponse(response, callback));
+    }
+
+    private void processApiResponse(HttpResponse<JsonNode> response, Consumer<JSONObject> callback) {
+        if (response.isSuccess()) {
+            callback.accept(response.getBody().getObject());
+        } else {
+            logger.error("An error occurred while calling shazam API: {}", response.getStatusText());
+            callback.accept(null);
+        }
     }
 
     private void deleteTempFile(File outFile) {
         new Thread(() -> {
             try {
                 Thread.sleep(5000);
-            } catch (InterruptedException ignored) {
+            } catch (InterruptedException e) {
+                logger.error("An error occurred while deleting temporary file: {}", e.toString());
             }
             outFile.delete();
         }).start();

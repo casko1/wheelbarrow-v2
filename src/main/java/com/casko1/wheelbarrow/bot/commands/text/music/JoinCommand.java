@@ -25,7 +25,7 @@ public class JoinCommand extends Command {
         GuildVoiceState selfVoiceState = self.getVoiceState();
 
         if (selfVoiceState.inAudioChannel()) {
-            event.reply("Already in voice channel.");
+            event.reply("Already in voice channel");
             return;
         }
 
@@ -33,7 +33,7 @@ public class JoinCommand extends Command {
         GuildVoiceState memberVoiceState = member.getVoiceState();
 
         if (!memberVoiceState.inAudioChannel()) {
-            event.reply("You must be in voice channel to use this command.");
+            event.reply("You must be in voice channel to use this command");
             return;
         }
 
@@ -46,6 +46,6 @@ public class JoinCommand extends Command {
 
         PlayerManager.getInstance().setTextChannel(event.getGuild(), channel);
 
-        event.replyFormatted("Joining %s.", voiceChannel.getName());
+        event.replyFormatted("Joining %s", voiceChannel.getName());
     }
 }

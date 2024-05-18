@@ -35,7 +35,7 @@ public class StopHybridCommand extends SimpleHybridCommand {
 
             PlayerManager.getInstance().removeMusicManager(guild.getIdLong());
 
-            event.reply("Leaving the voice channel.");
+            event.reply("Leaving the voice channel");
         }
     }
 }

@@ -21,6 +21,8 @@ import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.managers.AudioManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +32,7 @@ import java.util.List;
 @SuppressWarnings("ConstantConditions")
 public class PlayHybridCommand extends SlashCommand {
 
+    private static final Logger logger = LoggerFactory.getLogger(PlayHybridCommand.class);
     private final YouTubeClient searchClient;
 
     public PlayHybridCommand() {
@@ -62,14 +65,14 @@ public class PlayHybridCommand extends SlashCommand {
         GuildVoiceState memberVoiceState = member.getVoiceState();
 
         if (!memberVoiceState.inAudioChannel()) {
-            event.reply("You must be in voice channel to use this command.");
+            event.reply("You must be in voice channel to use this command");
             return;
         }
 
         if (!event.verifyCommandArguments()) return;
 
         if (!event.isUrl()) {
-            List<YouTubeTrack> results = getYouTubeTracks(event.getUrl());
+            List<YouTubeTrack> results = getYouTubeTracks(event.getArgs());
             if (results.isEmpty()) {
                 event.reply("No results found");
                 return;
@@ -81,7 +84,7 @@ public class PlayHybridCommand extends SlashCommand {
         if (!selfVoiceState.inAudioChannel()) {
             joinVoiceChannel(event, memberVoiceState, channel);
         } else if (!memberVoiceState.getChannel().equals(selfVoiceState.getChannel())) {
-            event.reply("You must be in the same channel as me to use this command!");
+            event.reply("You must be in the same channel as me to use this command");
             return;
         }
 
@@ -100,15 +103,15 @@ public class PlayHybridCommand extends SlashCommand {
 
     private void parseAndPlay(PlayEvent event, Member member) {
 
-        String link = event.getUrl();
+        String args = event.getArgs();
         boolean shuffle = event.getShuffle();
 
-        PlayRequest request = new PlayRequest(event, link, "", true, member, shuffle);
+        PlayRequest request = new PlayRequest(event, args, "", true, member, shuffle);
 
-        switch (ArgumentsUtil.parseURL(link)) {
-            case "spotify.com", "open.spotify.com" -> playSpotify(link, request, member, event);
-            case "soundcloud.com" -> playSoundcloud(event, link, member);
-            case "" -> event.reply("An error occurred. Please try again.");
+        switch (ArgumentsUtil.parseURL(args)) {
+            case "spotify.com", "open.spotify.com" -> playSpotify(args, request, member, event);
+            case "soundcloud.com" -> playSoundcloud(event, args, member);
+            case "" -> event.reply("An error occurred when parsing the URL");
             default -> PlayerManager.getInstance().loadAndPlay(request);
         }
     }
@@ -134,6 +137,7 @@ public class PlayHybridCommand extends SlashCommand {
         try {
             return searchClient.getTracksForSearch(query).next();
         } catch (TrackSearchException | NullPointerException e) {
+            logger.error("An error occurred while searching for tracks: {}", e.toString());
             return Collections.emptyList();
         }
     }
@@ -155,7 +159,7 @@ public class PlayHybridCommand extends SlashCommand {
         @Override
         protected void execute(SlashCommandEvent event) {
             event.deferReply().queue();
-            PlayHybridCommand.this.executeCommand(new PlaySlashCommandEvent(event, true));
+            PlayHybridCommand.this.executeCommand(new PlaySlashCommandEvent(event, false));
         }
     }
 
@@ -176,7 +180,7 @@ public class PlayHybridCommand extends SlashCommand {
         @Override
         protected void execute(SlashCommandEvent event) {
             event.deferReply().queue();
-            PlayHybridCommand.this.executeCommand(new PlaySlashCommandEvent(event, false));
+            PlayHybridCommand.this.executeCommand(new PlaySlashCommandEvent(event, true));
         }
 
         @Override
