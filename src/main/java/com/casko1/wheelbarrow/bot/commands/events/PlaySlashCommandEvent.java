@@ -3,45 +3,49 @@ package com.casko1.wheelbarrow.bot.commands.events;
 import com.casko1.wheelbarrow.bot.commands.interfaces.PlayEvent;
 import com.casko1.wheelbarrow.bot.utils.ArgumentsUtil;
 import com.jagrosh.jdautilities.command.SlashCommandEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 
 public class PlaySlashCommandEvent extends CommonSlashCommandEvent implements PlayEvent {
-    private final boolean isQuery;
 
-    public PlaySlashCommandEvent(SlashCommandEvent event, boolean isQuery) {
+    private String args;
+    private final boolean isUrl;
+
+    public PlaySlashCommandEvent(SlashCommandEvent event) {
         super(event);
-        this.isQuery = isQuery;
+        this.args = initializeArgs(event);
+        this.isUrl = ArgumentsUtil.isUrl(args);
+    }
+
+    private String initializeArgs(SlashCommandEvent event) {
+        OptionMapping argsOption = event.getOption("url-or-search");
+        return argsOption == null ? "" : argsOption.getAsString();
     }
 
     @Override
     public String getArgs() {
-        return event.hasOption("url") ? event.getOption("url").getAsString() : event.getOption("query").getAsString();
+        return args;
     }
 
     @Override
     public boolean getShuffle() {
-        return event.hasOption("shuffle") && event.getOption("shuffle").getAsBoolean();
+        OptionMapping shuffleOption = event.getOption("shuffle");
+        return shuffleOption != null && shuffleOption.getAsBoolean();
     }
 
     @Override
     public boolean isUrl() {
-        return true;
+        return isUrl;
     }
 
     @Override
     public void setUrl(String url) {
+        args = url;
     }
 
     @Override
     public boolean verifyCommandArguments() {
-        boolean isUrl = ArgumentsUtil.isUrl(getArgs());
-
-        if (!isUrl) {
-            if (!isQuery) {
-                reply("You must provide an URL when using this command");
-            } else {
-                reply("You must select an option from the list");
-            }
-
+        if (args.length() == 0) {
+            reply("URL/Search cannot be empty");
             return false;
         } else {
             return true;
