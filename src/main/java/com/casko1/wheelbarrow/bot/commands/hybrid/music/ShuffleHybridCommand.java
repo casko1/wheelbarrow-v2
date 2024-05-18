@@ -21,7 +21,7 @@ public class ShuffleHybridCommand extends SimpleHybridCommand {
 
             trackScheduler.shuffle();
 
-            event.reply("Shuffled current queue.");
+            event.reply("Shuffled current queue");
         }
     }
 }

@@ -31,13 +31,13 @@ public class RemoveCommand extends Command {
                 int position = Integer.parseInt(args[0]);
 
                 if (position < 1 || position > trackScheduler.queue.size()) {
-                    event.reply("Position out of bounds.");
+                    event.reply("Position out of bounds");
                 } else {
                     trackScheduler.remove(position);
                     event.reply(String.format("Removed track at position %d", position));
                 }
             } else {
-                event.reply("Incorrect command usage.");
+                event.reply("Incorrect command usage");
             }
         }
 

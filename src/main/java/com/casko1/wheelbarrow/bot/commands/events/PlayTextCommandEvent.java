@@ -31,12 +31,7 @@ public class PlayTextCommandEvent extends CommonTextCommandEvent implements Play
     }
 
     @Override
-    public AudioManager getAudioManager() {
-        return getGuild().getAudioManager();
-    }
-
-    @Override
-    public String getUrl() {
+    public String getArgs() {
         return args;
     }
 
@@ -65,7 +60,7 @@ public class PlayTextCommandEvent extends CommonTextCommandEvent implements Play
     @Override
     public boolean verifyCommandArguments() {
         if (event.getArgs().isBlank()) {
-            event.reply("You need to provide link or a query.");
+            event.reply("You need to provide link or a query");
             return false;
         }
 

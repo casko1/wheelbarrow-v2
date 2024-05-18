@@ -25,9 +25,9 @@ import java.util.EnumSet;
 import java.util.Properties;
 
 public class Wheelbarrow {
-    public static void main(String[] args) throws IOException, IllegalArgumentException {
+    private static final Logger logger = LoggerFactory.getLogger(Wheelbarrow.class);
 
-        Logger logger = LoggerFactory.getLogger(Wheelbarrow.class);
+    public static void main(String[] args) throws IOException, IllegalArgumentException {
 
         Properties config = PropertiesUtil.getInstance();
 

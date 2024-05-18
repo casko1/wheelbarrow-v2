@@ -11,6 +11,8 @@ import com.wrapper.spotify.requests.data.playlists.GetPlaylistsItemsRequest;
 import com.wrapper.spotify.requests.data.search.simplified.SearchTracksRequest;
 import com.wrapper.spotify.requests.data.tracks.GetTrackRequest;
 import org.apache.hc.core5.http.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,6 +30,8 @@ import java.util.stream.Collectors;
 
 public final class TrackUtil {
 
+    private static final Logger logger = LoggerFactory.getLogger(TrackUtil.class);
+
     public static String getThumbnail(String query, SpotifyApi spotifyApi, ClientCredentials clientCredentials) {
         String res = "attachment";
 
@@ -43,9 +47,10 @@ public final class TrackUtil {
 
     private static String getNewAccessToken(SpotifyApi spotifyApi, ClientCredentials clientCredentials) {
         try {
+            logger.info("Attempting to renew spotify token");
             clientCredentials = spotifyApi.clientCredentials().build().execute();
         } catch (IOException | SpotifyWebApiException | ParseException e) {
-            System.out.println(e);
+            logger.error("An error occurred while renewing spotify token: {}", e.toString());
         }
         return clientCredentials.getAccessToken();
     }
@@ -72,6 +77,7 @@ public final class TrackUtil {
             return searchTracksRequest.execute();
         } catch (IOException | SpotifyWebApiException | ParseException e) {
             spotifyApi.setAccessToken(getNewAccessToken(spotifyApi, clientCredentials));
+            logger.error("An error occurred while accessing spotify API: {}", e.toString());
             return queryTracks(query, spotifyApi, clientCredentials);
         }
     }

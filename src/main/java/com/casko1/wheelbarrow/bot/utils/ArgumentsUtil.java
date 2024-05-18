@@ -3,6 +3,8 @@ package com.casko1.wheelbarrow.bot.utils;
 import kong.unirest.Unirest;
 import net.dv8tion.jda.api.entities.Message;
 import org.apache.commons.validator.routines.UrlValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -11,6 +13,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public final class ArgumentsUtil {
+
+    private static final Logger logger = LoggerFactory.getLogger(ArgumentsUtil.class);
 
     static Set<String> allowedVideoTypes = new HashSet<>(Arrays.asList("video/quicktime", "video/mp4", "audio/mpeg",
             "video/webm", "video/mpeg", "audio/ogg", "video/ogg", "audio/opus"));
@@ -49,6 +53,7 @@ public final class ArgumentsUtil {
                 URI link = new URI(url);
                 return link.getHost().toLowerCase();
             } catch (URISyntaxException e) {
+                logger.error("An error occurred while parsing track url: {}", e.toString());
                 return "";
             }
         }

@@ -43,22 +43,22 @@ public final class VoiceStateCheckUtil {
         GuildVoiceState memberVoiceState = member.getVoiceState();
 
         if (!memberVoiceState.inAudioChannel()) {
-            event.reply("You must be in voice channel to use this command.");
+            event.reply("You must be in voice channel to use this command");
             return false;
         }
 
         if (!selfVoiceState.inAudioChannel()) {
-            event.reply("I am not currently in a voice channel!");
+            event.reply("I am not currently in a voice channel");
             return false;
         }
 
         if (!memberVoiceState.getChannel().equals(selfVoiceState.getChannel())) {
-            event.reply("You must be in the same channel as me to use this command!");
+            event.reply("You must be in the same channel as me to use this command");
             return false;
         }
 
         if (audioTrack == null && !override) {
-            event.reply("Nothing is playing right now.");
+            event.reply("Nothing is playing right now");
             return false;
         }
 

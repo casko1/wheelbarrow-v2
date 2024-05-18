@@ -11,6 +11,8 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -19,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class WeatherSlashCommand extends SlashCommand {
+
+    private static final Logger logger = LoggerFactory.getLogger(WeatherSlashCommand.class);
 
     private final String weatherToken;
     private String location;
@@ -44,7 +48,10 @@ public class WeatherSlashCommand extends SlashCommand {
                             MessageEmbed em = parseWeatherData(r);
                             event.getHook().editOriginalEmbeds(em).queue();
                         })
-                        .ifFailure(e -> event.getHook().editOriginal("An error occurred. Please try again.").queue()));
+                        .ifFailure(e -> {
+                            logger.error("An error occurred while executing Weather command: {}", e.toString());
+                            event.getHook().editOriginal("An error occurred while executing Weather command").queue();
+                        }));
 
     }
 

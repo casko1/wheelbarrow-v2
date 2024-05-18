@@ -12,6 +12,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
 import net.dv8tion.jda.api.EmbedBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.File;
@@ -19,6 +21,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class AudioResultHandler implements AudioLoadResultHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(AudioResultHandler.class);
 
     private final TrackScheduler scheduler;
     private final PlayRequest request;
@@ -57,7 +61,7 @@ public class AudioResultHandler implements AudioLoadResultHandler {
     @Override
     public void playlistLoaded(AudioPlaylist audioPlaylist) {
         if (audioPlaylist.getTracks().isEmpty()) {
-            request.getEvent().reply("There was an issue playing that track. ");
+            request.getEvent().reply("There was an issue playing that track");
             return;
         }
 
@@ -119,8 +123,10 @@ public class AudioResultHandler implements AudioLoadResultHandler {
 
     @Override
     public void loadFailed(FriendlyException e) {
+        logger.error("Loading track failed: {}", e.toString());
+
         if (!request.isPlaylist()) {
-            request.getEvent().reply("Loading failed.");
+            request.getEvent().reply("Loading failed");
         }
     }
 

@@ -25,9 +25,9 @@ public class PauseHybridCommand extends SimpleHybridCommand {
             player.setPaused(!isPaused);
 
             if (isPaused) {
-                event.reply(":arrow_forward: Un-pausing playback.");
+                event.reply(":arrow_forward: Un-pausing playback");
             } else {
-                event.reply(":pause_button: Pausing playback.");
+                event.reply(":pause_button: Pausing playback");
             }
         }
     }

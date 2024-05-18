@@ -20,7 +20,7 @@ public class ClearHybridCommand extends SimpleHybridCommand {
             GuildMusicManager manager = PlayerManager.getInstance().getMusicManager(event.getGuild());
             manager.trackScheduler.queue.clear();
 
-            event.reply("Cleared the entire queue.");
+            event.reply("Cleared the entire queue");
         }
     }
 }
