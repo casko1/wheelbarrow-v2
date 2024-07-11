@@ -56,9 +56,8 @@ jobs:
       uses: appleboy/ssh-action@v0.1.8
       with:
         host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
+        key: ${{ secrets.SSH_KEY }}
         script: |
           cd wheelbarrow-v2
           . ./deploy.sh wheelbarrow-bot-${{ env.version }}.jar
