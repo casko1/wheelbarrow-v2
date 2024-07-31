@@ -12,8 +12,7 @@ import com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceM
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
-import dev.lavalink.youtube.clients.MusicWithThumbnail;
-import dev.lavalink.youtube.clients.WebWithThumbnail;
+import dev.lavalink.youtube.clients.*;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -59,7 +58,14 @@ public class PlayerManager {
         this.clientCredentials = spotifyApi.clientCredentials().build().execute();
 
         this.spotifyApi.setAccessToken(clientCredentials.getAccessToken());
-        YoutubeAudioSourceManager youtubeSourceManager = new YoutubeAudioSourceManager(true, new MusicWithThumbnail(), new WebWithThumbnail());
+        YoutubeAudioSourceManager youtubeSourceManager = new YoutubeAudioSourceManager(
+                true,
+                new TvHtml5EmbeddedWithThumbnail(),
+                new MusicWithThumbnail(),
+                new WebWithThumbnail(),
+                new AndroidTestsuiteWithThumbnail(),
+                new AndroidMusicWithThumbnail()
+                );
         this.audioPlayerManager.registerSourceManager(youtubeSourceManager);
         this.audioPlayerManager.registerSourceManager(SoundCloudAudioSourceManager.createDefault());
         AudioSourceManagers.registerLocalSource(this.audioPlayerManager);
