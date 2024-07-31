@@ -8,18 +8,10 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.source.bandcamp.BandcampAudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.source.beam.BeamAudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.source.getyarn.GetyarnAudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.source.nico.NicoAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.source.vimeo.VimeoAudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.source.yamusic.YandexMusicAudioSourceManager;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
-import dev.lavalink.youtube.clients.AndroidWithThumbnail;
 import dev.lavalink.youtube.clients.MusicWithThumbnail;
 import dev.lavalink.youtube.clients.WebWithThumbnail;
 import net.dv8tion.jda.api.entities.Guild;
@@ -67,15 +59,9 @@ public class PlayerManager {
         this.clientCredentials = spotifyApi.clientCredentials().build().execute();
 
         this.spotifyApi.setAccessToken(clientCredentials.getAccessToken());
-        this.audioPlayerManager.registerSourceManager(new YoutubeAudioSourceManager(true, new MusicWithThumbnail(), new WebWithThumbnail(), new AndroidWithThumbnail()));
-        this.audioPlayerManager.registerSourceManager(new YandexMusicAudioSourceManager(true));
+        YoutubeAudioSourceManager youtubeSourceManager = new YoutubeAudioSourceManager(true, new MusicWithThumbnail(), new WebWithThumbnail());
+        this.audioPlayerManager.registerSourceManager(youtubeSourceManager);
         this.audioPlayerManager.registerSourceManager(SoundCloudAudioSourceManager.createDefault());
-        this.audioPlayerManager.registerSourceManager(new BandcampAudioSourceManager());
-        this.audioPlayerManager.registerSourceManager(new VimeoAudioSourceManager());
-        this.audioPlayerManager.registerSourceManager(new TwitchStreamAudioSourceManager());
-        this.audioPlayerManager.registerSourceManager(new BeamAudioSourceManager());
-        this.audioPlayerManager.registerSourceManager(new GetyarnAudioSourceManager());
-        this.audioPlayerManager.registerSourceManager(new NicoAudioSourceManager());
         AudioSourceManagers.registerLocalSource(this.audioPlayerManager);
     }
 
