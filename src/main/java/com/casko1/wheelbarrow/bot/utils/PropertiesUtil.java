@@ -23,6 +23,8 @@ public final class PropertiesUtil {
             p.setProperty("enableSongDetection", "false");
             p.setProperty("shazamCoreApiKey", "replaceShazamCoreApiKey");
             p.setProperty("enableApi", "false");
+            p.setProperty("poToken", "replaceWithPoToken");
+            p.setProperty("visitorData", "replaceWithVisitorData");
 
             p.store(os, "Automatically generated properties file. For basic functionality " +
                     "only botToken is required");
