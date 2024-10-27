@@ -83,8 +83,8 @@ public class PlayerManager {
     }
 
     private void setPoTokenAndVisitorData(Properties config) {
-        String poToken = config.getProperty("poToken");
-        String visitorData = config.getProperty("visitorData");
+        String poToken = config.getProperty("poToken", "replaceWithPoToken");
+        String visitorData = config.getProperty("visitorData", "replaceWithVisitorData");
         if (!poToken.equals("replaceWithPoToken") && !visitorData.equals("replaceWithVisitorData")) {
             Web.setPoTokenAndVisitorData(poToken, visitorData);
         }

@@ -8,11 +8,6 @@ plugins {
 }
 
 repositories {
-    jcenter {
-        content {
-            includeGroupByRegex "com\\.github\\.natanbc.*"
-        }
-    }
     mavenLocal()
     mavenCentral()
 
@@ -32,7 +27,6 @@ repositories {
         url = uri('https://repo.maven.apache.org/maven2/')
     }
 
-
     maven {
         url = uri('https://jitpack.io')
     }
@@ -50,7 +44,6 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0'
     implementation 'com.konghq:unirest-java:3.11.11'
     implementation 'se.michaelthelin.spotify:spotify-web-api-java:6.5.4'
-    implementation 'com.github.natanbc:lavadsp:0.7.7'
     implementation 'ch.qos.logback:logback-classic:1.5.0'
     implementation 'commons-validator:commons-validator:1.7'
     implementation 'dev.lavalink.youtube:v2:1.8.3'
@@ -59,6 +52,7 @@ dependencies {
     implementation 'net.bramp.ffmpeg:ffmpeg:0.6.2'
     implementation 'io.sfrei:tracksearch:0.9.0'
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+    implementation 'com.github.JustRed23:lavadsp:0.7.7-1'
 }
 
 group = 'com.casko1'
