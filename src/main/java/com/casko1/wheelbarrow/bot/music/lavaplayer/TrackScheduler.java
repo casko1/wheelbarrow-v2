@@ -25,6 +25,7 @@ public class TrackScheduler extends AudioEventAdapter {
     public BlockingQueue<AudioTrack> queue;
     private final Guild guild;
     private boolean loop = false;
+    private long lastExceptionTimestamp = 0L;
 
     public TrackScheduler(AudioPlayer player, Guild guild) {
         this.player = player;
@@ -98,9 +99,14 @@ public class TrackScheduler extends AudioEventAdapter {
     @Override
     public void onTrackException(AudioPlayer player, AudioTrack track, FriendlyException exception) {
         logger.error("An error occurred while playing the track: {}", exception.toString());
-        PlayerManager playerManager = PlayerManager.getInstance();
-        TextChannel textChannel = playerManager.getTextChannel(guild);
-        textChannel.sendMessage("There was an error playing that track").queue();
+        long currentTime = System.currentTimeMillis();
+        // Throttle to 1 track exception message per 10 seconds in case of a broken playlist
+        if (currentTime - lastExceptionTimestamp > 10000L) {
+            lastExceptionTimestamp = currentTime;
+            PlayerManager playerManager = PlayerManager.getInstance();
+            TextChannel textChannel = playerManager.getTextChannel(guild);
+            textChannel.sendMessage("There was an error playing that track").queue();
+        }
     }
 
     public void nextTrack() {
