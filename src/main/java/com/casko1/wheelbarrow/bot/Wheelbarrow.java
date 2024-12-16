@@ -103,8 +103,7 @@ public class Wheelbarrow {
                         GatewayIntent.GUILD_MESSAGES,
                         GatewayIntent.GUILD_VOICE_STATES,
                         GatewayIntent.GUILD_MESSAGE_REACTIONS,
-                        GatewayIntent.MESSAGE_CONTENT,
-                        GatewayIntent.GUILD_EMOJIS_AND_STICKERS
+                        GatewayIntent.MESSAGE_CONTENT
                 )
                 .disableCache(EnumSet.of(
                         CacheFlag.CLIENT_STATUS,
