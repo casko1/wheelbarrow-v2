@@ -6,6 +6,8 @@ services:
       weatherToken: "replaceWithOpenWeatherToken"
       poToken: "replaceWithPoToken"
       visitorData: "replaceWithVisitorData"
+      spotifyId: "replaceWithSpotifyId"
+      spotifySecret: "replaceWithSpotifySecret"
     build:
       context: .
       dockerfile: Dockerfile
