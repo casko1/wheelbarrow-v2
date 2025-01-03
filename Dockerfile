@@ -18,4 +18,4 @@ RUN apt-get -y update && \
     /app/python-api/venv/bin/pip install -r /app/python-api/requirements.txt
 
 EXPOSE 5000
-CMD ["sh", "-c", "java -jar app.jar & /app/python-api/venv/bin/uvicorn python-api.app:app --reload --port 5000"]
+CMD ["sh", "-c", "java -jar app.jar & /app/python-api/venv/bin/uvicorn python-api.app:app --port 5000"]
