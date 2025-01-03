@@ -35,6 +35,8 @@ buildNumber.properties
 # Gradle:
 .idea/gradle.xml
 .idea/libraries
+venv/*
+venv
 
 # Mongo Explorer plugin:
 # .idea/mongoSettings.xml

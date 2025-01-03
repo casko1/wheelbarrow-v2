@@ -1,7 +1,6 @@
 package com.casko1.wheelbarrow.bot.commands.menu.music;
 
 import com.casko1.wheelbarrow.bot.utils.ArgumentsUtil;
-import com.casko1.wheelbarrow.bot.utils.PropertiesUtil;
 import com.jagrosh.jdautilities.command.MessageContextMenu;
 import com.jagrosh.jdautilities.command.MessageContextMenuEvent;
 import kong.unirest.HttpResponse;
@@ -50,13 +49,13 @@ public class SongDetectContextMenu extends MessageContextMenu {
         recognize(url, (r, f) -> {
             if (f == null || r == null) {
                 event.getHook().editOriginal("An error occurred").queue();
-            } else if (!r.has("track")) {
+            } else if (!r.has("result")) {
                 event.getHook().editOriginal("No matches found").queue();
             } else {
-                String title = r.getJSONObject("track").getString("title");
-                String author = r.getJSONObject("track").getString("subtitle");
-                event.getHook().editOriginal(url + "\nDetected song: **" + title +
-                        "** by **" + author + "**").queue();
+                JSONObject res = r.getJSONObject("result");
+                String title = res.getJSONObject("track").getString("title");
+                String author = res.getJSONObject("track").getString("subtitle");
+                event.getHook().editOriginal(url + "\nDetected song: **" + title + "** by **" + author + "**").queue();
             }
             deleteTempFile(f);
         });
@@ -90,9 +89,7 @@ public class SongDetectContextMenu extends MessageContextMenu {
     }
 
     private void getTrack(File file, Consumer<JSONObject> callback) throws IOException {
-        Unirest.post("https://shazam-core.p.rapidapi.com/v1/tracks/recognize")
-                .header("x-rapidapi-host", "shazam-core.p.rapidapi.com")
-                .header("x-rapidapi-key", PropertiesUtil.getInstance().getProperty("shazamCoreApi"))
+        Unirest.post("http://localhost:5000/detect/")
                 .field("file", file, "audio/ogg")
                 .asJsonAsync(response -> processApiResponse(response, callback));
     }

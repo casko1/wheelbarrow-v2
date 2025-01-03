@@ -8,8 +8,6 @@ import com.casko1.wheelbarrow.bot.commands.text.basic.InspireMeCommand;
 import com.casko1.wheelbarrow.bot.commands.text.basic.PingCommand;
 import com.casko1.wheelbarrow.bot.commands.text.music.*;
 import com.casko1.wheelbarrow.bot.music.QueuePaginator;
-import com.casko1.wheelbarrow.bot.server.ApiMessageServer;
-import com.casko1.wheelbarrow.bot.utils.PropertiesUtil;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.JDABuilder;
@@ -20,32 +18,21 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.EnumSet;
-import java.util.Properties;
 
 public class Wheelbarrow {
     private static final Logger logger = LoggerFactory.getLogger(Wheelbarrow.class);
 
-    public static void main(String[] args) throws IOException, IllegalArgumentException {
+    public static void main(String[] args) throws IllegalArgumentException {
+        String token = System.getenv("botToken");
 
-        Properties config = PropertiesUtil.getInstance();
-
-        if (config == null) {
-            logger.info("Generating properties file. Please enter your bot token in wheelbarrow.properties file!");
+        if (token.equals("replaceWithBotToken")) {
+            logger.error("Bot token not provided, make sure to supply it when executing the app");
             return;
         }
 
-        if (config.getProperty("botToken").equals("replaceWithBotToken")) {
-            logger.info("Detected default botToken value. Please enter your bot token in wheelbarrow.properties file!");
-            return;
-        }
-
-        String token = config.getProperty("botToken");
-        String ownerId = config.getProperty("ownerId");
-        String weatherToken = config.getProperty("weatherToken");
-        String enableApi = config.getProperty("enableApi");
-        String enableSongDetection = config.getProperty("enableSongDetection");
+        String weatherToken = System.getenv("weatherToken");
+        String ownerId = System.getenv("ownerId");
 
         EventWaiter waiter = new EventWaiter();
         EventWaiter reactionWaiter = new EventWaiter();
@@ -90,9 +77,7 @@ public class Wheelbarrow {
                 new PauseHybridCommand()
         );
 
-        if (enableSongDetection.equals("true")) {
-            client.addContextMenu(new SongDetectContextMenu());
-        }
+        client.addContextMenu(new SongDetectContextMenu());
 
         //used for development
         //client.forceGuildOnly("guildId");
@@ -116,11 +101,5 @@ public class Wheelbarrow {
                 .setActivity(Activity.playing("loading..."))
                 .addEventListeners(waiter, reactionWaiter, client.build())
                 .build(); //start the bot
-
-
-        if (enableApi.equals("true")) {
-            new ApiMessageServer();
-        }
-
     }
 }

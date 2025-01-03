@@ -1,0 +1,14 @@
+services:
+  app:
+    environment:
+      botToken: "replaceWithBotToken"
+      ownerId: "replaceWithOwnerId"
+      weatherToken: "replaceWithOpenWeatherToken"
+      poToken: "replaceWithPoToken"
+      visitorData: "replaceWithVisitorData"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000" # Python API
+    restart: unless-stopped

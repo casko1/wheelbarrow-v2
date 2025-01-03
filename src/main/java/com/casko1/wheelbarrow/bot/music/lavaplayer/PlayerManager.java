@@ -2,7 +2,6 @@ package com.casko1.wheelbarrow.bot.music.lavaplayer;
 
 import com.casko1.wheelbarrow.bot.commands.interfaces.PlayEvent;
 import com.casko1.wheelbarrow.bot.entities.PlayRequest;
-import com.casko1.wheelbarrow.bot.utils.PropertiesUtil;
 import com.casko1.wheelbarrow.bot.utils.TrackUtil;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
@@ -36,11 +35,8 @@ public class PlayerManager {
 
 
     public PlayerManager() throws IOException, ParseException, SpotifyWebApiException {
-        Properties config = PropertiesUtil.getInstance();
-
-        assert config != null;
-        String spotifyId = config.getProperty("spotifyId");
-        String spotifySecret = config.getProperty("spotifySecret");
+        String spotifyId = System.getenv("spotifyId");
+        String spotifySecret = System.getenv("spotifySecret");
 
         this.musicManagers = new HashMap<>();
         this.textChannelManagers = new HashMap<>();
@@ -58,7 +54,7 @@ public class PlayerManager {
         this.clientCredentials = spotifyApi.clientCredentials().build().execute();
 
         this.spotifyApi.setAccessToken(clientCredentials.getAccessToken());
-        setPoTokenAndVisitorData(config);
+        setPoTokenAndVisitorData();
         YoutubeAudioSourceManager youtubeSourceManager = new YoutubeAudioSourceManager(
                 true,
                 new TvHtml5EmbeddedWithThumbnail(),
@@ -81,9 +77,9 @@ public class PlayerManager {
         });
     }
 
-    private void setPoTokenAndVisitorData(Properties config) {
-        String poToken = config.getProperty("poToken", "replaceWithPoToken");
-        String visitorData = config.getProperty("visitorData", "replaceWithVisitorData");
+    private void setPoTokenAndVisitorData() {
+        String poToken = System.getenv("poToken");
+        String visitorData = System.getenv("visitorData");
         if (!poToken.equals("replaceWithPoToken") && !visitorData.equals("replaceWithVisitorData")) {
             Web.setPoTokenAndVisitorData(poToken, visitorData);
         }

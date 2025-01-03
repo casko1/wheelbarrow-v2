@@ -38,21 +38,24 @@ public class WeatherSlashCommand extends SlashCommand {
     protected void execute(SlashCommandEvent event) throws ArrayIndexOutOfBoundsException {
         event.deferReply().queue();
 
-        location = event.getOption("location").getAsString();
+        if (weatherToken == null) {
+            event.getHook().editOriginal("Weather token not provided").queue();
+        } else {
+            location = event.getOption("location").getAsString();
 
-        Unirest.get("https://api.openweathermap.org/data/2.5/forecast?q={location}&appid={token}")
-                .routeParam("location", location)
-                .routeParam("token", weatherToken)
-                .asJsonAsync(response -> response
-                        .ifSuccess(r -> {
-                            MessageEmbed em = parseWeatherData(r);
-                            event.getHook().editOriginalEmbeds(em).queue();
-                        })
-                        .ifFailure(e -> {
-                            logger.error("An error occurred while executing Weather command: {}", e.toString());
-                            event.getHook().editOriginal("An error occurred while executing Weather command").queue();
-                        }));
-
+            Unirest.get("https://api.openweathermap.org/data/2.5/forecast?q={location}&appid={token}")
+                    .routeParam("location", location)
+                    .routeParam("token", weatherToken)
+                    .asJsonAsync(response -> response
+                            .ifSuccess(r -> {
+                                MessageEmbed em = parseWeatherData(r);
+                                event.getHook().editOriginalEmbeds(em).queue();
+                            })
+                            .ifFailure(e -> {
+                                logger.error("An error occurred while executing Weather command: {}", e.toString());
+                                event.getHook().editOriginal("An error occurred while executing Weather command").queue();
+                            }));
+        }
     }
 
     private MessageEmbed parseWeatherData(HttpResponse<JsonNode> data) {
