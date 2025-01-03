@@ -21,4 +21,4 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd wheelbarrow-v2/repo
-            . ./docker-deploy.sh
+            . ./docker-deploy.sh >/dev/null 2>&1
