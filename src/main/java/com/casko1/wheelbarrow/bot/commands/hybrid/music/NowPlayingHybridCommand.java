@@ -1,8 +1,8 @@
 package com.casko1.wheelbarrow.bot.commands.hybrid.music;
 
-import com.casko1.wheelbarrow.bot.commands.hybrid.SimpleHybridCommand;
-import com.casko1.wheelbarrow.bot.commands.interfaces.CommonEvent;
 import com.casko1.wheelbarrow.bot.entities.AdditionalTrackData;
+import com.casko1.wheelbarrow.bot.lib.command.HybridCommand;
+import com.casko1.wheelbarrow.bot.lib.event.CommonEvent;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.GuildMusicManager;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.PlayerManager;
 import com.casko1.wheelbarrow.bot.utils.TimeConverterUtil;
@@ -14,13 +14,11 @@ import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
 
-public class NowPlayingHybridCommand extends SimpleHybridCommand {
+public class NowPlayingHybridCommand extends HybridCommand {
 
     public NowPlayingHybridCommand() {
         this.name = "nowplaying";
-        this.help = "Displays information about current track.";
-        this.guildOnly = false;
-        this.aliases = new String[]{"np"};
+        this.description = "Displays information about current track.";
     }
 
     @Override

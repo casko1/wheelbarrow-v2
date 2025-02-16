@@ -1,17 +1,16 @@
 package com.casko1.wheelbarrow.bot.commands.hybrid.music;
 
-import com.casko1.wheelbarrow.bot.commands.hybrid.SimpleHybridCommand;
-import com.casko1.wheelbarrow.bot.commands.interfaces.CommonEvent;
+import com.casko1.wheelbarrow.bot.lib.command.HybridCommand;
+import com.casko1.wheelbarrow.bot.lib.event.CommonEvent;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.GuildMusicManager;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.PlayerManager;
 import com.casko1.wheelbarrow.bot.utils.VoiceStateCheckUtil;
 
-public class LoopHybridCommand extends SimpleHybridCommand {
+public class LoopHybridCommand extends HybridCommand {
 
     public LoopHybridCommand() {
         this.name = "loop";
-        this.help = "Loops current track";
-        this.guildOnly = false;
+        this.description = "Loops current track";
     }
 
     @Override

@@ -4,11 +4,12 @@ import com.casko1.wheelbarrow.bot.commands.events.PlaySlashCommandEvent;
 import com.casko1.wheelbarrow.bot.commands.events.PlayTextCommandEvent;
 import com.casko1.wheelbarrow.bot.commands.interfaces.PlayEvent;
 import com.casko1.wheelbarrow.bot.entities.PlayRequest;
+import com.casko1.wheelbarrow.bot.lib.command.HybridCommand;
+import com.casko1.wheelbarrow.bot.lib.event.CommonEvent;
+import com.casko1.wheelbarrow.bot.lib.event.SlashCommandEvent;
+import com.casko1.wheelbarrow.bot.lib.event.TextCommandEvent;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.PlayerManager;
 import com.casko1.wheelbarrow.bot.utils.ArgumentsUtil;
-import com.jagrosh.jdautilities.command.CommandEvent;
-import com.jagrosh.jdautilities.command.SlashCommand;
-import com.jagrosh.jdautilities.command.SlashCommandEvent;
 import io.sfrei.tracksearch.clients.youtube.YouTubeClient;
 import io.sfrei.tracksearch.exceptions.TrackSearchException;
 import io.sfrei.tracksearch.tracks.YouTubeTrack;
@@ -25,20 +26,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
-public class PlayHybridCommand extends SlashCommand {
+public class PlayHybridCommand extends HybridCommand {
 
     private static final Logger logger = LoggerFactory.getLogger(PlayHybridCommand.class);
     private final YouTubeClient searchClient;
 
     public PlayHybridCommand() {
         this.name = "play";
-        this.help = "Plays a song or playlist from specified url or query.";
-        this.options = Arrays.asList(
+        this.description = "Plays a song or playlist from specified url or query.";
+        this.options = List.of(
                 new OptionData(
                         OptionType.STRING, "url-or-search", "URL or name of the song/playlist, optionally select an option from the list", true, true
                 ),
@@ -46,19 +46,22 @@ public class PlayHybridCommand extends SlashCommand {
                         OptionType.BOOLEAN, "shuffle", "Shuffle the playlist", false
                 )
         );
-        this.guildOnly = false;
+        //this.guildOnly = false;
         this.searchClient = new YouTubeClient();
     }
 
     @Override
-    protected void execute(CommandEvent event) {
+    public void execute(TextCommandEvent event) {
         executeCommand(new PlayTextCommandEvent(event));
     }
 
     @Override
-    protected void execute(SlashCommandEvent event) {
-        event.deferReply().queue();
-        PlayHybridCommand.this.executeCommand(new PlaySlashCommandEvent(event));
+    protected void execute(CommonEvent event) {}
+
+    @Override
+    public void execute(SlashCommandEvent event) {
+        event.deferReply();
+        executeCommand(new PlaySlashCommandEvent(event));
     }
 
     @Override
@@ -102,7 +105,7 @@ public class PlayHybridCommand extends SlashCommand {
         if (!event.verifyCommandArguments()) return;
 
         if (!event.isUrl()) {
-            List<YouTubeTrack> results = getYouTubeTracks(event.getArgs());
+            List<YouTubeTrack> results = getYouTubeTracks(event.getQuery());
             if (results.isEmpty()) {
                 event.reply("No results found");
                 return;
@@ -132,8 +135,7 @@ public class PlayHybridCommand extends SlashCommand {
     }
 
     private void parseAndPlay(PlayEvent event, Member member) {
-
-        String args = event.getArgs();
+        String args = event.getQuery();
         boolean shuffle = event.getShuffle();
 
         PlayRequest request = new PlayRequest(event, args, "", true, member, shuffle);

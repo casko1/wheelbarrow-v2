@@ -1,11 +1,7 @@
 package com.casko1.wheelbarrow.bot.utils;
 
-import com.casko1.wheelbarrow.bot.commands.events.CommonSlashCommandEvent;
-import com.casko1.wheelbarrow.bot.commands.events.CommonTextCommandEvent;
-import com.casko1.wheelbarrow.bot.commands.interfaces.CommonEvent;
+import com.casko1.wheelbarrow.bot.lib.event.CommonEvent;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.PlayerManager;
-import com.jagrosh.jdautilities.command.CommandEvent;
-import com.jagrosh.jdautilities.command.SlashCommandEvent;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
@@ -19,14 +15,6 @@ import net.dv8tion.jda.api.entities.Member;
 public final class VoiceStateCheckUtil {
 
     //override is used for stop and skip command in case audio track somehow ends up null
-    public static boolean isEligible(CommandEvent event, boolean override) {
-        return isEligible(new CommonTextCommandEvent(event), override);
-    }
-
-    public static boolean isEligible(SlashCommandEvent event, boolean override) {
-        return isEligible(new CommonSlashCommandEvent(event), override);
-    }
-
     public static boolean isEligible(CommonEvent event, boolean override) {
         Guild guild = event.getGuild();
 

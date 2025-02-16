@@ -1,20 +1,19 @@
 package com.casko1.wheelbarrow.bot.commands.hybrid.music;
 
-import com.casko1.wheelbarrow.bot.commands.hybrid.SimpleHybridCommand;
-import com.casko1.wheelbarrow.bot.commands.interfaces.CommonEvent;
+import com.casko1.wheelbarrow.bot.lib.command.HybridCommand;
+import com.casko1.wheelbarrow.bot.lib.event.CommonEvent;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.GuildMusicManager;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.PlayerManager;
 import com.casko1.wheelbarrow.bot.utils.VoiceStateCheckUtil;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.managers.AudioManager;
 
-public class StopHybridCommand extends SimpleHybridCommand {
+public class StopHybridCommand extends HybridCommand {
 
     public StopHybridCommand() {
         this.name = "stop";
-        this.help = "Makes the bot stop playing music.";
-        this.guildOnly = false;
-        this.aliases = new String[]{"leave", "disconnect", "exit"};
+        this.description = "Makes the bot stop playing music.";
+        //this.aliases = new String[]{"leave", "disconnect", "exit"};
     }
 
     @Override

@@ -1,18 +1,17 @@
 package com.casko1.wheelbarrow.bot.commands.hybrid.music;
 
-import com.casko1.wheelbarrow.bot.commands.hybrid.SimpleHybridCommand;
-import com.casko1.wheelbarrow.bot.commands.interfaces.CommonEvent;
+import com.casko1.wheelbarrow.bot.lib.command.HybridCommand;
+import com.casko1.wheelbarrow.bot.lib.event.CommonEvent;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.GuildMusicManager;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.PlayerManager;
 import com.casko1.wheelbarrow.bot.utils.VoiceStateCheckUtil;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 
-public class PauseHybridCommand extends SimpleHybridCommand {
+public class PauseHybridCommand extends HybridCommand {
 
     public PauseHybridCommand() {
         this.name = "pause";
-        this.help = "Pauses the current track";
-        this.guildOnly = false;
+        this.description = "Pauses the current track";
     }
 
     @Override

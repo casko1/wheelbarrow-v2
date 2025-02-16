@@ -1,8 +1,8 @@
 package com.casko1.wheelbarrow.bot.commands.text.music;
 
+import com.casko1.wheelbarrow.bot.lib.command.TextCommand;
+import com.casko1.wheelbarrow.bot.lib.event.TextCommandEvent;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.PlayerManager;
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -10,17 +10,15 @@ import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
 
 @SuppressWarnings("ConstantConditions")
-public class JoinCommand extends Command {
+public class JoinCommand extends TextCommand {
 
     public JoinCommand() {
         this.name = "join";
-        this.help = "Makes bot join the voice channel you are currently in.";
-        this.guildOnly = false;
+        //this.help = "Makes bot join the voice channel you are currently in.";
     }
 
-
     @Override
-    protected void execute(CommandEvent event) {
+    public void execute(TextCommandEvent event) {
         Member self = event.getSelfMember();
         GuildVoiceState selfVoiceState = self.getVoiceState();
 
@@ -46,6 +44,6 @@ public class JoinCommand extends Command {
 
         PlayerManager.getInstance().setTextChannel(event.getGuild(), channel);
 
-        event.replyFormatted("Joining %s", voiceChannel.getName());
+        event.reply(String.format("Joining %s", voiceChannel.getName()));
     }
 }

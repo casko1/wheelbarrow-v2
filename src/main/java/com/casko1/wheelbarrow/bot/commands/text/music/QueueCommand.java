@@ -1,11 +1,11 @@
 package com.casko1.wheelbarrow.bot.commands.text.music;
 
+import com.casko1.wheelbarrow.bot.lib.command.TextCommand;
+import com.casko1.wheelbarrow.bot.lib.event.TextCommandEvent;
 import com.casko1.wheelbarrow.bot.music.QueuePaginator;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.GuildMusicManager;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.PlayerManager;
 import com.casko1.wheelbarrow.bot.utils.VoiceStateCheckUtil;
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import java.awt.*;
@@ -13,21 +13,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
-public class QueueCommand extends Command {
+public class QueueCommand extends TextCommand {
 
     private final QueuePaginator.Builder builder;
 
     public QueueCommand(QueuePaginator.Builder builder) {
         this.name = "queue";
-        this.help = "Return the current music queue.";
-        this.aliases = new String[]{"q"};
-        this.guildOnly = false;
         this.builder = builder;
     }
 
 
     @Override
-    protected void execute(CommandEvent event) {
+    public void execute(TextCommandEvent event) {
 
         if (VoiceStateCheckUtil.isEligible(event, false)) {
 
@@ -39,7 +36,7 @@ public class QueueCommand extends Command {
         }
     }
 
-    public void renderQueue(BlockingQueue<AudioTrack> queue, GuildMusicManager manager, CommandEvent event) {
+    public void renderQueue(BlockingQueue<AudioTrack> queue, GuildMusicManager manager, TextCommandEvent event) {
 
         List<String> list = new ArrayList<>();
 

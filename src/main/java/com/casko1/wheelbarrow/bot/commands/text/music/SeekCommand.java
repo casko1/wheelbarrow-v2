@@ -1,5 +1,7 @@
 package com.casko1.wheelbarrow.bot.commands.text.music;
 
+import com.casko1.wheelbarrow.bot.lib.command.TextCommand;
+import com.casko1.wheelbarrow.bot.lib.event.TextCommandEvent;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.GuildMusicManager;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.PlayerManager;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.TrackScheduler;
@@ -9,24 +11,23 @@ import com.casko1.wheelbarrow.bot.utils.VoiceStateCheckUtil;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
-public class SeekCommand extends Command {
+public class SeekCommand extends TextCommand {
 
     public SeekCommand() {
         this.name = "seek";
-        this.help = "Seeks current track to specified timestamp (in seconds)";
-        this.arguments = "<timestamp in seconds>";
-        this.guildOnly = false;
+        this.description = "Seeks current track to specified timestamp (in seconds)";
+        this.usage = "<timestamp in seconds>";
     }
 
 
     @Override
-    protected void execute(CommandEvent event) {
+    public void execute(TextCommandEvent event) {
         if (VoiceStateCheckUtil.isEligible(event, false)) {
             GuildMusicManager guildMusicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
 
             TrackScheduler trackScheduler = guildMusicManager.trackScheduler;
 
-            String[] args = event.getArgs().split(" ");
+            String[] args = event.getArgs();
 
             if (ArgumentsUtil.isInteger(args[0]) && trackScheduler.seek((long) Integer.parseInt(args[0]) * 1000)) {
                 sendTimestampMessage(event, Integer.parseInt(args[0]), trackScheduler.player.getPlayingTrack().getDuration());
@@ -37,7 +38,7 @@ public class SeekCommand extends Command {
     }
 
 
-    private void sendTimestampMessage(CommandEvent event, int timeStamp, long trackDuration) {
+    private void sendTimestampMessage(TextCommandEvent event, int timeStamp, long trackDuration) {
 
         if (timeStamp <= 0) {
             event.reply("Seeking current track to 0:00");

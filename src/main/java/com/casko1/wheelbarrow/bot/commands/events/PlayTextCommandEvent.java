@@ -1,6 +1,7 @@
 package com.casko1.wheelbarrow.bot.commands.events;
 
 import com.casko1.wheelbarrow.bot.commands.interfaces.PlayEvent;
+import com.casko1.wheelbarrow.bot.lib.event.TextCommandEvent;
 import com.casko1.wheelbarrow.bot.utils.ArgumentsUtil;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import net.dv8tion.jda.api.managers.AudioManager;
@@ -10,41 +11,39 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PlayTextCommandEvent extends CommonTextCommandEvent implements PlayEvent {
+public class PlayTextCommandEvent extends TextCommandEvent implements PlayEvent {
     private final boolean isUrl;
     private final boolean shuffle;
-    private String args;
+    private String query;
 
 
-    public PlayTextCommandEvent(CommandEvent event) {
-        super(event);
-        shuffle = setShuffle(event);
+    public PlayTextCommandEvent(TextCommandEvent event) {
+        super(event.getEvent(), event.getArgs());
+        String[] inputArgs = event.getArgs();
+        shuffle = setShuffle(inputArgs);
 
         if (shuffle) {
-            String[] split = event.getArgs().split("\\s+");
-            args = Arrays.stream(split).limit(split.length - 1).collect(Collectors.joining("\\s+"));
-        } else {
-            args = event.getArgs();
+            query = Arrays.stream(inputArgs).limit(inputArgs.length - 1).collect(Collectors.joining("\\s+"));
+        } else if (inputArgs.length > 0) {
+            query = inputArgs[0];
         }
 
-        isUrl = ArgumentsUtil.isUrl(args);
+        isUrl = ArgumentsUtil.isUrl(query);
     }
 
     @Override
-    public String getArgs() {
-        return args;
+    public String getQuery() {
+        return query;
     }
 
     @Override
     public void setUrl(String url) {
-        args = url;
+        query = url;
     }
 
-    private boolean setShuffle(CommandEvent event) {
-        event.getArgs();
-        List<String> split = new ArrayList<>(Arrays.asList(event.getArgs().split("\\s+")));
-
-        return split.get(split.size() - 1).equals("-s");
+    private boolean setShuffle(String[] inputArgs) {
+        int length = inputArgs.length;
+        return inputArgs[length - 1].equals("-s");
     }
 
     @Override
@@ -59,8 +58,8 @@ public class PlayTextCommandEvent extends CommonTextCommandEvent implements Play
 
     @Override
     public boolean verifyCommandArguments() {
-        if (event.getArgs().isBlank()) {
-            event.reply("You need to provide link or a query");
+        if (query.isBlank()) {
+            this.reply("You need to provide link or a query");
             return false;
         }
 

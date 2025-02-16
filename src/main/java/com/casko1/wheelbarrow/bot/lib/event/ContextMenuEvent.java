@@ -1,57 +1,72 @@
-package com.casko1.wheelbarrow.bot.commands.events;
+package com.casko1.wheelbarrow.bot.lib.event;
 
-import com.casko1.wheelbarrow.bot.commands.interfaces.CommonEvent;
-import com.jagrosh.jdautilities.command.SlashCommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.GuildVoiceState;
-import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.events.interaction.command.MessageContextInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.utils.FileUpload;
 
 import java.io.File;
 
-public class CommonSlashCommandEvent implements CommonEvent {
+public class ContextMenuEvent implements CommonEvent {
+    public final MessageContextInteractionEvent event;
 
-    public final SlashCommandEvent event;
-
-    public CommonSlashCommandEvent(SlashCommandEvent event) {
+    public ContextMenuEvent(MessageContextInteractionEvent event) {
         this.event = event;
     }
 
-    @Override
+
     public void reply(String message) {
         event.getHook().editOriginal(message).queue();
     }
 
-    @Override
     public void replyEmbed(EmbedBuilder eb) {
         event.getHook().sendMessageEmbeds(eb.build()).queue();
     }
 
-    @Override
     public void replyEmbed(EmbedBuilder eb, File image) {
         FileUpload fileUpload = FileUpload.fromData(image, "thumbnail.png");
         event.getHook().sendMessageEmbeds(eb.build()).addFiles(fileUpload).queue();
     }
 
-    @Override
+    public void editOriginalEmbeds(MessageEmbed eb) {
+        event.getHook().editOriginalEmbeds(eb).queue();
+    }
+
     public Guild getGuild() {
         return event.getGuild();
     }
 
-    @Override
     public GuildVoiceState getSelfVoiceState() {
         return getGuild().getSelfMember().getVoiceState();
     }
 
-    @Override
     public TextChannel getTextChannel() {
-        return event.getTextChannel();
+        return null;
     }
 
-    @Override
     public Member getMember() {
         return event.getMember();
+    }
+
+    public User getAuthor() {
+        return event.getUser();
+    }
+
+    public MessageContextInteractionEvent getEvent() {
+        return event;
+    }
+
+    public void deferReply() {
+        event.deferReply().queue();
+    }
+
+    public OptionMapping getOption(String name) {
+        return event.getOption(name);
+    }
+
+    public Message getTarget() {
+        return event.getTarget();
     }
 }

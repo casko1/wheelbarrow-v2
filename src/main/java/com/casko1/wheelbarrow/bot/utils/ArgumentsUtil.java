@@ -70,8 +70,8 @@ public final class ArgumentsUtil {
     public static String getContentUrl(Message message) {
         String url = null;
 
-        if (!message.getAttachments().isEmpty()) url = message.getAttachments().get(0).getUrl();
-        if (!message.getEmbeds().isEmpty()) url = message.getEmbeds().get(0).getUrl();
+        if (!message.getAttachments().isEmpty()) url = message.getAttachments().get(0).getProxyUrl();
+        if (!message.getEmbeds().isEmpty()) url = message.getEmbeds().get(0).getVideoInfo().getProxyUrl();
 
         return url;
     }

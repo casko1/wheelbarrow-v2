@@ -1,9 +1,10 @@
-package com.casko1.wheelbarrow.bot.commands.interfaces;
+package com.casko1.wheelbarrow.bot.lib.event;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 import java.io.File;
@@ -22,4 +23,6 @@ public interface CommonEvent {
     TextChannel getTextChannel();
 
     Member getMember();
+
+    User getAuthor();
 }
