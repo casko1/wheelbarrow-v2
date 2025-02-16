@@ -7,6 +7,7 @@ import com.casko1.wheelbarrow.bot.commands.slash.music.FilterSlashCommand;
 import com.casko1.wheelbarrow.bot.commands.text.basic.InspireMeCommand;
 import com.casko1.wheelbarrow.bot.commands.text.basic.PingCommand;
 import com.casko1.wheelbarrow.bot.commands.text.music.*;
+import com.casko1.wheelbarrow.bot.lib.handler.EventHandlerBuilder;
 import com.casko1.wheelbarrow.bot.music.QueuePaginator;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
@@ -23,7 +24,7 @@ import java.util.EnumSet;
 public class Wheelbarrow {
     private static final Logger logger = LoggerFactory.getLogger(Wheelbarrow.class);
 
-    public static void main(String[] args) throws IllegalArgumentException {
+    public static void main(String[] args) throws Exception {
         String token = System.getenv("botToken");
 
         if (token.equals("replaceWithBotToken")) {
@@ -32,55 +33,39 @@ public class Wheelbarrow {
         }
 
         String weatherToken = System.getenv("weatherToken");
-        String ownerId = System.getenv("ownerId");
 
         EventWaiter waiter = new EventWaiter();
         EventWaiter reactionWaiter = new EventWaiter();
 
-        CommandClientBuilder client = new CommandClientBuilder()
-                .setPrefix("--")
-                .setStatus(OnlineStatus.ONLINE)
-                .setOwnerId(ownerId)
-                .setActivity(Activity.playing("-- is my prefix!"));
-
         QueuePaginator.Builder paginatorBuilder = new QueuePaginator.Builder().setEventWaiter(reactionWaiter);
 
-        client.addCommands(
-                new PingCommand(),
-                new JoinCommand(),
-                new StopHybridCommand(),
-                new SkipHybridCommand(),
-                new NowPlayingHybridCommand(),
-                new QueueCommand(paginatorBuilder),
-                new FilterSettingsHybridCommand(),
-                new LoopHybridCommand(),
-                new SeekCommand(),
-                new RemoveCommand(),
-                new ShuffleHybridCommand(),
-                new ClearHybridCommand(),
-                new PlayHybridCommand(),
-                new InspireMeCommand(),
-                new PauseHybridCommand()
-        );
-
-        client.addSlashCommands(
-                new PlayHybridCommand(),
-                new FilterSlashCommand(),
-                new WeatherSlashCommand(weatherToken),
-                new StopHybridCommand(),
-                new SkipHybridCommand(),
-                new LoopHybridCommand(),
-                new ShuffleHybridCommand(),
-                new NowPlayingHybridCommand(),
-                new FilterSettingsHybridCommand(),
-                new ClearHybridCommand(),
-                new PauseHybridCommand()
-        );
-
-        client.addContextMenu(new SongDetectContextMenu());
-
-        //used for development
-        //client.forceGuildOnly("guildId");
+        EventHandlerBuilder handler = new EventHandlerBuilder()
+                .setPrefix("--")
+                .setDevelopmentGuildId(System.getenv("developmentGuildId"))
+                .addTextCommands(
+                        new PingCommand(),
+                        new JoinCommand(),
+                        new QueueCommand(paginatorBuilder),
+                        new InspireMeCommand(),
+                        new SeekCommand(),
+                        new RemoveCommand()
+                )
+                .addHybridCommands(
+                        new PlayHybridCommand(),
+                        new ClearHybridCommand(),
+                        new FilterSettingsHybridCommand(),
+                        new StopHybridCommand(),
+                        new SkipHybridCommand(),
+                        new LoopHybridCommand(),
+                        new ShuffleHybridCommand(),
+                        new NowPlayingHybridCommand(),
+                        new PauseHybridCommand()
+                )
+                .addSlashCommands(
+                        new FilterSlashCommand(),
+                        new WeatherSlashCommand(weatherToken)
+                )
+                .addContextMenuCommands(new SongDetectContextMenu());
 
         JDABuilder.createDefault(
                         token,
@@ -99,7 +84,7 @@ public class Wheelbarrow {
                 .enableCache(CacheFlag.VOICE_STATE)
                 .setStatus(OnlineStatus.DO_NOT_DISTURB)
                 .setActivity(Activity.playing("loading..."))
-                .addEventListeners(waiter, reactionWaiter, client.build())
+                .addEventListeners(waiter, reactionWaiter, handler.build())
                 .build(); //start the bot
     }
 }

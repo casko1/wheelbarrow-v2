@@ -1,7 +1,7 @@
 package com.casko1.wheelbarrow.bot.commands.slash.basic;
 
-import com.jagrosh.jdautilities.command.SlashCommand;
-import com.jagrosh.jdautilities.command.SlashCommandEvent;
+import com.casko1.wheelbarrow.bot.lib.command.SlashCommand;
+import com.casko1.wheelbarrow.bot.lib.event.SlashCommandEvent;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
@@ -18,6 +18,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 public class WeatherSlashCommand extends SlashCommand {
@@ -29,17 +31,17 @@ public class WeatherSlashCommand extends SlashCommand {
 
     public WeatherSlashCommand(String weatherToken) {
         this.name = "weather";
-        this.options.add(new OptionData(OptionType.STRING, "location", "Name of teh location", true));
-        this.guildOnly = false;
+        this.description = "Displays weather information for a specific location.";
+        this.options = List.of(new OptionData(OptionType.STRING, "location", "Name of the location", true));
         this.weatherToken = weatherToken;
     }
 
     @Override
-    protected void execute(SlashCommandEvent event) throws ArrayIndexOutOfBoundsException {
-        event.deferReply().queue();
+    public void execute(SlashCommandEvent event) throws ArrayIndexOutOfBoundsException {
+        event.deferReply();
 
         if (weatherToken == null) {
-            event.getHook().editOriginal("Weather token not provided").queue();
+            event.reply("Weather token not provided");
         } else {
             location = event.getOption("location").getAsString();
 
@@ -49,11 +51,11 @@ public class WeatherSlashCommand extends SlashCommand {
                     .asJsonAsync(response -> response
                             .ifSuccess(r -> {
                                 MessageEmbed em = parseWeatherData(r);
-                                event.getHook().editOriginalEmbeds(em).queue();
+                                event.editOriginalEmbeds(em);
                             })
                             .ifFailure(e -> {
                                 logger.error("An error occurred while executing Weather command: {}", e.toString());
-                                event.getHook().editOriginal("An error occurred while executing Weather command").queue();
+                                event.reply("An error occurred while executing Weather command");
                             }));
         }
     }

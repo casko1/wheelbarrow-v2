@@ -1,8 +1,8 @@
 package com.casko1.wheelbarrow.bot.commands.menu.music;
 
+import com.casko1.wheelbarrow.bot.lib.command.ContextMenuCommand;
+import com.casko1.wheelbarrow.bot.lib.event.ContextMenuEvent;
 import com.casko1.wheelbarrow.bot.utils.ArgumentsUtil;
-import com.jagrosh.jdautilities.command.MessageContextMenu;
-import com.jagrosh.jdautilities.command.MessageContextMenuEvent;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
@@ -21,7 +21,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 
-public class SongDetectContextMenu extends MessageContextMenu {
+public class SongDetectContextMenu extends ContextMenuCommand {
 
     private static final Logger logger = LoggerFactory.getLogger(SongDetectContextMenu.class);
 
@@ -30,32 +30,32 @@ public class SongDetectContextMenu extends MessageContextMenu {
     }
 
     @Override
-    protected void execute(MessageContextMenuEvent event) {
-        event.deferReply().queue();
+    public void execute(ContextMenuEvent event) {
+        event.deferReply();
         String url = ArgumentsUtil.getContentUrl(event.getTarget());
 
         if (url == null) {
-            event.getHook().editOriginal("Cannot find audio to recognize").queue();
+            event.reply("Cannot find audio to recognize");
             return;
         }
         String type = ArgumentsUtil.getUrlContentType(url);
 
         if (!ArgumentsUtil.isValidVideoType(type)) {
-            event.getHook().editOriginal("Unsupported video format or the URL cannot be read from." +
-                    " Try uploading the file").queue();
+            event.reply("Unsupported video format or the URL cannot be read from." +
+                    " Try uploading the file");
             return;
         }
 
         recognize(url, (r, f) -> {
             if (f == null || r == null) {
-                event.getHook().editOriginal("An error occurred").queue();
+                event.reply("An error occurred");
             } else if (!r.has("result")) {
-                event.getHook().editOriginal("No matches found").queue();
+                event.reply("No matches found");
             } else {
                 JSONObject res = r.getJSONObject("result");
                 String title = res.getJSONObject("track").getString("title");
                 String author = res.getJSONObject("track").getString("subtitle");
-                event.getHook().editOriginal(url + "\nDetected song: **" + title + "** by **" + author + "**").queue();
+                event.reply(url + "\nDetected song: **" + title + "** by **" + author + "**");
             }
             deleteTempFile(f);
         });

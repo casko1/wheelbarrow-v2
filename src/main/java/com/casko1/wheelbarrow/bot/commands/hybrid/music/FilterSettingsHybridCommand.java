@@ -1,7 +1,7 @@
 package com.casko1.wheelbarrow.bot.commands.hybrid.music;
 
-import com.casko1.wheelbarrow.bot.commands.hybrid.SimpleHybridCommand;
-import com.casko1.wheelbarrow.bot.commands.interfaces.CommonEvent;
+import com.casko1.wheelbarrow.bot.lib.command.HybridCommand;
+import com.casko1.wheelbarrow.bot.lib.event.CommonEvent;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.GuildMusicManager;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.PlayerManager;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.filters.FilterConfig;
@@ -11,12 +11,11 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import java.awt.*;
 import java.util.HashMap;
 
-public class FilterSettingsHybridCommand extends SimpleHybridCommand {
+public class FilterSettingsHybridCommand extends HybridCommand {
 
     public FilterSettingsHybridCommand() {
         this.name = "filters";
-        this.help = "Displays enabled filters";
-        this.guildOnly = false;
+        this.description = "Displays enabled filters";
     }
 
     @Override

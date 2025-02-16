@@ -1,12 +1,12 @@
 package com.casko1.wheelbarrow.bot.commands.slash.music;
 
+import com.casko1.wheelbarrow.bot.lib.command.SlashCommand;
+import com.casko1.wheelbarrow.bot.lib.event.SlashCommandEvent;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.FilterConfiguration;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.GuildMusicManager;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.PlayerManager;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.filters.FilterConfig;
 import com.casko1.wheelbarrow.bot.utils.ArgumentsUtil;
-import com.jagrosh.jdautilities.command.SlashCommand;
-import com.jagrosh.jdautilities.command.SlashCommandEvent;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -21,16 +21,18 @@ public class FilterSlashCommand extends SlashCommand {
 
     public FilterSlashCommand() {
         this.name = "filter";
-        this.children = new SlashCommand[]{new Type(), new Disable()};
+        this.description = "Applies filter(s) to currently playing track.";
+        this.subcommands = Arrays.asList(new Type(), new Disable());
     }
 
     @Override
-    protected void execute(SlashCommandEvent event) {
+    public void execute(SlashCommandEvent event) {
+        executeCommand(event, event.getEvent().getSubcommandName());
     }
 
     public void executeCommand(SlashCommandEvent event, String subCommand) {
         //TODO check if user is in a voice channel
-        event.deferReply().queue();
+        event.deferReply();
 
         GuildMusicManager guildMusicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
         FilterConfiguration config = guildMusicManager.getFilterConfiguration();
@@ -44,7 +46,7 @@ public class FilterSlashCommand extends SlashCommand {
             String value = event.getOption("value").getAsString();
 
             if (!ArgumentsUtil.isFloat(value)) {
-                event.getHook().editOriginal("Value must be a number").queue();
+                event.reply("Value must be a number");
                 return;
             }
 
@@ -54,19 +56,17 @@ public class FilterSlashCommand extends SlashCommand {
 
     @Override
     public void onAutoComplete(CommandAutoCompleteInteractionEvent event) {
-        super.onAutoComplete(event);
-
         if (event.getSubcommandName().equals("disable")) {
-            this.children[1].onAutoComplete(event);
+            this.subcommands.get(1).onAutoComplete(event);
             return;
         }
 
-        this.children[0].onAutoComplete(event);
+        this.subcommands.get(0).onAutoComplete(event);
     }
 
     private void disableFilter(SlashCommandEvent event, FilterConfig config,
                                GuildMusicManager guildMusicManager, String filterName) {
-        event.getHook().editOriginal(String.format("Disabling **%s** filter.", filterName)).queue();
+        event.reply(String.format("Disabling **%s** filter.", filterName));
         config.disable();
         guildMusicManager.setFilters();
     }
@@ -78,11 +78,11 @@ public class FilterSlashCommand extends SlashCommand {
         boolean enabled = filterConfig.isEnabled();
 
         if (filterConfig.applyConfig(option, factor)) {
-            event.getHook().editOriginal(String.format("Setting %s/**%s** to **%.1fx**", filterName, option, factor)).queue();
+            event.reply(String.format("Setting %s/**%s** to **%.1fx**", filterName, option, factor));
 
             if (!enabled) guildMusicManager.setFilters();
         } else {
-            event.getHook().editOriginal("Incorrect command usage").queue();
+            event.reply("Incorrect command usage");
         }
     }
 
@@ -105,7 +105,8 @@ public class FilterSlashCommand extends SlashCommand {
 
         public Type() {
             this.name = "type";
-            this.options = Arrays.asList(
+            this.description = "Applies filter(s) to currently playing track.";
+            this.options = List.of(
                     new OptionData(OptionType.STRING, "type", "Type of filter", true),
                     new OptionData(OptionType.STRING, "option", "Option of the filter", true, true),
                     //fix that input may be string
@@ -116,9 +117,7 @@ public class FilterSlashCommand extends SlashCommand {
         }
 
         @Override
-        protected void execute(SlashCommandEvent event) {
-            FilterSlashCommand.this.executeCommand(event, "type");
-        }
+        public void execute(SlashCommandEvent event) {}
 
         @Override
         public void onAutoComplete(CommandAutoCompleteInteractionEvent event) {
@@ -146,7 +145,8 @@ public class FilterSlashCommand extends SlashCommand {
 
         public Disable() {
             this.name = "disable";
-            this.options = Collections.singletonList(
+            this.description = "Disable specific filter.";
+            this.options = List.of(
                     new OptionData(
                             OptionType.STRING, "type", "Type of filter", true, true
                     )
@@ -154,14 +154,10 @@ public class FilterSlashCommand extends SlashCommand {
         }
 
         @Override
-        protected void execute(SlashCommandEvent event) {
-            FilterSlashCommand.this.executeCommand(event, "disable");
-        }
+        public void execute(SlashCommandEvent event) {}
 
         @Override
         public void onAutoComplete(CommandAutoCompleteInteractionEvent event) {
-            super.onAutoComplete(event);
-
             GuildMusicManager guildMusicManager = PlayerManager.getInstance().getMusicManager(event.getGuild());
             HashMap<String, FilterConfig> configs = guildMusicManager.getFilterConfiguration().getConfigs();
 

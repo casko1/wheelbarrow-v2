@@ -1,29 +1,28 @@
 package com.casko1.wheelbarrow.bot.commands.events;
 
 import com.casko1.wheelbarrow.bot.commands.interfaces.PlayEvent;
+import com.casko1.wheelbarrow.bot.lib.event.SlashCommandEvent;
 import com.casko1.wheelbarrow.bot.utils.ArgumentsUtil;
-import com.jagrosh.jdautilities.command.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 
-public class PlaySlashCommandEvent extends CommonSlashCommandEvent implements PlayEvent {
-
-    private String args;
+public class PlaySlashCommandEvent extends SlashCommandEvent implements PlayEvent {
+    private String query;
     private final boolean isUrl;
 
     public PlaySlashCommandEvent(SlashCommandEvent event) {
-        super(event);
-        this.args = initializeArgs(event);
-        this.isUrl = ArgumentsUtil.isUrl(args);
+        super(event.getEvent());
+        query = initializeArgs(event);
+        isUrl = ArgumentsUtil.isUrl(query);
     }
 
     private String initializeArgs(SlashCommandEvent event) {
-        OptionMapping argsOption = event.getOption("url-or-search");
+        OptionMapping argsOption = event.getEvent().getOption("url-or-search");
         return argsOption == null ? "" : argsOption.getAsString();
     }
 
     @Override
-    public String getArgs() {
-        return args;
+    public String getQuery() {
+        return query;
     }
 
     @Override
@@ -39,12 +38,12 @@ public class PlaySlashCommandEvent extends CommonSlashCommandEvent implements Pl
 
     @Override
     public void setUrl(String url) {
-        args = url;
+        query = url;
     }
 
     @Override
     public boolean verifyCommandArguments() {
-        if (args.length() == 0) {
+        if (query.length() == 0) {
             reply("URL/Search cannot be empty");
             return false;
         } else {
