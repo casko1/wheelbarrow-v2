@@ -26,4 +26,4 @@ async def detect(file: UploadFile):
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Temporary file could not be deleted: {str(e)}")
 
-    return {"result": result}
+    return {"result": result, "matches": len(result["matches"])}

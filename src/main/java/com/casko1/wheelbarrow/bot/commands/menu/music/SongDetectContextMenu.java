@@ -49,7 +49,7 @@ public class SongDetectContextMenu extends ContextMenuCommand {
         recognize(url, (r, f) -> {
             if (f == null || r == null) {
                 event.reply("An error occurred");
-            } else if (!r.has("result")) {
+            } else if (!r.has("result") || (r.has("matches") && r.getInt("matches") == 0)) {
                 event.reply("No matches found");
             } else {
                 JSONObject res = r.getJSONObject("result");
