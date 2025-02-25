@@ -80,12 +80,14 @@ public class EventHandler extends ListenerAdapter {
         }
 
         if (!developmentGuildId.equals("")) {
+            logger.info("Development server detected, propagating commands to {}", developmentGuildId);
             Guild server = jdaInstance.getGuildById(developmentGuildId);
 
             if (server != null) {
                 server.updateCommands().addCommands(commandData).queue();
             }
         } else {
+            logger.info("No development server detected, propagating commands to all servers");
             jdaInstance.updateCommands().addCommands(commandData).queue();
         }
 
