@@ -66,6 +66,7 @@ public class EventHandler extends ListenerAdapter {
 
         for (HybridCommand command : hybridCommands.values()) {
             logger.info("Registered hybrid command: {}", command.getName());
+            commandData.add(command.buildCommandData());
         }
 
         for (SlashCommand command : slashCommands.values()) {
