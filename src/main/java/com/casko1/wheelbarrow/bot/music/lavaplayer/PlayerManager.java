@@ -54,12 +54,14 @@ public class PlayerManager {
         this.clientCredentials = spotifyApi.clientCredentials().build().execute();
 
         this.spotifyApi.setAccessToken(clientCredentials.getAccessToken());
-        setPoTokenAndVisitorData();
         YoutubeAudioSourceManager youtubeSourceManager = new YoutubeAudioSourceManager(
                 true,
-                new TvHtml5EmbeddedWithThumbnail(),
                 new MusicWithThumbnail(),
-                new WebWithThumbnail(),
+                new TvHtml5EmbeddedWithThumbnail(),
+                new MWebWithThumbnail(),
+                new WebEmbeddedWithThumbnail(),
+                new AndroidVrWithThumbnail(),
+                new IosWithThumbnail(),
                 new AndroidMusicWithThumbnail()
                 );
         this.audioPlayerManager.registerSourceManager(youtubeSourceManager);
@@ -75,14 +77,6 @@ public class PlayerManager {
 
             return guildMusicManager;
         });
-    }
-
-    private void setPoTokenAndVisitorData() {
-        String poToken = System.getenv("poToken");
-        String visitorData = System.getenv("visitorData");
-        if (!poToken.equals("replaceWithPoToken") && !visitorData.equals("replaceWithVisitorData")) {
-            Web.setPoTokenAndVisitorData(poToken, visitorData);
-        }
     }
 
     public void removeMusicManager(Long guild) {

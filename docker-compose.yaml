@@ -4,8 +4,6 @@ services:
       botToken: "replaceWithBotToken"
       ownerId: "replaceWithOwnerId"
       weatherToken: "replaceWithOpenWeatherToken"
-      poToken: "replaceWithPoToken"
-      visitorData: "replaceWithVisitorData"
       spotifyId: "replaceWithSpotifyId"
       spotifySecret: "replaceWithSpotifySecret"
     build:
