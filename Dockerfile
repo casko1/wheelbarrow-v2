@@ -1,10 +1,10 @@
-FROM amazoncorretto:21-alpine AS builder
+FROM amazoncorretto:21 AS builder
 RUN mkdir /project
 COPY . /project
 WORKDIR /project
 RUN gradle clean build
 
-FROM amazoncorretto:21-alpine AS runtime
+FROM amazoncorretto:21 AS runtime
 RUN mkdir /app
 WORKDIR /app
 
