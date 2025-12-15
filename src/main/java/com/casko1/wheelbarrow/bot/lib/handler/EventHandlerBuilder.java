@@ -11,7 +11,7 @@ import java.util.HashMap;
 public class EventHandlerBuilder {
     private String prefix = "";
     private String developmentGuildId = "";
-    private OnlineStatus status = OnlineStatus.ONLINE;
+    private final OnlineStatus status = OnlineStatus.ONLINE;
     private final HashMap<String, TextCommand> textCommands = new HashMap<>();
     private final HashMap<String, SlashCommand> slashCommands = new HashMap<>();
     private final HashMap<String, ContextMenuCommand> contextMenuCommands = new HashMap<>();

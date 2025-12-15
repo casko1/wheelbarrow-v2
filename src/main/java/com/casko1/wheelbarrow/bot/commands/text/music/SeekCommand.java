@@ -8,8 +8,6 @@ import com.casko1.wheelbarrow.bot.music.lavaplayer.TrackScheduler;
 import com.casko1.wheelbarrow.bot.utils.ArgumentsUtil;
 import com.casko1.wheelbarrow.bot.utils.TimeConverterUtil;
 import com.casko1.wheelbarrow.bot.utils.VoiceStateCheckUtil;
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
 
 public class SeekCommand extends TextCommand {
 
@@ -42,11 +40,11 @@ public class SeekCommand extends TextCommand {
 
         if (timeStamp <= 0) {
             event.reply("Seeking current track to 0:00");
-        } else if (timeStamp * 1000 > trackDuration) {
+        } else if (timeStamp * 1000L > trackDuration) {
             event.reply("Seeking beyond song duration. Skipping current track");
         } else {
             event.reply(String.format("Seeking current track to %s",
-                    TimeConverterUtil.getMinutesAndSeconds(timeStamp * 1000)));
+                    TimeConverterUtil.getMinutesAndSeconds(timeStamp * 1000L)));
         }
     }
 }

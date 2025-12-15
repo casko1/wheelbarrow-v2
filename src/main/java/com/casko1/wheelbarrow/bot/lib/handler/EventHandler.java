@@ -1,6 +1,9 @@
 package com.casko1.wheelbarrow.bot.lib.handler;
 
-import com.casko1.wheelbarrow.bot.lib.command.*;
+import com.casko1.wheelbarrow.bot.lib.command.ContextMenuCommand;
+import com.casko1.wheelbarrow.bot.lib.command.HybridCommand;
+import com.casko1.wheelbarrow.bot.lib.command.SlashCommand;
+import com.casko1.wheelbarrow.bot.lib.command.TextCommand;
 import com.casko1.wheelbarrow.bot.lib.event.ContextMenuEvent;
 import com.casko1.wheelbarrow.bot.lib.event.SlashCommandEvent;
 import com.casko1.wheelbarrow.bot.lib.event.TextCommandEvent;

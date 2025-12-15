@@ -56,7 +56,8 @@ public class PlayHybridCommand extends HybridCommand {
     }
 
     @Override
-    protected void execute(CommonEvent event) {}
+    protected void execute(CommonEvent event) {
+    }
 
     @Override
     public void execute(SlashCommandEvent event) {

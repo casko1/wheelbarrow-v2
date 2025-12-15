@@ -20,7 +20,7 @@ public abstract class SlashCommand extends Command implements SlashCommandInterf
         List<SubcommandData> subcommandsData = new ArrayList<>();
 
         if (subcommands != null && !subcommands.isEmpty()) {
-            for (SlashCommand subcommand: subcommands) {
+            for (SlashCommand subcommand : subcommands) {
                 SubcommandData subcommandData = new SubcommandData(subcommand.getName(), subcommand.getDescription());
 
                 if (subcommand.options != null && !subcommand.options.isEmpty()) {
@@ -38,5 +38,6 @@ public abstract class SlashCommand extends Command implements SlashCommandInterf
         return data;
     }
 
-    public void onAutoComplete(CommandAutoCompleteInteractionEvent event) {}
+    public void onAutoComplete(CommandAutoCompleteInteractionEvent event) {
+    }
 }

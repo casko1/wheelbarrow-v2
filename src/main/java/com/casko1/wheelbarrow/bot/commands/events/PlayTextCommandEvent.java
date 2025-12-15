@@ -3,12 +3,8 @@ package com.casko1.wheelbarrow.bot.commands.events;
 import com.casko1.wheelbarrow.bot.commands.interfaces.PlayEvent;
 import com.casko1.wheelbarrow.bot.lib.event.TextCommandEvent;
 import com.casko1.wheelbarrow.bot.utils.ArgumentsUtil;
-import com.jagrosh.jdautilities.command.CommandEvent;
-import net.dv8tion.jda.api.managers.AudioManager;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class PlayTextCommandEvent extends TextCommandEvent implements PlayEvent {

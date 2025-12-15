@@ -6,11 +6,11 @@ import com.casko1.wheelbarrow.bot.utils.TrackUtil;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
-import dev.lavalink.youtube.YoutubeAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceManager;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
+import dev.lavalink.youtube.YoutubeAudioSourceManager;
 import dev.lavalink.youtube.clients.*;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -19,7 +19,10 @@ import org.apache.commons.io.IOUtils;
 import org.apache.hc.core5.http.ParseException;
 
 import java.io.*;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PlayerManager {
     //only one instance
@@ -63,7 +66,7 @@ public class PlayerManager {
                 new AndroidVrWithThumbnail(),
                 new IosWithThumbnail(),
                 new AndroidMusicWithThumbnail()
-                );
+        );
         this.audioPlayerManager.registerSourceManager(youtubeSourceManager);
         this.audioPlayerManager.registerSourceManager(SoundCloudAudioSourceManager.createDefault());
         AudioSourceManagers.registerLocalSource(this.audioPlayerManager);

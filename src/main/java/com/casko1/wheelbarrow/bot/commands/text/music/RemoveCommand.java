@@ -7,8 +7,6 @@ import com.casko1.wheelbarrow.bot.music.lavaplayer.PlayerManager;
 import com.casko1.wheelbarrow.bot.music.lavaplayer.TrackScheduler;
 import com.casko1.wheelbarrow.bot.utils.ArgumentsUtil;
 import com.casko1.wheelbarrow.bot.utils.VoiceStateCheckUtil;
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
 
 public class RemoveCommand extends TextCommand {
 
