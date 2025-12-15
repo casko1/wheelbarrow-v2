@@ -1,4 +1,4 @@
-FROM amazoncorretto:21 AS builder
+FROM gradle:8.7-jdk21 AS builder
 RUN mkdir /project
 COPY . /project
 WORKDIR /project
