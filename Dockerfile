@@ -1,10 +1,10 @@
-FROM gradle:8.7-jdk21 AS builder
+FROM eclipse-temurin:21-jdk-nanoserver AS builder
 RUN mkdir /project
 COPY . /project
 WORKDIR /project
 RUN gradle clean build
 
-FROM amazoncorretto:21 AS runtime
+FROM eclipse-temurin:21-jdk-nanoserver AS runtime
 RUN mkdir /app
 WORKDIR /app
 
