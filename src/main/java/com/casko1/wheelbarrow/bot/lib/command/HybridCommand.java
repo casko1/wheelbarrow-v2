@@ -20,5 +20,6 @@ public abstract class HybridCommand extends SlashCommand implements TextCommandI
 
     protected abstract void execute(CommonEvent event);
 
-    public void onAutoComplete(CommandAutoCompleteInteractionEvent event) {}
+    public void onAutoComplete(CommandAutoCompleteInteractionEvent event) {
+    }
 }

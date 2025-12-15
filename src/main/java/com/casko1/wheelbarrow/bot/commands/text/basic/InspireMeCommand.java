@@ -2,8 +2,6 @@ package com.casko1.wheelbarrow.bot.commands.text.basic;
 
 import com.casko1.wheelbarrow.bot.lib.command.TextCommand;
 import com.casko1.wheelbarrow.bot.lib.event.TextCommandEvent;
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
 import kong.unirest.Unirest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

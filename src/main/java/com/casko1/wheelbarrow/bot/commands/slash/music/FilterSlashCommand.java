@@ -117,7 +117,8 @@ public class FilterSlashCommand extends SlashCommand {
         }
 
         @Override
-        public void execute(SlashCommandEvent event) {}
+        public void execute(SlashCommandEvent event) {
+        }
 
         @Override
         public void onAutoComplete(CommandAutoCompleteInteractionEvent event) {
@@ -154,7 +155,8 @@ public class FilterSlashCommand extends SlashCommand {
         }
 
         @Override
-        public void execute(SlashCommandEvent event) {}
+        public void execute(SlashCommandEvent event) {
+        }
 
         @Override
         public void onAutoComplete(CommandAutoCompleteInteractionEvent event) {
