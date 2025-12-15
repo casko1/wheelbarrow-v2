@@ -10,9 +10,9 @@ WORKDIR /app
 
 COPY --from=builder /project/build/libs/*.jar /app/app.jar
 COPY python-api /app/python-api
-RUN apt-get -y update && \
-    apt-get install -y ffmpeg && \
-    apt-get install -y python3 python3-venv && \
+RUN yum -y update && \
+    yum install -y ffmpeg && \
+    yum install -y python3 python3-venv && \
     python3 -m venv /app/python-api/venv && \
     /app/python-api/venv/bin/pip install --upgrade pip && \
     /app/python-api/venv/bin/pip install -r /app/python-api/requirements.txt
