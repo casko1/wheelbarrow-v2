@@ -1,10 +1,10 @@
-FROM gradle:jdk21-corretto as builder
+FROM amazoncorretto:21-alpine AS builder
 RUN mkdir /project
 COPY . /project
 WORKDIR /project
 RUN gradle clean build
 
-FROM openjdk:21-slim as runtime
+FROM amazoncorretto:21-alpine AS runtime
 RUN mkdir /app
 WORKDIR /app
 
