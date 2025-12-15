@@ -1,10 +1,10 @@
-FROM eclipse-temurin:21-jdk-nanoserver AS builder
+FROM eclipse-temurin:21-jdk AS builder
 RUN mkdir /project
 COPY . /project
 WORKDIR /project
 RUN gradle clean build
 
-FROM eclipse-temurin:21-jdk-nanoserver AS runtime
+FROM eclipse-temurin:21-jdk AS runtime
 RUN mkdir /app
 WORKDIR /app
 
