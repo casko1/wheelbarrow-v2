@@ -60,7 +60,6 @@ public class PlayerManager {
         YoutubeAudioSourceManager youtubeSourceManager = new YoutubeAudioSourceManager(
                 true,
                 new MusicWithThumbnail(),
-                new TvHtml5EmbeddedWithThumbnail(),
                 new MWebWithThumbnail(),
                 new WebEmbeddedWithThumbnail(),
                 new AndroidVrWithThumbnail(),
