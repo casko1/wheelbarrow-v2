@@ -3,18 +3,14 @@ package com.casko1.wheelbarrow.bot.music.lavaplayer;
 import com.casko1.wheelbarrow.bot.commands.interfaces.PlayEvent;
 import com.casko1.wheelbarrow.bot.entities.AdditionalTrackData;
 import com.casko1.wheelbarrow.bot.entities.PlayRequest;
-import com.casko1.wheelbarrow.bot.utils.TrackUtil;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
-import com.wrapper.spotify.SpotifyApi;
-import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.awt.*;
 import java.io.File;
 import java.util.Collections;
@@ -27,16 +23,11 @@ public class AudioResultHandler implements AudioLoadResultHandler {
     private final TrackScheduler scheduler;
     private final PlayRequest request;
     private final File defaultImage;
-    private final SpotifyApi spotifyApi;
-    private final ClientCredentials clientCredentials;
 
-    public AudioResultHandler(PlayRequest request, TrackScheduler scheduler, File defaultImage,
-                              SpotifyApi spotifyApi, ClientCredentials clientCredentials) {
+    public AudioResultHandler(PlayRequest request, TrackScheduler scheduler, File defaultImage) {
         this.scheduler = scheduler;
         this.request = request;
         this.defaultImage = defaultImage;
-        this.spotifyApi = spotifyApi;
-        this.clientCredentials = clientCredentials;
     }
 
 
@@ -46,7 +37,7 @@ public class AudioResultHandler implements AudioLoadResultHandler {
         AudioTrackInfo audioTrackInfo = audioTrack.getInfo();
 
         //url provided so we supply with title
-        String thumbnail = TrackUtil.getThumbnail(audioTrackInfo.title, spotifyApi, clientCredentials);
+        String thumbnail = audioTrackInfo.artworkUrl;
 
         audioTrack.setUserData(new AdditionalTrackData(request.getRequester(),
                 thumbnail,
@@ -67,13 +58,13 @@ public class AudioResultHandler implements AudioLoadResultHandler {
 
         //search result
         if (audioPlaylist.isSearchResult()) {
-            AudioTrack audioTrack = audioPlaylist.getTracks().get(0);
+            AudioTrack audioTrack = audioPlaylist.getTracks().getFirst();
 
             AudioTrackInfo audioTrackInfo = audioTrack.getInfo();
             String thumbnail = "attachment";
 
             if (!request.isPlaylist()) {
-                thumbnail = TrackUtil.getThumbnail(request.getImageSearchString(), spotifyApi, clientCredentials);
+                thumbnail = audioTrackInfo.artworkUrl;
             }
 
             audioTrack.setUserData(new AdditionalTrackData(request.getRequester(),
@@ -148,7 +139,7 @@ public class AudioResultHandler implements AudioLoadResultHandler {
             eb.setThumbnail("attachment://thumbnail.png");
             event.replyEmbed(eb, defaultImage);
         } else {
-            //spotify api has found thumbnail
+            //thumbnail could not be found
             eb.setThumbnail(addTrackData.getThumbnail());
             event.replyEmbed(eb);
         }

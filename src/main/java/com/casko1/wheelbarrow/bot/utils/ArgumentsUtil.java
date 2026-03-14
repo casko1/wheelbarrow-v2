@@ -61,23 +61,17 @@ public final class ArgumentsUtil {
         return "";
     }
 
-    public static String parseSpotifyUrl(String url) {
-        String[] split = url.split("/");
-
-        return split[3];
-    }
-
     public static String getContentUrl(Message message) {
         String url = null;
 
-        if (!message.getAttachments().isEmpty()) url = message.getAttachments().get(0).getProxyUrl();
-        if (!message.getEmbeds().isEmpty()) url = message.getEmbeds().get(0).getVideoInfo().getProxyUrl();
+        if (!message.getAttachments().isEmpty()) url = message.getAttachments().getFirst().getProxyUrl();
+        if (!message.getEmbeds().isEmpty()) url = message.getEmbeds().getFirst().getVideoInfo().getProxyUrl();
 
         return url;
     }
 
     public static String getUrlContentType(String url) {
-        return Unirest.head(url).asString().getHeaders().get("Content-Type").get(0);
+        return Unirest.head(url).asString().getHeaders().get("Content-Type").getFirst();
     }
 
     public static boolean isValidVideoType(String contentType) {
