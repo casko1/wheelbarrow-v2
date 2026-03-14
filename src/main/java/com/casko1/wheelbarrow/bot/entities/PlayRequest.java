@@ -9,17 +9,13 @@ public class PlayRequest {
 
     private final String searchString;
 
-    private final String imageSearchString;
-
     private final boolean isPlaylist;
 
     private final Member requester;
 
-    public PlayRequest(PlayEvent event, String searchString, String imageSearchString,
-                       boolean isPlaylist, Member requester, boolean shuffle) {
+    public PlayRequest(PlayEvent event, String searchString, boolean isPlaylist, Member requester, boolean shuffle) {
         this.event = event;
         this.searchString = searchString;
-        this.imageSearchString = imageSearchString;
         this.isPlaylist = isPlaylist;
         this.requester = requester;
         this.shuffle = shuffle;
@@ -37,10 +33,6 @@ public class PlayRequest {
 
     public String getSearchString() {
         return searchString;
-    }
-
-    public String getImageSearchString() {
-        return imageSearchString;
     }
 
     public boolean isPlaylist() {

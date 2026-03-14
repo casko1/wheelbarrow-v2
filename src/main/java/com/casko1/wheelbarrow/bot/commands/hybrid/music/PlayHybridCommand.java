@@ -77,7 +77,7 @@ public class PlayHybridCommand extends HybridCommand {
         List<Command.Choice> choice = new ArrayList<>();
         List<YouTubeTrack> results = getYouTubeTracks(query);
 
-        if (results.size() > 0) {
+        if (!results.isEmpty()) {
             for (int i = 0; i < Math.min(results.size(), 10); i++) {
                 YouTubeTrack track = results.get(i);
                 String title = track.getTitle();
@@ -112,7 +112,7 @@ public class PlayHybridCommand extends HybridCommand {
                 return;
             }
 
-            event.setUrl(results.get(0).getUrl());
+            event.setUrl(results.getFirst().getUrl());
         }
 
         if (!selfVoiceState.inAudioChannel()) {
@@ -139,31 +139,14 @@ public class PlayHybridCommand extends HybridCommand {
         String args = event.getQuery();
         boolean shuffle = event.getShuffle();
 
-        PlayRequest request = new PlayRequest(event, args, "", true, member, shuffle);
+        PlayRequest request = new PlayRequest(event, args, true, member, shuffle);
 
         switch (ArgumentsUtil.parseURL(args)) {
-            case "spotify.com", "open.spotify.com" -> playSpotify(args, request, member, event);
-            case "soundcloud.com" -> playSoundcloud(event, args, member);
+            case "spotify.com", "open.spotify.com" -> event.reply("Spotify is not supported");
+            case "soundcloud.com" -> event.reply("SoundCloud is not supported");
             case "" -> event.reply("An error occurred when parsing the URL");
             default -> PlayerManager.getInstance().loadAndPlay(request);
         }
-    }
-
-    private void playSpotify(String link, PlayRequest request, Member member, PlayEvent event) {
-        switch (ArgumentsUtil.parseSpotifyUrl(link)) {
-            case "playlist" -> PlayerManager.getInstance().loadSpotifyTracks("playlist", request);
-            case "album" -> PlayerManager.getInstance().loadSpotifyTracks("album", request);
-            case "track" -> PlayerManager.getInstance().loadSpotifyTrack(event, link, member);
-            default -> event.reply("Spotify URL could not be parsed");
-        }
-    }
-
-    private void playSoundcloud(PlayEvent event, String link, Member member) {
-        String query = link;
-        link = "scsearch:" + link;
-        PlayRequest request = new PlayRequest(event, link, query, false, member, false);
-
-        PlayerManager.getInstance().loadAndPlay(request);
     }
 
     private List<YouTubeTrack> getYouTubeTracks(String query) {

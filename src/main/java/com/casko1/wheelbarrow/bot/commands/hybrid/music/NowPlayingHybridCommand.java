@@ -54,7 +54,7 @@ public class NowPlayingHybridCommand extends HybridCommand {
             eb.setThumbnail("attachment://thumbnail.png");
             event.replyEmbed(eb, addTrackData.getDefaultImage());
         } else {
-            //spotify api has found thumbnail
+            //thumbnail could not be found
             eb.setThumbnail(addTrackData.getThumbnail());
             event.replyEmbed(eb);
         }
