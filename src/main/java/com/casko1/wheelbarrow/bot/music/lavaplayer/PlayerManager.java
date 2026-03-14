@@ -10,7 +10,6 @@ import dev.lavalink.youtube.clients.*;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import org.apache.commons.io.IOUtils;
-import org.apache.hc.core5.http.ParseException;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +25,7 @@ public class PlayerManager {
     private final File defaultImage;
 
 
-    public PlayerManager() throws IOException, ParseException {
+    public PlayerManager() throws IOException {
         this.musicManagers = new HashMap<>();
         this.textChannelManagers = new HashMap<>();
         this.audioPlayerManager = new DefaultAudioPlayerManager();
@@ -104,7 +103,7 @@ public class PlayerManager {
         if (instance == null) {
             try {
                 instance = new PlayerManager();
-            } catch (IOException | ParseException e) {
+            } catch (IOException e) {
                 System.out.println(e);
             }
         }
