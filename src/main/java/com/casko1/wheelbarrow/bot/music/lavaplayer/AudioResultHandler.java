@@ -34,6 +34,7 @@ public class AudioResultHandler implements AudioLoadResultHandler {
     //when loading from url
     @Override
     public void trackLoaded(AudioTrack audioTrack) {
+        logger.info("Track loaded");
         AudioTrackInfo audioTrackInfo = audioTrack.getInfo();
 
         //url provided so we supply with title
@@ -51,6 +52,7 @@ public class AudioResultHandler implements AudioLoadResultHandler {
 
     @Override
     public void playlistLoaded(AudioPlaylist audioPlaylist) {
+        logger.info("Playlist loaded");
         if (audioPlaylist.getTracks().isEmpty()) {
             request.getEvent().reply("There was an issue playing that track");
             return;
