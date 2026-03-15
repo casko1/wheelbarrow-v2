@@ -81,5 +81,3 @@ jar {
     }
     duplicatesStrategy 'exclude'
 }
-
-targetCompatibility = JavaVersion.VERSION_25

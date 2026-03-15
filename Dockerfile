@@ -1,5 +1,5 @@
 # ---------- JAVA BUILD ----------
-FROM gradle:8.7-jdk25 AS java-builder
+FROM gradle:9.4.0-jdk25 AS java-builder
 WORKDIR /project
 
 # cache Gradle dependencies
