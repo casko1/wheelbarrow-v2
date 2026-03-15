@@ -35,7 +35,6 @@ public class TrackScheduler extends AudioEventAdapter {
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        logger.info(endReason.toString());
         if (endReason.mayStartNext) {
             if (this.loop) {
                 this.player.startTrack(track.makeClone(), false);

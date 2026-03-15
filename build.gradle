@@ -41,7 +41,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'net.dv8tion:JDA:5.2.1'
+    implementation 'net.dv8tion:JDA:6.3.1'
     implementation 'pw.chew:jda-chewtils:2.0-SNAPSHOT'
     implementation 'com.fasterxml.jackson.core:jackson-core:2.14.0'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.14.0'
@@ -56,12 +56,13 @@ dependencies {
     implementation 'io.sfrei:tracksearch:0.9.0'
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
     implementation 'com.github.JustRed23:lavadsp:0.7.7-1'
+    implementation("club.minnced:jdave-native-linux-x86-64:0.0.1")
 }
 
 group = 'com.casko1'
 version = '1.4.5'
 description = 'wheelbarrow-bot'
-java.sourceCompatibility = JavaVersion.VERSION_21
+java.sourceCompatibility = JavaVersion.VERSION_25
 
 publishing {
     publications {
@@ -81,4 +82,4 @@ jar {
     duplicatesStrategy 'exclude'
 }
 
-targetCompatibility = JavaVersion.VERSION_21
+targetCompatibility = JavaVersion.VERSION_25
