@@ -61,5 +61,5 @@ ENTRYPOINT ["/usr/bin/tini","--"]
 CMD ["sh", "-c", "\
 java -jar /app/app.jar & \
 /app/python-api/venv/bin/uvicorn python-api.app:app --host 0.0.0.0 --port 5000 & \
-deno run --allow-net --allow-read --allow-env /app/yt-cipher/main.ts \
+deno run --allow-net --allow-read --allow-write --allow-env /app/yt-cipher/server.ts \
 "]
