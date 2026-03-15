@@ -35,6 +35,7 @@ public class TrackScheduler extends AudioEventAdapter {
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
+        logger.info("Track ended");
         if (endReason.mayStartNext) {
             if (this.loop) {
                 this.player.startTrack(track.makeClone(), false);
@@ -107,6 +108,11 @@ public class TrackScheduler extends AudioEventAdapter {
             TextChannel textChannel = playerManager.getTextChannel(guild);
             textChannel.sendMessage("There was an error playing that track").queue();
         }
+    }
+
+    @Override
+    public void onTrackStuck(AudioPlayer player, AudioTrack track, long thresholdMs) {
+        logger.info("track stuck");
     }
 
     public void nextTrack() {
