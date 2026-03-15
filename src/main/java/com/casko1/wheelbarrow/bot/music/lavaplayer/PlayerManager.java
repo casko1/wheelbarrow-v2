@@ -6,6 +6,7 @@ import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceManager;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
+import dev.lavalink.youtube.YoutubeSourceOptions;
 import dev.lavalink.youtube.clients.*;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -34,8 +35,12 @@ public class PlayerManager {
 
         defaultImage = prepareDefaultImage();
 
+        YoutubeSourceOptions options = new YoutubeSourceOptions()
+                .setRemoteCipher("http://localhost:8001", "test", "wheelbarrow")
+                .setAllowSearch(true);
+
         YoutubeAudioSourceManager youtubeSourceManager = new YoutubeAudioSourceManager(
-                true,
+                options,
                 new MusicWithThumbnail(),
                 new MWebWithThumbnail(),
                 new WebEmbeddedWithThumbnail(),
