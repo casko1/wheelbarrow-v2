@@ -28,7 +28,7 @@ import java.util.EnumSet;
 public class Wheelbarrow {
     private static final Logger logger = LoggerFactory.getLogger(Wheelbarrow.class);
 
-    public static void main(String[] args) throws Exception {
+    static void main(String[] args) throws Exception {
         String token = System.getenv("botToken");
 
         if (token.equals("replaceWithBotToken")) {
