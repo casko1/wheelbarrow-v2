@@ -56,7 +56,8 @@ dependencies {
     implementation 'io.sfrei:tracksearch:0.9.0'
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
     implementation 'com.github.JustRed23:lavadsp:0.7.7-1'
-    implementation("club.minnced:jdave-native-linux-x86-64:0.0.1")
+    implementation("club.minnced:jdave-api:0.1.7")
+    implementation("club.minnced:jdave-native-linux-x86-64:0.1.7")
 }
 
 group = 'com.casko1'
