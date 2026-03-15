@@ -11,9 +11,6 @@ import dev.lavalink.youtube.clients.*;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,8 +18,6 @@ import java.util.Map;
 public class PlayerManager {
     //only one instance
     private static PlayerManager instance;
-
-    private static final Logger logger = LoggerFactory.getLogger(PlayerManager.class);
 
     //maps guild id's to music managers
     private final Map<Long, GuildMusicManager> musicManagers;
@@ -92,8 +87,6 @@ public class PlayerManager {
 
     public void loadAndPlay(PlayRequest request) {
         final GuildMusicManager musicManager = this.getMusicManager(request.getEvent().getGuild());
-
-        logger.info("loadAndPlay called");
 
         this.audioPlayerManager.loadItemOrdered(musicManager, request.getSearchString(),
                 new AudioResultHandler(request, musicManager.trackScheduler, defaultImage));
