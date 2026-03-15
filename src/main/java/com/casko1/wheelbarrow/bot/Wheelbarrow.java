@@ -1,5 +1,6 @@
 package com.casko1.wheelbarrow.bot;
 
+import club.minnced.discord.jdave.interop.JDaveSessionFactory;
 import com.casko1.wheelbarrow.bot.commands.hybrid.music.*;
 import com.casko1.wheelbarrow.bot.commands.menu.music.SongDetectContextMenu;
 import com.casko1.wheelbarrow.bot.commands.slash.basic.WeatherSlashCommand;
@@ -15,6 +16,7 @@ import com.casko1.wheelbarrow.bot.music.QueuePaginator;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.audio.AudioModuleConfig;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
@@ -76,6 +78,12 @@ public class Wheelbarrow {
                         GatewayIntent.GUILD_VOICE_STATES,
                         GatewayIntent.GUILD_MESSAGE_REACTIONS,
                         GatewayIntent.MESSAGE_CONTENT
+                )
+                .setAudioModuleConfig(
+                        new AudioModuleConfig()
+                                .withDaveSessionFactory(
+                                        new JDaveSessionFactory()
+                                )
                 )
                 .disableCache(EnumSet.of(
                         CacheFlag.CLIENT_STATUS,

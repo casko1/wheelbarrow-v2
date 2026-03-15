@@ -1,5 +1,5 @@
 # ---------- JAVA BUILD ----------
-FROM gradle:8.7-jdk21 AS java-builder
+FROM gradle:8.7-jdk25 AS java-builder
 WORKDIR /project
 
 # cache Gradle dependencies
@@ -27,7 +27,7 @@ RUN deno run --allow-read --allow-write ./scripts/patch-ejs.ts
 
 
 # ---------- FINAL RUNTIME ----------
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:25-jre
 WORKDIR /app
 
 RUN apt-get update && \
