@@ -35,7 +35,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # copy deno binary
-COPY --from=denoland/deno:alpine /usr/bin/deno /usr/local/bin/deno
+COPY --from=denoland/deno:alpine /usr/local/bin/deno /usr/local/bin/deno
 
 # java artifact
 COPY --from=java-builder /project/build/libs/*.jar /app/app.jar
