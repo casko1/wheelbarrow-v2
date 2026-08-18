@@ -23,13 +23,13 @@ RUN git clone https://github.com/yt-dlp/ejs.git && \
 RUN deno run --allow-read --allow-write ./scripts/patch-ejs.ts
 
 
-# ---------- PYTHON BUILDER (Python 3.12 for binary wheels) ----------
-FROM python:3.12-slim AS python-builder
+# ---------- PYTHON BUILDER ----------
+# Using python:slim to build pre-compiled wheels cleanly
+FROM python:3-slim AS python-builder
 WORKDIR /app/python-api
 
 COPY python-api/requirements.txt .
 
-# Installs instantly using pre-compiled wheels from PyPI
 RUN python -m venv /app/python-api/venv && \
     /app/python-api/venv/bin/pip install --upgrade pip && \
     /app/python-api/venv/bin/pip install --no-cache-dir -r requirements.txt
@@ -39,9 +39,9 @@ RUN python -m venv /app/python-api/venv && \
 FROM eclipse-temurin:25-jre
 WORKDIR /app
 
-# Install runtime dependencies including python 3.12
+# Install system dependencies with standard python3 & python3-venv
 RUN apt-get update && \
-    apt-get install -y ffmpeg python3.12 python3.12-venv tini && \
+    apt-get install -y ffmpeg python3 python3-venv tini && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy Deno binary
