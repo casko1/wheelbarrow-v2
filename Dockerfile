@@ -23,13 +23,13 @@ RUN git clone https://github.com/yt-dlp/ejs.git && \
 RUN deno run --allow-read --allow-write ./scripts/patch-ejs.ts
 
 
-# ---------- PYTHON BUILDER ----------
-# Using python:slim to build pre-compiled wheels cleanly
-FROM python:3-slim AS python-builder
+# ---------- PYTHON BUILDER (Python 3.12) ----------
+FROM python:3.12-slim AS python-base
 WORKDIR /app/python-api
 
 COPY python-api/requirements.txt .
 
+# Uses pre-built wheels from PyPI (fast, no compiling)
 RUN python -m venv /app/python-api/venv && \
     /app/python-api/venv/bin/pip install --upgrade pip && \
     /app/python-api/venv/bin/pip install --no-cache-dir -r requirements.txt
@@ -39,13 +39,17 @@ RUN python -m venv /app/python-api/venv && \
 FROM eclipse-temurin:25-jre
 WORKDIR /app
 
-# Install system dependencies with standard python3 & python3-venv
-RUN apt-get update && \
-    apt-get install -y ffmpeg python3 python3-venv tini && \
-    rm -rf /var/lib/apt/lists/*
+# Copy Python 3.12 binaries & standard library directly from official image
+COPY --from=python-base /usr/local/bin/python3* /usr/local/bin/
+COPY --from=python-base /usr/local/lib/python3.12 /usr/local/lib/python3.12
 
 # Copy Deno binary
 COPY --from=denoland/deno:alpine /bin/deno /usr/local/bin/deno
+
+# Install non-python runtime tools only
+RUN apt-get update && \
+    apt-get install -y ffmpeg tini && \
+    rm -rf /var/lib/apt/lists/*
 
 # Java artifact
 COPY --from=java-builder /project/build/libs/*.jar /app/app.jar
@@ -53,8 +57,8 @@ COPY --from=java-builder /project/build/libs/*.jar /app/app.jar
 # YT-Cipher source
 COPY --from=yt-cipher-builder /yt-cipher /app/yt-cipher
 
-# Copy virtual environment directly from Python builder stage
-COPY --from=python-builder /app/python-api/venv /app/python-api/venv
+# Python virtual environment & code
+COPY --from=python-base /app/python-api/venv /app/python-api/venv
 COPY python-api /app/python-api
 
 ENV OVERRIDE_PLAYER_VARIANT=IAS
