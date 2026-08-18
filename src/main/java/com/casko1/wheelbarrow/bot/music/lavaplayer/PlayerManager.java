@@ -41,14 +41,16 @@ public class PlayerManager {
 
         YoutubeAudioSourceManager youtubeSourceManager = new YoutubeAudioSourceManager(
                 options,
+                new TvHtml5SimplyWithThumbnail(),
                 new MusicWithThumbnail(),
                 new MWebWithThumbnail(),
-                new TvHtml5SimplyWithThumbnail(),
                 new WebEmbeddedWithThumbnail(),
                 new AndroidVrWithThumbnail(),
                 new IosWithThumbnail(),
                 new AndroidMusicWithThumbnail()
         );
+
+        youtubeSourceManager.useOauth2(null, false);
         this.audioPlayerManager.registerSourceManager(youtubeSourceManager);
         this.audioPlayerManager.registerSourceManager(SoundCloudAudioSourceManager.createDefault());
         AudioSourceManagers.registerLocalSource(this.audioPlayerManager);
