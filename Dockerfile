@@ -31,7 +31,7 @@ FROM eclipse-temurin:25-jre
 WORKDIR /app
 
 RUN apt-get update && \
-    apt-get install -y ffmpeg python3 python3-venv tini build-essential && \
+    apt-get install -y ffmpeg python3 python3-venv python3-dev pkg-config tini build-essential && \
     rm -rf /var/lib/apt/lists/*
 
 # copy deno binary
