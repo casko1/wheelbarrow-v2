@@ -2,11 +2,11 @@
 FROM gradle:9.4.0-jdk25 AS java-builder
 WORKDIR /project
 
-# cache Gradle dependencies
+# Cache Gradle dependencies
 COPY build.gradle settings.gradle gradle /project/
 RUN gradle build -x test || true
 
-# copy the rest of the source
+# Copy rest of source and build
 COPY . .
 RUN gradle clean build
 
@@ -15,11 +15,9 @@ RUN gradle clean build
 FROM denoland/deno:alpine AS yt-cipher-builder
 WORKDIR /yt-cipher
 
-RUN apk add --no-cache git
-
-RUN git clone https://github.com/kikkia/yt-cipher.git .
-
-RUN git clone https://github.com/yt-dlp/ejs.git && \
+RUN apk add --no-cache git && \
+    git clone https://github.com/kikkia/yt-cipher.git . && \
+    git clone https://github.com/yt-dlp/ejs.git && \
     cd ejs && \
     git checkout cd4e87f52e87ab6d8b318fd3a817adda6fafa8dc
 
@@ -30,33 +28,46 @@ RUN deno run --allow-read --allow-write ./scripts/patch-ejs.ts
 FROM eclipse-temurin:25-jre
 WORKDIR /app
 
+# Install system dependencies
 RUN apt-get update && \
-    apt-get install -y ffmpeg python3 python3-venv python3-dev pkg-config tini build-essential && \
+    apt-get install -y --no-install-recommends \
+        ffmpeg \
+        python3 \
+        python3-venv \
+        python3-pip \
+        tini && \
     rm -rf /var/lib/apt/lists/*
 
-# copy deno binary
+# Copy Deno binary from builder
 COPY --from=denoland/deno:alpine /bin/deno /usr/local/bin/deno
 
-# java artifact
+# Create Python Virtual Environment
+RUN python3 -m venv /app/python-api/venv
+
+# CACHE OPTIMIZATION: Copy ONLY requirements.txt first
+# This ensures pip install only runs when requirements.txt changes!
+COPY python-api/requirements.txt /app/python-api/requirements.txt
+
+# Install Python requirements using pip cache
+RUN --mount=type=cache,target=/root/.cache/pip \
+    /app/python-api/venv/bin/pip install --upgrade pip setuptools wheel && \
+    /app/python-api/venv/bin/pip install --prefer-binary -r /app/python-api/requirements.txt
+
+# Copy Java artifact
 COPY --from=java-builder /project/build/libs/*.jar /app/app.jar
 
-# yt-cipher prepared source
+# Copy yt-cipher prepared source
 COPY --from=yt-cipher-builder /yt-cipher /app/yt-cipher
 
-# python api
+# Copy Python application source code (AFTER pip install)
 COPY python-api /app/python-api
-
-# python environment
-RUN python3 -m venv /app/python-api/venv && \
-    /app/python-api/venv/bin/pip install --upgrade pip && \
-    /app/python-api/venv/bin/pip install -r /app/python-api/requirements.txt
 
 ENV OVERRIDE_PLAYER_VARIANT=IAS
 
 EXPOSE 5000
 EXPOSE 8001
 
-ENTRYPOINT ["/usr/bin/tini","--"]
+ENTRYPOINT ["/usr/bin/tini", "--"]
 
 CMD ["sh", "-c", "\
 java -jar /app/app.jar & \
