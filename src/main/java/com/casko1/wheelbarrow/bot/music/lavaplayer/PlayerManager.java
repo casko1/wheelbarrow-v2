@@ -43,6 +43,7 @@ public class PlayerManager {
                 options,
                 new MusicWithThumbnail(),
                 new MWebWithThumbnail(),
+                new TvHtml5SimplyWithThumbnail(),
                 new WebEmbeddedWithThumbnail(),
                 new AndroidVrWithThumbnail(),
                 new IosWithThumbnail(),
